@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using graphApiService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,18 +10,26 @@ namespace graphApiService.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        private readonly IGraphClientService _graphClient;
+        public ValuesController(IGraphClientService graphClient)
         {
-            return new string[] { "value1", "value2" };
+            _graphClient = graphClient;
         }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        // GET api/values
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult<string> Get()
         {
-            return "value";
+           string result = _graphClient.GetAllUsers();
+            return result;
+        }
+        // GET api/values/5
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<string>> Get(int id)
+        {
+            await _graphClient.CreateUserAsync();
+            return "done";
         }
 
         // POST api/values
