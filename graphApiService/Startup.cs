@@ -1,4 +1,5 @@
-﻿using graphApiService.Services;
+﻿using AutoMapper;
+using graphApiService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,15 @@ namespace graphApiService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(config =>
+            {
+                config.ValidateInlineMaps = false;
+            });
+
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
 
-            services.AddMapper();
+            services.AddSwagger();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -42,6 +48,13 @@ namespace graphApiService
             {
                 app.UseHsts();
             }
+
+            app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

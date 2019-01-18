@@ -11,85 +11,74 @@ using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
 
 namespace graphApiService.Controllers
 {
+    [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IGraphClientService _graphClient;
-        private readonly IMapper _mapper;
 
         public UsersController(IGraphClientService graphClient, IMapper mapper)
         {
             _graphClient = graphClient;
-            _mapper = mapper;
         }
 
-        // GET api/users
+        /// <summary>
+        /// Returns collection of users from Active Directory
+        /// </summary>
+        /// <returns>Collection of users</returns>
+        /// <response code="200">If users fetched successfully</response>
         [HttpGet]
-        public async Task<ActionResult<List<UserProfileDto>>> Get()
+        public ActionResult<List<UserProfileDto>> Get()
         {
-            IPagedCollection<IUser> users = _graphClient.GetAllUsers();
-
-            List<UserProfileDto> result = new List<UserProfileDto>();
-
-            do
-            {
-                foreach (var user in users.CurrentPage)
-                {
-                    result.Add(_mapper.Map<UserProfileDto>(user));
-                }
-
-                users = await users.GetNextPageAsync();
-            } while (users?.MorePagesAvailable == true);
-
-            return result;
+            return _graphClient.GetAllUsers().Result;
         }
-        // GET api/users/5
+
+        /// <summary>
+        /// Get user by his objectId or userPrincipalName
+        /// </summary>
+        /// <param name="objectId">Azure AD B2C user uniq identifier. Can be objectId of userPrincipalName</param>
+        /// <returns>User with passed identifier, or not found response</returns>
+        /// <response code="200">If user fetched successfully</response>
+        /// <response code="404">If user was not found</response>
         [HttpGet("{objectId}", Name = "User")]
         public UserProfileDto Get(string objectId)
         {
-            IUser user = _graphClient.GetUserByObjectId(objectId);
-
-            return _mapper.Map<UserProfileDto>(user);
+            return _graphClient.GetUserByObjectId(objectId);
         }
 
-        // POST api/users
+        /// <summary>
+        /// Creates new user
+        /// </summary>
+        /// <param name="userCreatableDto">User DTO to create</param>
+        /// <returns>URL to newly created user</returns>
+        /// <response code="201">If user fetched successfully</response>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] User newUserProfile)
+        public async Task<IActionResult> Post([FromBody] UserProfileCreatableDto userCreatableDto)
         {
-            UserProfileDto userToResponse;
-
-            try
-            {
-                IUser user = await _graphClient.CreateUserAsync(newUserProfile);
-                userToResponse = _mapper.Map<UserProfileDto>(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-
-            return Created("users/" + userToResponse.ObjectId, userToResponse);
+            UserProfileDto userToResponse = await _graphClient.CreateUserAsync((userCreatableDto));
+            return CreatedAtRoute("User", userToResponse.ObjectId, userToResponse);
         }
 
-        // PUT api/users/5
+        /// <summary>
+        /// Update user properties by objectId or userPrincipalName
+        /// </summary>
+        /// <param name="objectId">objectId or userPrincipalName of Azure AD B2C User</param>
+        /// <param name="userToUpdate">User DTO to update</param>
+        /// <returns>URL to updated user</returns>
+        /// <response code="201">If user updated successfully</response>
+        /// <response code="404">If user was not found</response>
         [HttpPatch("{objectId}")]
         public async Task<IActionResult> Patch(string objectId, [FromBody] UserProfileEditableDto userToUpdate)
         {
             try
             {
-                UserProfileDto userToResponse =
-                    _mapper.Map<UserProfileDto>(await _graphClient.UpdateUserByObjectId(objectId, userToUpdate));
+                UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
                 return CreatedAtRoute("User", userToResponse.ObjectId, userToResponse);
             }
             catch (ObjectNotFoundException ex)
             {
                 return NotFound(ex);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
             }
         }
     }

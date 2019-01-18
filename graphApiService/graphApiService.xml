@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>graphApiService</name>
+    </assembly>
+    <members>
+        <member name="M:graphApiService.Controllers.UsersController.Get">
+            <summary>
+            Returns collection of users from Active Directory
+            </summary>
+            <returns>Collection of users</returns>
+            <response code="200">If users fetched successfully</response>
+        </member>
+        <member name="M:graphApiService.Controllers.UsersController.Get(System.String)">
+            <summary>
+            Get user by his objectId or userPrincipalName
+            </summary>
+            <param name="objectId">Azure AD B2C user uniq identifier. Can be objectId of userPrincipalName</param>
+            <returns>User with passed identifier, or not found response</returns>
+            <response code="200">If user fetched successfully</response>
+            <response code="404">If user was not found</response>
+        </member>
+        <member name="M:graphApiService.Controllers.UsersController.Post(graphApiService.Dtos.User.UserProfileCreatableDto)">
+            <summary>
+            Creates new user
+            </summary>
+            <param name="userCreatableDto">User DTO to create</param>
+            <returns>URL to newly created user</returns>
+            <response code="201">If user fetched successfully</response>
+        </member>
+        <member name="M:graphApiService.Controllers.UsersController.Patch(System.String,graphApiService.Dtos.User.UserProfileEditableDto)">
+            <summary>
+            Update user properties by objectId or userPrincipalName
+            </summary>
+            <param name="objectId">objectId or userPrincipalName of Azure AD B2C User</param>
+            <param name="userToUpdate">User DTO to update</param>
+            <returns>URL to updated user</returns>
+            <response code="201">If user updated successfully</response>
+            <response code="404">If user was not found</response>
+        </member>
+    </members>
+</doc>

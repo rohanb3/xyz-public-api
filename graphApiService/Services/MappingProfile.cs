@@ -14,6 +14,7 @@ namespace graphApiService.Services
             CreateMap<UserProfileCreatableDto, User>();
             CreateMap<User, UserProfileEditableDto>();
             CreateMap<UserProfileEditableDto, User>();
+            CreateMap<UserProfileCreatableDto, UserProfileDto>();
         }
     }
 }

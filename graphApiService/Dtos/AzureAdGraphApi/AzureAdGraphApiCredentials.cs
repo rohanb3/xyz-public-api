@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 
-namespace graphApiService.Entities
+namespace graphApiService.Dtos.AzureAdGraphApi
 {
 
-    public class AzureADGraphApiCredentials
+    public class AzureAdGraphApiCredentials
     {
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
