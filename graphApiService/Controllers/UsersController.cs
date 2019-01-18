@@ -56,15 +56,24 @@ namespace graphApiService.Controllers
 
         // POST api/users
         [HttpPost]
-        public async Task<CreatedAtRouteResult> Post([FromBody] UserProfileCreatableDto newUserProfile)
+        public async Task<IActionResult> Post([FromBody] User newUserProfile)
         {
-            IUser user = await _graphClient.CreateUserAsync(_mapper.Map<User>(newUserProfile));
-            UserProfileDto userToRespone = _mapper.Map<UserProfileDto>(user);
-            return CreatedAtRoute("User", userToRespone.ObjectId, userToRespone);
+            UserProfileDto userToResponse;
+
+            try
+            {
+                IUser user = await _graphClient.CreateUserAsync(newUserProfile);
+                userToResponse = _mapper.Map<UserProfileDto>(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return Created("users/" + userToResponse.ObjectId, userToResponse);
         }
 
         // PUT api/users/5
-
         [HttpPatch("{objectId}")]
         public async Task<IActionResult> Patch(string objectId, [FromBody] UserProfileEditableDto userToUpdate)
         {
@@ -76,32 +85,12 @@ namespace graphApiService.Controllers
             }
             catch (ObjectNotFoundException ex)
             {
-                return NotFound();
+                return NotFound(ex);
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex);
             }
-        }
-
-        // DELETE api/users/5
-        [HttpDelete("{objectId}")]
-        public async Task<IActionResult> Delete(string objectId)
-        {
-            try
-            {
-               await _graphClient.DeleteUserByObjectId(objectId);
-            }
-            catch (ObjectNotFoundException ex)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
-
-            return Ok();
         }
     }
 }

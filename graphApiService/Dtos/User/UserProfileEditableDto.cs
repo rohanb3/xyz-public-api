@@ -4,11 +4,13 @@ namespace graphApiService.Dtos.User
 {
     public class UserProfileEditableDto
     {
-        [JsonProperty("display_name")]
+        [JsonProperty("accountEnabled")]
+        public  bool AccountEnabled { get; set; }
+        [JsonProperty("displayName")]
         public string DisplayName { get; set; }
         [JsonProperty("city")]
         public string City { get; set; }
-        [JsonProperty("company_name")]
+        [JsonProperty("companyName")]
         public string CompanyName { get; set; }
     }
 }

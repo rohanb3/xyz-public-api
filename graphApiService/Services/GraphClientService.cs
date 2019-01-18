@@ -18,7 +18,6 @@ namespace graphApiService.Services
         IPagedCollection<IUser> GetAllUsers();
         IUser GetUserByObjectId(string objectId);
         Task<IUser> UpdateUserByObjectId(string objectId, UserProfileEditableDto userToUpdate);
-        Task DeleteUserByObjectId(string objectId);
         Task<IUser> CreateUserAsync();
         Task<IUser> CreateUserAsync(IUser user);
     }
@@ -70,9 +69,10 @@ namespace graphApiService.Services
                 throw new ObjectNotFoundException(HttpStatusCode.NotFound, "Not found");
             }
 
-            userByObjectId.DisplayName = userToUpdate.DisplayName;
+            userByObjectId.DisplayName = userToUpdate.DisplayName ?? userByObjectId.DisplayName;
             userByObjectId.CompanyName = userToUpdate.CompanyName;
             userByObjectId.City = userToUpdate.City;
+            userByObjectId.AccountEnabled = userToUpdate.AccountEnabled;
 
 
             try
@@ -85,18 +85,6 @@ namespace graphApiService.Services
             }
 
             return userByObjectId;
-        }
-
-        public async Task DeleteUserByObjectId(string objectId)
-        {
-            IUser userByObjectId = await _client.Users.GetByObjectId(objectId).ExecuteAsync();
-
-            if (userByObjectId == null)
-            {
-                throw new ObjectNotFoundException(HttpStatusCode.NotFound, "Not found");
-            }
-
-            await userByObjectId.DeleteAsync();
         }
 
         public async Task<IUser> CreateUserAsync()

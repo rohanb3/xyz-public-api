@@ -7,5 +7,6 @@ namespace graphApiService.Dtos.User
         public string DisplayName { get; set; }
         public string City { get; set; }
         public string CompanyName { get; set; }
+        public string AccountEnabled { get; set; }
     }
 }

@@ -5,7 +5,6 @@ namespace graphApiService.Dtos.User
 {
     public class UserProfileCreatableDto
     {
-
         public string DisplayName { get; set; }
         public bool AccountEnabled { get; set; }
         public string CreationType { get; set; }
