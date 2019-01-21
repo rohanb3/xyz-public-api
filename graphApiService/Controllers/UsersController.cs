@@ -28,6 +28,7 @@ namespace graphApiService.Controllers
         /// </summary>
         /// <returns>Collection of users</returns>
         /// <response code="200">If users fetched successfully</response>
+        /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
         public ActionResult<List<UserProfileDto>> Get()
         {
@@ -40,6 +41,7 @@ namespace graphApiService.Controllers
         /// <param name="objectId">Azure AD B2C user uniq identifier. Can be objectId of userPrincipalName</param>
         /// <returns>User with passed identifier, or not found response</returns>
         /// <response code="200">If user fetched successfully</response>
+        /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{objectId}", Name = "User")]
         public UserProfileDto Get(string objectId)
@@ -52,6 +54,7 @@ namespace graphApiService.Controllers
         /// </summary>
         /// <param name="userCreatableDto">User DTO to create</param>
         /// <returns>URL to newly created user</returns>
+        /// <response code="401">If authorization token is invalid</response>
         /// <response code="201">If user fetched successfully</response>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserProfileCreatableDto userCreatableDto)
@@ -67,6 +70,7 @@ namespace graphApiService.Controllers
         /// <param name="userToUpdate">User DTO to update</param>
         /// <returns>URL to updated user</returns>
         /// <response code="201">If user updated successfully</response>
+        /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpPatch("{objectId}")]
         public async Task<IActionResult> Patch(string objectId, [FromBody] UserProfileEditableDto userToUpdate)
