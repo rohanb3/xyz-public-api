@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Azure.ActiveDirectory.GraphClient.Internal;
+using Microsoft.Azure.ActiveDirectory.GraphClient;
 
 namespace graphApiService.Dtos.User
 {

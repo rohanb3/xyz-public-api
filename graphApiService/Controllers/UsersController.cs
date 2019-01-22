@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using graphApiService.Dtos.User;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
-using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
 
 namespace graphApiService.Controllers
 {
@@ -18,7 +15,7 @@ namespace graphApiService.Controllers
     {
         private readonly IGraphClientService _graphClient;
 
-        public UsersController(IGraphClientService graphClient, IMapper mapper)
+        public UsersController(IGraphClientService graphClient)
         {
             _graphClient = graphClient;
         }

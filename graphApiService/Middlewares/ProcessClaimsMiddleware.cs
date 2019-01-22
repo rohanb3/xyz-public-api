@@ -16,12 +16,12 @@ namespace graphApiService.Middlewares
 
         public async Task Invoke(HttpContext context)
         { 
-            ClaimsIdentity identity = new ClaimsIdentity();
             foreach (Claim userClaim in context.User.Claims)
             {
                 if (userClaim.Type.Contains("extension_Group"))
                 {
-                    identity.AddClaim(new Claim(ClaimTypes.Role,userClaim.Value));
+                    ClaimsIdentity identity = new ClaimsIdentity();
+                    identity.AddClaim(new Claim(ClaimTypes.Role, userClaim.Value));
                     context.User.AddIdentity(identity);
                     break;
                 }

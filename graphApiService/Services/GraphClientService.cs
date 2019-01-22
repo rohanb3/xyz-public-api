@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using AutoMapper;
 using graphApiService.Dtos.AzureAdGraphApi;
 using graphApiService.Dtos.User;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
@@ -26,20 +25,19 @@ namespace graphApiService.Services
     {
         private readonly ActiveDirectoryClient _client;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
 
-        public GraphClientService(IConfiguration configuration, IMapper mapper)
+        public GraphClientService(IConfiguration configuration)
         {
-            Uri servicePointUri = new Uri(configuration["AzureAdGraphApi:Resource"]);
-            Uri serviceRoot = new Uri(servicePointUri, configuration["AzureAdB2C:Domain"]);
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            var servicePointUri = new Uri(configuration["AzureAdGraphApi:Resource"]);
+            var serviceRoot = new Uri(servicePointUri, configuration["AzureAdB2C:Domain"]);
             _client = new ActiveDirectoryClient(serviceRoot, async () => await AcquireTokenAsyncForApplication());
-            _configuration = configuration;
-            _mapper = mapper;
         }
 
         private async Task<string> AcquireTokenAsyncForApplication()
         {
-            using (HttpClient httpClient = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
                 var pairs = new List<KeyValuePair<string, string>>
                  {
@@ -66,7 +64,7 @@ namespace graphApiService.Services
             {
                 foreach (var user in users.CurrentPage)
                 {
-                    result.Add(_mapper.Map<UserProfileDto>(user));
+                    result.Add(user.ToUserProfileDto());
                 }
 
                 users = await users.GetNextPageAsync();
@@ -77,27 +75,29 @@ namespace graphApiService.Services
 
         public async Task<UserProfileDto> UpdateUserByObjectId(string objectId, UserProfileEditableDto userToUpdate)
         {
-            IUser userByObjectId = _client.Users.GetByObjectId(objectId).ExecuteAsync().Result;
+            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
+            if (userToUpdate == null) throw new ArgumentNullException(nameof(userToUpdate));
 
-            if (userByObjectId == null)
-            {
-                throw new ObjectNotFoundException(HttpStatusCode.NotFound, "Not found");
-            }
+            IUser userByObjectId = _client.Users.GetByObjectId(objectId).ExecuteAsync().Result ??
+                                   throw new ObjectNotFoundException(HttpStatusCode.NotFound, "Not found");
+
 
             Utils.MergeObjects(userToUpdate, (User)userByObjectId);
 
             await userByObjectId.UpdateAsync();
 
-            return _mapper.Map<UserProfileDto>(userByObjectId);
+            return userByObjectId.ToUserProfileDto();
         }
 
         public async Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto userToBeAdded)
         {
-            await _client.Users.AddUserAsync(_mapper.Map<User>(userToBeAdded));
+            if (userToBeAdded == null) throw new ArgumentNullException(nameof(userToBeAdded));
+
+            await _client.Users.AddUserAsync(userToBeAdded.ToAdUser());
 
             try
             {
-                return _mapper.Map<UserProfileDto>(userToBeAdded);
+                return userToBeAdded.ToUserProfileDto();
             }
             catch (Exception ex)
             {
@@ -108,8 +108,12 @@ namespace graphApiService.Services
 
         public UserProfileDto GetUserByObjectId(string objectId)
         {
-            return _mapper.Map<UserProfileDto>(_client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync()
-                .Result.CurrentPage.First());
+            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
+
+            User userByObjectId = (User)_client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync()
+                .Result.CurrentPage.First() ?? throw new ObjectNotFoundException("User not found");
+
+            return userByObjectId.ToUserProfileDto();
         }
     }
 }
