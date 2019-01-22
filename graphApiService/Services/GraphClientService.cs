@@ -59,7 +59,7 @@ namespace graphApiService.Services
 
         public async Task<List<UserProfileDto>> GetAllUsers()
         {
-            IPagedCollection<IUser> users= _client.Users.ExecuteAsync().Result;
+            IPagedCollection<IUser> users = _client.Users.ExecuteAsync().Result;
             List<UserProfileDto> result = new List<UserProfileDto>();
 
             do
@@ -93,13 +93,23 @@ namespace graphApiService.Services
 
         public async Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto userToBeAdded)
         {
-             await _client.Users.AddUserAsync(_mapper.Map<User>(userToBeAdded));
-             return _mapper.Map<UserProfileDto>(userToBeAdded);
+            await _client.Users.AddUserAsync(_mapper.Map<User>(userToBeAdded));
+
+            try
+            {
+                return _mapper.Map<UserProfileDto>(userToBeAdded);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw ex;
+            }
         }
 
         public UserProfileDto GetUserByObjectId(string objectId)
         {
-            return _mapper.Map<UserProfileDto>(_client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync().Result.CurrentPage.First());
+            return _mapper.Map<UserProfileDto>(_client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync()
+                .Result.CurrentPage.First());
         }
     }
 }

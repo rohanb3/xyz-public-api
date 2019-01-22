@@ -30,6 +30,7 @@ namespace graphApiService.Controllers
         /// <response code="200">If users fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
+        [Authorize(Roles="test")]
         public ActionResult<List<UserProfileDto>> Get()
         {
             return _graphClient.GetAllUsers().Result;
@@ -60,7 +61,7 @@ namespace graphApiService.Controllers
         public async Task<IActionResult> Post([FromBody] UserProfileCreatableDto userCreatableDto)
         {
             UserProfileDto userToResponse = await _graphClient.CreateUserAsync((userCreatableDto));
-            return CreatedAtRoute("User", userToResponse.ObjectId, userToResponse);
+            return Created("users/" + userToResponse.ObjectId, userToResponse);
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace graphApiService.Controllers
             try
             {
                 UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
-                return CreatedAtRoute("User", userToResponse.ObjectId, userToResponse);
+                return Created("users/" + userToResponse.ObjectId, userToResponse);
             }
             catch (ObjectNotFoundException ex)
             {
