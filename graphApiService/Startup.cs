@@ -1,4 +1,5 @@
 ﻿using System;
+using graphApiService.Helpers;
 using graphApiService.Middlewares;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,8 @@ namespace graphApiService
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<IGraphClientService, GraphClientService>();
+            services.Configure<AzureAdB2COptions>( Configuration.GetSection("AzureAdB2C"));
+            services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

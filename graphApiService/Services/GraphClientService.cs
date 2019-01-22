@@ -7,16 +7,17 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using graphApiService.Dtos.AzureAdGraphApi;
 using graphApiService.Dtos.User;
+using graphApiService.Helpers;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace graphApiService.Services
 {
     public interface IGraphClientService
     {
         Task<List<UserProfileDto>> GetAllUsers();
-        UserProfileDto GetUserByObjectId(string objectId);
+        Task<UserProfileDto> GetUserByObjectId(string objectId);
         Task<UserProfileDto> UpdateUserByObjectId(string objectId, UserProfileEditableDto userToUpdate);
         Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto user);
     }
@@ -24,14 +25,18 @@ namespace graphApiService.Services
     public class GraphClientService : IGraphClientService
     {
         private readonly ActiveDirectoryClient _client;
-        private readonly IConfiguration _configuration;
+        private readonly AzureAdGraphApiOptions _azureAdGraphApiOptions;
 
-        public GraphClientService(IConfiguration configuration)
+        public GraphClientService(IOptionsMonitor<AzureAdGraphApiOptions> azureAdGraphApiOptionsMonitor,
+            IOptionsMonitor<AzureAdB2COptions> azureAdB2COptionsMonitor)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            var azureAdB2COptions = azureAdB2COptionsMonitor?.CurrentValue ??
+                                    throw new ArgumentNullException(nameof(azureAdB2COptionsMonitor));
+            _azureAdGraphApiOptions = azureAdGraphApiOptionsMonitor?.CurrentValue ??
+                                      throw new ArgumentNullException(nameof(azureAdGraphApiOptionsMonitor));
 
-            var servicePointUri = new Uri(configuration["AzureAdGraphApi:Resource"]);
-            var serviceRoot = new Uri(servicePointUri, configuration["AzureAdB2C:Domain"]);
+            var servicePointUri = new Uri(_azureAdGraphApiOptions.Resource);
+            var serviceRoot = new Uri(servicePointUri, azureAdB2COptions.Domain);
             _client = new ActiveDirectoryClient(serviceRoot, async () => await AcquireTokenAsyncForApplication());
         }
 
@@ -41,15 +46,15 @@ namespace graphApiService.Services
             {
                 var pairs = new List<KeyValuePair<string, string>>
                  {
-                     new KeyValuePair<string, string>("client_id", _configuration["AzureAdGraphApi:client_id"]),
-                     new KeyValuePair<string, string>("client_secret", _configuration["AzureAdGraphApi:client_secret"]),
-                     new KeyValuePair<string, string>("Resource", _configuration["AzureAdGraphApi:Resource"]),
-                     new KeyValuePair<string, string>("grant_type", _configuration["AzureAdGraphApi:grant_type"])
+                     new KeyValuePair<string, string>("client_id", _azureAdGraphApiOptions.ClientId),
+                     new KeyValuePair<string, string>("client_secret", _azureAdGraphApiOptions.ClientSecret),
+                     new KeyValuePair<string, string>("Resource", _azureAdGraphApiOptions.Resource),
+                     new KeyValuePair<string, string>("grant_type", _azureAdGraphApiOptions.GrantType)
                  };
 
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
-                HttpResponseMessage response = httpClient.PostAsync(_configuration["AzureAdGraphApi:requestUri"], content).Result;
+                HttpResponseMessage response = await httpClient.PostAsync(_azureAdGraphApiOptions.RequestUri, content);
                 var credentials = await response.Content.ReadAsAsync<AzureAdGraphApiCredentials>(new[] { new JsonMediaTypeFormatter() });
                 return credentials.AccessToken;
             }
@@ -57,7 +62,7 @@ namespace graphApiService.Services
 
         public async Task<List<UserProfileDto>> GetAllUsers()
         {
-            IPagedCollection<IUser> users = _client.Users.ExecuteAsync().Result;
+            IPagedCollection<IUser> users = await _client.Users.ExecuteAsync();
             List<UserProfileDto> result = new List<UserProfileDto>();
 
             do
@@ -75,12 +80,21 @@ namespace graphApiService.Services
 
         public async Task<UserProfileDto> UpdateUserByObjectId(string objectId, UserProfileEditableDto userToUpdate)
         {
-            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
-            if (userToUpdate == null) throw new ArgumentNullException(nameof(userToUpdate));
+            if (objectId == null)
+            {
+                throw new ArgumentNullException(nameof(objectId));
+            }
 
-            IUser userByObjectId = _client.Users.GetByObjectId(objectId).ExecuteAsync().Result ??
-                                   throw new ObjectNotFoundException(HttpStatusCode.NotFound, "Not found");
+            if (userToUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(userToUpdate));
+            }
 
+            IUser userByObjectId = await _client.Users.GetByObjectId(objectId).ExecuteAsync();
+            if (userByObjectId == null)
+            {
+                throw new ObjectNotFoundException(HttpStatusCode.NotFound, "Not found");
+            }
 
             Utils.MergeObjects(userToUpdate, (User)userByObjectId);
 
@@ -91,28 +105,31 @@ namespace graphApiService.Services
 
         public async Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto userToBeAdded)
         {
-            if (userToBeAdded == null) throw new ArgumentNullException(nameof(userToBeAdded));
+            if (userToBeAdded == null)
+            {
+                throw new ArgumentNullException(nameof(userToBeAdded));
+            }
 
             await _client.Users.AddUserAsync(userToBeAdded.ToAdUser());
 
-            try
-            {
-                return userToBeAdded.ToUserProfileDto();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw ex;
-            }
+            return userToBeAdded.ToUserProfileDto();
         }
 
-        public UserProfileDto GetUserByObjectId(string objectId)
+        public async Task<UserProfileDto> GetUserByObjectId(string objectId)
         {
-            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
+            if (objectId == null)
+            {
+                throw new ArgumentNullException(nameof(objectId));
+            }
 
-            User userByObjectId = (User)_client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync()
-                .Result.CurrentPage.First() ?? throw new ObjectNotFoundException("User not found");
+            IPagedCollection<IUser> pagedUsersCollection = await _client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync();
 
+            if (pagedUsersCollection.CurrentPage.Count == 0)
+            {
+                throw new ObjectNotFoundException("User with passed objectId not found");
+            }
+
+            IUser userByObjectId = pagedUsersCollection.CurrentPage.First();
             return userByObjectId.ToUserProfileDto();
         }
     }

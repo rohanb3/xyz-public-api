@@ -42,9 +42,9 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{objectId}", Name = "User")]
-        public UserProfileDto Get(string objectId)
+        public async Task<UserProfileDto> Get(string objectId)
         {
-            return _graphClient.GetUserByObjectId(objectId);
+            return await _graphClient.GetUserByObjectId(objectId);
         }
 
         /// <summary>
