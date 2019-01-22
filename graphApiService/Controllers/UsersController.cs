@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using graphApiService.Dtos.User;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace graphApiService.Controllers
 {
@@ -42,6 +44,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{objectId}", Name = "User")]
+        [ProducesResponseType(200,Type=typeof(UserProfileDto))]
         public async Task<UserProfileDto> Get(string objectId)
         {
             return await _graphClient.GetUserByObjectId(objectId);
@@ -55,7 +58,7 @@ namespace graphApiService.Controllers
         /// <response code="201">If user fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] UserProfileCreatableDto userCreatableDto)
+        public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
         {
             UserProfileDto userToResponse = await _graphClient.CreateUserAsync((userCreatableDto));
             return Created("users/" + userToResponse.ObjectId, userToResponse);
@@ -71,7 +74,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpPatch("{objectId}")]
-        public async Task<IActionResult> Patch(string objectId, [FromBody] UserProfileEditableDto userToUpdate)
+        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] UserProfileEditableDto userToUpdate)
         {
             try
             {
@@ -80,7 +83,7 @@ namespace graphApiService.Controllers
             }
             catch (ObjectNotFoundException ex)
             {
-                return NotFound(ex);
+                return NotFound(ex.Message);
             }
         }
     }
