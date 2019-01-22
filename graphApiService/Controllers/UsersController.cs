@@ -52,8 +52,8 @@ namespace graphApiService.Controllers
         /// </summary>
         /// <param name="userCreatableDto">User DTO to create</param>
         /// <returns>URL to newly created user</returns>
-        /// <response code="401">If authorization token is invalid</response>
         /// <response code="201">If user fetched successfully</response>
+        /// <response code="401">If authorization token is invalid</response>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserProfileCreatableDto userCreatableDto)
         {

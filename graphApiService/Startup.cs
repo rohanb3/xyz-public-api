@@ -43,10 +43,13 @@ namespace graphApiService
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseExceptionMiddleware();
             }
             else
             {
                 app.UseHsts();
+                app.UseExceptionMiddleware();
+                app.UseExceptionHandler();
             }
 
             app.UseStaticFiles();
