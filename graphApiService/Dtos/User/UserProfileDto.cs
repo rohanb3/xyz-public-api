@@ -12,6 +12,6 @@ namespace graphApiService.Dtos.User {
         [StringLength(64)]
         public string CompanyName { get; set; }
         [Required]
-        public bool AccountEnabled { get; set; }
+        public bool? AccountEnabled { get; set; }
     }
 }

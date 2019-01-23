@@ -7,7 +7,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using graphApiService.Dtos.AzureAdGraphApi;
 using graphApiService.Dtos.User;
-using graphApiService.Helpers;
+using graphApiService.Helpers.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
 using Microsoft.Extensions.Options;

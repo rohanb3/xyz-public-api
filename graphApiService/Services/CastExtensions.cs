@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using graphApiService.Dtos.User;
+﻿using graphApiService.Dtos.User;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 
 namespace graphApiService.Services
@@ -11,7 +9,7 @@ namespace graphApiService.Services
         {
             return new UserProfileDto()
             {
-                AccountEnabled = user.AccountEnabled.Value,
+                AccountEnabled = user.AccountEnabled,
                 City = user.City,
                 CompanyName = user.CompanyName,
                 DisplayName = user.DisplayName,

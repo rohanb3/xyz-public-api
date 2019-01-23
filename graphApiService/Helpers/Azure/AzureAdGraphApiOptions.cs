@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace graphApiService.Helpers
+﻿namespace graphApiService.Helpers.Azure
 {
     public class AzureAdGraphApiOptions
     {
