@@ -28,7 +28,6 @@ namespace graphApiService.Controllers
         /// <response code="200">If users fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
-        [Authorize(Roles="test")]
         public ActionResult<List<UserProfileDto>> Get()
         {
             return _graphClient.GetAllUsers().Result;
@@ -43,7 +42,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{objectId}", Name = "User")]
-        [ProducesResponseType(200,Type=typeof(UserProfileDto))]
+        [ProducesResponseType(200, Type = typeof(UserProfileDto))]
         public async Task<UserProfileDto> Get(string objectId)
         {
             return await _graphClient.GetUserByObjectId(objectId);
@@ -60,30 +59,30 @@ namespace graphApiService.Controllers
         public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
         {
             UserProfileDto userToResponse = await _graphClient.CreateUserAsync((userCreatableDto));
-            return Created("users/" + userToResponse.ObjectId, userToResponse);
+            return CreatedAtRoute("User", new {objectId = userToResponse.ObjectId}, userToResponse);
         }
 
-        /// <summary>
-        /// Update user properties by objectId or userPrincipalName
-        /// </summary>
-        /// <param name="objectId">objectId or userPrincipalName of Azure AD B2C User</param>
-        /// <param name="userToUpdate">User DTO to update</param>
-        /// <returns>URL to updated user</returns>
-        /// <response code="201">If user updated successfully</response>
-        /// <response code="401">If authorization token is invalid</response>
-        /// <response code="404">If user was not found</response>
-        [HttpPatch("{objectId}")]
-        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] UserProfileEditableDto userToUpdate)
+    /// <summary>
+    /// Update user properties by objectId or userPrincipalName
+    /// </summary>
+    /// <param name="objectId">objectId or userPrincipalName of Azure AD B2C User</param>
+    /// <param name="userToUpdate">User DTO to update</param>
+    /// <returns>URL to updated user</returns>
+    /// <response code="201">If user updated successfully</response>
+    /// <response code="401">If authorization token is invalid</response>
+    /// <response code="404">If user was not found</response>
+    [HttpPatch("{objectId}")]
+    public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] UserProfileEditableDto userToUpdate)
+    {
+        try
         {
-            try
-            {
-                UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
-                return Created("users/" + userToResponse.ObjectId, userToResponse);
-            }
-            catch (ObjectNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
+            return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
+        }
+        catch (ObjectNotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
     }
+}
 }

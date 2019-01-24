@@ -45,7 +45,6 @@ namespace graphApiService
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseExceptionMiddleware();
             }
             else
             {

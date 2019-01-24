@@ -112,7 +112,12 @@ namespace graphApiService.Services
 
             await _client.Users.AddUserAsync(userToBeAdded.ToAdUser());
 
-            return userToBeAdded.ToUserProfileDto();
+            string mail = userToBeAdded.SignInNames.Find(name => name.Type == "emailAddress").Value;
+
+            IPagedCollection<IUser> result = await _client.Users
+                .Where(user => user.SignInNames.Any(name => name.Value == mail)).ExecuteAsync();
+
+            return result.CurrentPage.First().ToUserProfileDto();
         }
 
         public async Task<UserProfileDto> GetUserByObjectId(string objectId)

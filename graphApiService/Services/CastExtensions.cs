@@ -1,4 +1,5 @@
-﻿using graphApiService.Dtos.User;
+﻿using System.Linq;
+using graphApiService.Dtos.User;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 
 namespace graphApiService.Services
@@ -13,19 +14,11 @@ namespace graphApiService.Services
                 City = user.City,
                 CompanyName = user.CompanyName,
                 DisplayName = user.DisplayName,
-                ObjectId = user.ObjectId
-            };
-        }
-
-        public static IUser ToAdUser(this UserProfileDto user)
-        {
-            return new User()
-            {
-                AccountEnabled = user.AccountEnabled,
-                City = user.City,
-                CompanyName = user.CompanyName,
-                DisplayName = user.DisplayName,
                 ObjectId = user.ObjectId,
+                Surname = user.Surname,
+                GivenName = user.GivenName,
+                UserName = user.SignInNames.FirstOrDefault(name=>name.Type=="userName")?.Value,
+                Email = user.SignInNames.FirstOrDefault(name => name.Type == "emailAddress")?.Value,
             };
         }
 
@@ -39,7 +32,8 @@ namespace graphApiService.Services
                 MailNickname = user.MailNickname,
                 PasswordProfile = user.PasswordProfile,
                 UsageLocation = user.UsageLocation,
-                SignInNames = user.SignInNames
+                SignInNames = user.SignInNames,
+                Surname = user.Surname
             };
         }
 
@@ -48,7 +42,13 @@ namespace graphApiService.Services
             return new UserProfileDto()
             {
                 AccountEnabled = user.AccountEnabled,
-                DisplayName = user.DisplayName
+                AvatarUrl = user.AvatarUrl,
+                DisplayName = user.DisplayName,
+                City = user.City,
+                CompanyId = user.CompanyId,
+                GivenName = user.GivenName,
+                Phone = user.Phone,
+                RetailerId = user.RetailerId
             };
         }
     }
