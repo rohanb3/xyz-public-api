@@ -48,7 +48,9 @@ namespace graphApiService.Services
                 CompanyId = user.CompanyId,
                 GivenName = user.GivenName,
                 Phone = user.Phone,
-                RetailerId = user.RetailerId
+                RetailerId = user.RetailerId,
+                UserName = user.SignInNames.FirstOrDefault(signInName => signInName.Type=="userName")?.Value,
+                Email = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")?.Value,
             };
         }
     }
