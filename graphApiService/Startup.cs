@@ -1,6 +1,5 @@
 ﻿using System;
 using graphApiService.Helpers.Azure;
-using graphApiService.Helpers.Users;
 using graphApiService.Middlewares;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Builder;
@@ -33,7 +32,6 @@ namespace graphApiService
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<IGraphClientService, GraphClientService>();
-            services.Configure<UserRolesOptions>(Configuration.GetSection("UserRoles"));
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
             services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using graphApiService.Dtos.User;
@@ -11,7 +12,7 @@ namespace graphApiService.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UsersController : ControllerBase
     {
         private readonly IGraphClientService _graphClient;
@@ -28,9 +29,11 @@ namespace graphApiService.Controllers
         /// <response code="200">If users fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
-        public ActionResult<List<UserProfileDto>> Get()
+        [ProducesResponseType(200, Type = typeof(List<IUser>))]
+        public async Task<IActionResult> Get()
         {
-            return _graphClient.GetAllUsers().Result;
+            List<UserProfileDto> users = await _graphClient.GetAllUsers();
+            return Ok(users);
         }
 
         /// <summary>
@@ -43,9 +46,11 @@ namespace graphApiService.Controllers
         /// <response code="404">If user was not found</response>
         [HttpGet("{objectId}", Name = "User")]
         [ProducesResponseType(200, Type = typeof(UserProfileDto))]
-        public async Task<UserProfileDto> Get(string objectId)
+        public async Task<IActionResult> Get(string objectId)
         {
-            return await _graphClient.GetUserByObjectId(objectId);
+            UserProfileDto user = await _graphClient.GetUserByObjectId(objectId);
+            return Ok(user);
+
         }
 
         /// <summary>
@@ -56,33 +61,34 @@ namespace graphApiService.Controllers
         /// <response code="201">If user fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpPost]
+        [ProducesResponseType(201, Type = typeof(UserProfileDto))]
         public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
         {
-            UserProfileDto userToResponse = await _graphClient.CreateUserAsync((userCreatableDto));
-            return CreatedAtRoute("User", new {objectId = userToResponse.ObjectId}, userToResponse);
-        }
-
-    /// <summary>
-    /// Update user properties by objectId or userPrincipalName
-    /// </summary>
-    /// <param name="objectId">objectId or userPrincipalName of Azure AD B2C User</param>
-    /// <param name="userToUpdate">User DTO to update</param>
-    /// <returns>URL to updated user</returns>
-    /// <response code="201">If user updated successfully</response>
-    /// <response code="401">If authorization token is invalid</response>
-    /// <response code="404">If user was not found</response>
-    [HttpPatch("{objectId}")]
-    public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] UserProfileEditableDto userToUpdate)
-    {
-        try
-        {
-            UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
+            UserProfileDto userToResponse = await _graphClient.CreateUserAsync(userCreatableDto);
             return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
         }
-        catch (ObjectNotFoundException ex)
+
+        /// <summary>
+        /// Update user properties by objectId or userPrincipalName
+        /// </summary>
+        /// <param name="objectId">objectId or userPrincipalName of Azure AD B2C User</param>
+        /// <param name="userToUpdate">User DTO to update</param>
+        /// <returns>URL to updated user</returns>
+        /// <response code="201">If user updated successfully</response>
+        /// <response code="401">If authorization token is invalid</response>
+        /// <response code="404">If user was not found</response>
+        [HttpPatch("{objectId}")]
+        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] UserProfileEditableDto userToUpdate)
         {
-            return NotFound(ex.Message);
+            try
+            {
+                UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
+                return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
-}
 }

@@ -7,6 +7,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using graphApiService.Dtos.AzureAdGraphApi;
 using graphApiService.Dtos.User;
+using graphApiService.Helpers;
 using graphApiService.Helpers.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
@@ -117,7 +118,12 @@ namespace graphApiService.Services
             IPagedCollection<IUser> result = await _client.Users
                 .Where(user => user.SignInNames.Any(name => name.Value == mail)).ExecuteAsync();
 
-            return result.CurrentPage.First().ToUserProfileDto();
+            User createdUser = (User)result.CurrentPage.First();
+            createdUser.SetExtendedProperty(Const.ExtensionPropertyName, "User");
+
+            await createdUser.UpdateAsync();
+
+            return createdUser.ToUserProfileDto();
         }
 
         public async Task<UserProfileDto> GetUserByObjectId(string objectId)
@@ -127,15 +133,9 @@ namespace graphApiService.Services
                 throw new ArgumentNullException(nameof(objectId));
             }
 
-            IPagedCollection<IUser> pagedUsersCollection = await _client.Users.Where(user => user.ObjectId == objectId).ExecuteAsync();
 
-            if (pagedUsersCollection.CurrentPage.Count == 0)
-            {
-                throw new ObjectNotFoundException("User with passed objectId not found");
-            }
-
-            IUser userByObjectId = pagedUsersCollection.CurrentPage.First();
-            return userByObjectId.ToUserProfileDto();
+            IUser fetchedUser = await _client.Users.Where(user => user.ObjectId == objectId).ExecuteSingleAsync();
+            return fetchedUser.ToUserProfileDto();
         }
     }
 }

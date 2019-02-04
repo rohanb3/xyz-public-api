@@ -17,9 +17,7 @@ namespace graphApiService.Dtos.User
         public string Phone { get; set; }
         [Required]
         public string Status { get; set; }
-        [Required]
-        [Url]
-        public Url AvatarUrl { get; set; }
+        public string AvatarUrl { get; set; }
         [StringLength(64)]
         public string GivenName { get; set; }
         [StringLength(64)]

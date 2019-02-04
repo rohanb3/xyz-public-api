@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using graphApiService.Dtos.User;
+using graphApiService.Helpers.Users;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 
 namespace graphApiService.Services
@@ -8,6 +10,9 @@ namespace graphApiService.Services
     {
         public static UserProfileDto ToUserProfileDto(this IUser user)
         {
+            var userRole = (user as User).GetExtendedProperties().Where(extProp =>
+                    extProp.Key.Equals("extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Group", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Value?.ToString();
+
             return new UserProfileDto()
             {
                 AccountEnabled = user.AccountEnabled,
@@ -16,8 +21,9 @@ namespace graphApiService.Services
                 DisplayName = user.DisplayName,
                 ObjectId = user.ObjectId,
                 Surname = user.Surname,
+                Role = userRole,
                 GivenName = user.GivenName,
-                UserName = user.SignInNames.FirstOrDefault(name=>name.Type=="userName")?.Value,
+                UserName = user.SignInNames.FirstOrDefault(name => name.Type == "userName")?.Value,
                 Email = user.SignInNames.FirstOrDefault(name => name.Type == "emailAddress")?.Value,
             };
         }
@@ -49,7 +55,7 @@ namespace graphApiService.Services
                 GivenName = user.GivenName,
                 Phone = user.Phone,
                 RetailerId = user.RetailerId,
-                UserName = user.SignInNames.FirstOrDefault(signInName => signInName.Type=="userName")?.Value,
+                UserName = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "userName")?.Value,
                 Email = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")?.Value,
             };
         }
