@@ -20,7 +20,7 @@ namespace tests
             {
                 AccountEnabled = false,
                 GivenName = "Changed",
-                AvatarUrl = new Url("https://changed.com"),
+                AvatarUrl = "https://changed.com",
                 RetailerId = 200
             };
 

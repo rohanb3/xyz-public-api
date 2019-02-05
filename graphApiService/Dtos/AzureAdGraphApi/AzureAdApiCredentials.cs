@@ -2,7 +2,7 @@
 
 namespace graphApiService.Dtos.AzureAdGraphApi
 {
-    public class AzureAdGraphApiCredentials
+    public class AzureAdApiCredentials
     {
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }

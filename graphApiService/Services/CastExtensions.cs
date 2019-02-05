@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using graphApiService.Dtos.User;
-using graphApiService.Helpers.Users;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 
 namespace graphApiService.Services
@@ -48,13 +47,13 @@ namespace graphApiService.Services
             return new UserProfileDto()
             {
                 AccountEnabled = user.AccountEnabled,
-                AvatarUrl = user.AvatarUrl,
+                //AvatarUrl = user.AvatarUrl,
                 DisplayName = user.DisplayName,
                 City = user.City,
-                CompanyId = user.CompanyId,
+                //CompanyId = user.CompanyId,
                 GivenName = user.GivenName,
-                Phone = user.Phone,
-                RetailerId = user.RetailerId,
+                //Phone = user.Phone,
+                //RetailerId = user.RetailerId,
                 UserName = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "userName")?.Value,
                 Email = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")?.Value,
             };

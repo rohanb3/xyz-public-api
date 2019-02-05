@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Policy;
 
-namespace graphApiService.Dtos.User {
-    public class UserProfileDto {
+namespace graphApiService.Dtos.User
+{
+    public class UserProfileDto
+    {
         [Required]
         public string ObjectId { get; set; }
         [Required]

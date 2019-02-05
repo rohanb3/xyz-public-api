@@ -32,7 +32,7 @@ namespace graphApiService.Controllers
         [ProducesResponseType(200, Type = typeof(List<IUser>))]
         public async Task<IActionResult> Get()
         {
-            List<UserProfileDto> users = await _graphClient.GetAllUsers();
+            IEnumerable<UserProfileDto> users = await _graphClient.GetAllUsers();
             return Ok(users);
         }
 
@@ -48,9 +48,15 @@ namespace graphApiService.Controllers
         [ProducesResponseType(200, Type = typeof(UserProfileDto))]
         public async Task<IActionResult> Get(string objectId)
         {
-            UserProfileDto user = await _graphClient.GetUserByObjectId(objectId);
-            return Ok(user);
-
+            try
+            {
+                var user = await _graphClient.GetUserByObjectId(objectId);
+                return Ok(user);
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         /// <summary>
@@ -65,7 +71,8 @@ namespace graphApiService.Controllers
         public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
         {
             UserProfileDto userToResponse = await _graphClient.CreateUserAsync(userCreatableDto);
-            return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
+            return Ok(userToResponse);
+            //return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
         }
 
         /// <summary>
@@ -83,7 +90,8 @@ namespace graphApiService.Controllers
             try
             {
                 UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
-                return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
+                return Ok(userToResponse);
+                //return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
             }
             catch (ObjectNotFoundException ex)
             {

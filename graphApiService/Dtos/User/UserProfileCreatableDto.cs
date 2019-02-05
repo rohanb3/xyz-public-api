@@ -17,16 +17,16 @@ namespace graphApiService.Dtos.User
         public string Surname { get; set; }
         [StringLength(64)]
         public string City { get; set; }
-        [Required]
-        public int CompanyId { get; set; }
-        [Required]
-        public int RetailerId { get; set; }
-        [Required]
-        [Phone]
-        public string Phone { get; set; }
-        [Required]
-        public string Status { get; set; }
-        public string AvatarUrl { get; set; }
+        //[Required]
+        //public int CompanyId { get; set; }
+        //[Required]
+        //public int RetailerId { get; set; }
+        //[Required]
+        //[Phone]
+        //public string Phone { get; set; }
+        //[Required]
+        //public string Status { get; set; }
+        //public string AvatarUrl { get; set; }
         [DefaultValue(true)]
         public bool AccountEnabled { get; set; }
         [DefaultValue("LocalAccount")]
