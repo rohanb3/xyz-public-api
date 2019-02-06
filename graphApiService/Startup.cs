@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using graphApiService.Repositories.Azure;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace graphApiService
 {
@@ -32,11 +33,13 @@ namespace graphApiService
             services.AddSwagger();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.Configure<MvcJsonOptions>(json =>
-            {
-                json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            });
 
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings// is it works on deserialize?
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            
             services.AddScoped<IAzureADClient, AzureADClient>();
             services.AddScoped<IUserService, UserService>();
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));

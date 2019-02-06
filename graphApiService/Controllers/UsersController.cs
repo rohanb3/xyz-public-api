@@ -79,6 +79,10 @@ namespace graphApiService.Controllers
             {
                 return NotFound(ex.Message);
             }
+            catch (AccessViolationException)
+            {
+                return Forbid();
+            }
         }
 
         /// <summary>

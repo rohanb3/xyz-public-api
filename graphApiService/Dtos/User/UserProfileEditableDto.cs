@@ -6,16 +6,11 @@ namespace graphApiService.Dtos.User
 {
     public class UserProfileEditableDto
     {
-        [DefaultValue(true)]
-        public bool AccountEnabled { get; set; }
-        [Required]
-        public int CompanyId { get; set; }
-        [Required]
-        public int RetailerId { get; set; }
-        [Required]
+        public bool? AccountEnabled { get; set; }
+        public int? CompanyId { get; set; }
+        public int? RetailerId { get; set; }
         [Phone]
         public string Phone { get; set; }
-        [Required]
         public string Status { get; set; }
         public string AvatarUrl { get; set; }
         [StringLength(64)]

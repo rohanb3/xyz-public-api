@@ -105,6 +105,10 @@ namespace graphApiService.Services
             {
                 throw;
             }
+            catch (AccessViolationException)
+            {
+                throw;
+            }
         }
     }
 }

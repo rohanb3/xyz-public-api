@@ -75,6 +75,10 @@ namespace graphApiService.Repositories.Azure
                 {
                     throw new ObjectNotFoundException("User with current identifier does not exist");
                 }
+                if(response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    throw new AccessViolationException();
+                }
             }
         }
 
