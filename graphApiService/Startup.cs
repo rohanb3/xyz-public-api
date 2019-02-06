@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using graphApiService.Repositories.Azure;
+using Newtonsoft.Json.Serialization;
 
 namespace graphApiService
 {
@@ -31,9 +32,13 @@ namespace graphApiService
             services.AddSwagger();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<MvcJsonOptions>(json =>
+            {
+                json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
             services.AddScoped<IAzureADClient, AzureADClient>();
-            services.AddScoped<IGraphClientService, GraphClientService>();
+            services.AddScoped<IUserService, UserService>();
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
             services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));
         }

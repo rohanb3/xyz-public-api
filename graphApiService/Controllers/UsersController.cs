@@ -15,11 +15,11 @@ namespace graphApiService.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IGraphClientService _graphClient;
+        private readonly IUserService _userService;
 
-        public UsersController(IGraphClientService graphClient)
+        public UsersController(IUserService userService)
         {
-            _graphClient = graphClient;
+            _userService = userService;
         }
 
         /// <summary>
@@ -32,26 +32,48 @@ namespace graphApiService.Controllers
         [ProducesResponseType(200, Type = typeof(List<IUser>))]
         public async Task<IActionResult> Get()
         {
-            IEnumerable<UserProfileDto> users = await _graphClient.GetAllUsers();
+            IEnumerable<UserProfileDto> users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
         /// <summary>
         /// Get user by his objectId or userPrincipalName
         /// </summary>
-        /// <param name="objectId">Azure AD B2C user uniq identifier. Can be objectId of userPrincipalName</param>
+        /// <param name="id">Azure AD B2C user uniq identifier. Can be objectId of userPrincipalName</param>
         /// <returns>User with passed identifier, or not found response</returns>
         /// <response code="200">If user fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
-        [HttpGet("{objectId}", Name = "User")]
+        [HttpGet("{id}", Name = "User")]
         [ProducesResponseType(200, Type = typeof(UserProfileDto))]
-        public async Task<IActionResult> Get(string objectId)
+        public async Task<IActionResult> Get(string id)
         {
             try
             {
-                var user = await _graphClient.GetUserByObjectId(objectId);
+                var user = await _userService.GetUserByIdAsync(id);
                 return Ok(user);
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete user by his objectId or userPrincipalName
+        /// </summary>
+        /// <param name="id">Azure AD B2C user uniq identifier. Can be objectId of userPrincipalName</param>
+        /// <returns>User with passed identifier, or not found response</returns>
+        /// <response code="204">If user deleted successfully</response>
+        /// <response code="401">If authorization token is invalid</response>
+        /// <response code="404">If user was not found</response>
+        [HttpDelete("{id}", Name = "User")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                await _userService.DeleteUserByIdAsync(id);
+                return NoContent();
             }
             catch (ObjectNotFoundException ex)
             {
@@ -70,9 +92,15 @@ namespace graphApiService.Controllers
         [ProducesResponseType(201, Type = typeof(UserProfileDto))]
         public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
         {
-            UserProfileDto userToResponse = await _graphClient.CreateUserAsync(userCreatableDto);
-            return Ok(userToResponse);
-            //return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
+            try
+            {
+                var userToResponse = await _userService.CreateUserAsync(userCreatableDto);
+                return Ok(userToResponse);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -89,13 +117,12 @@ namespace graphApiService.Controllers
         {
             try
             {
-                UserProfileDto userToResponse = await _graphClient.UpdateUserByObjectId(objectId, userToUpdate);
-                return Ok(userToResponse);
-                //return CreatedAtRoute("User", new { objectId = userToResponse.ObjectId }, userToResponse);
+                await _userService.UpdateUserByIdAsync(objectId, userToUpdate);
+                return NoContent();
             }
-            catch (ObjectNotFoundException ex)
+            catch (ApplicationException ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
     }

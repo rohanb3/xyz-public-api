@@ -65,17 +65,24 @@ namespace graphApiService.Repositories.Azure
             await SetCredentials(client);
         }
 
-        public async Task DeleteUser(string objectId)
-        {
-
-            throw new NotImplementedException();
-        }
-
-        public async Task<UserProfileDto> GetUserById(string objectId)
+        public async Task DeleteUser(string id)
         {
             using (var httpClient = new HttpClient())
             {
-                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{objectId}");
+                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
+                var response = await httpClient.DeleteAsync(httpClient.BaseAddress);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new ObjectNotFoundException("User with current identifier does not exist");
+                }
+            }
+        }
+
+        public async Task<UserProfileDto> GetUserById(string id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
                 var response = await httpClient.GetAsync(httpClient.BaseAddress);
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -93,20 +100,25 @@ namespace graphApiService.Repositories.Azure
             {
                 await SetClient(httpClient, Const.GraphApi.UserEntity);
                 var response = await httpClient.GetAsync(httpClient.BaseAddress);
-                if (response.Content != null)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
+                var responseString = await response?.Content?.ReadAsStringAsync();
+                var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
 
-                    return value.ToObject<List<UserProfileDto>>();
-                }
-                return null;
+                return value.ToObject<List<UserProfileDto>>();
             }
         }
 
-        public Task PatchUser(string objectId, UserProfileEditableDto user)
+        public async Task PatchUser(string id, UserProfileEditableDto user)
         {
-            throw new NotImplementedException();
+            using (var httpClient = new HttpClient())
+            {
+                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
+                var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                var response = await httpClient.PatchAsync(httpClient.BaseAddress, content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new ApplicationException("Can not update user with current parameters");
+                }
+            }
         }
 
         public async Task PostUser(UserProfileCreatableDto user)
@@ -114,11 +126,14 @@ namespace graphApiService.Repositories.Azure
             using (var httpClient = new HttpClient())
             {
                 await SetClient(httpClient, Const.GraphApi.UserEntity);
-                var serializerSettings = new JsonSerializerSettings();
-                serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                var content = new StringContent(JsonConvert.SerializeObject(user, serializerSettings), Encoding.UTF8, "application/json");
+                //var serializerSettings = new JsonSerializerSettings();
+                //serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                var content = new StringContent(JsonConvert.SerializeObject(user/*, serializerSettings*/), Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync(httpClient.BaseAddress, content);
-                var responseString = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new ApplicationException("Can not create user with current parameters");
+                }
             }
         }
     }
