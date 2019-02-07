@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using graphApiService.Helpers.Azure;
+using graphApiService.Common.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
-using graphApiService.Helpers;
+using graphApiService.Common;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -81,7 +81,7 @@ namespace graphApiService.Repositories.Azure
             }
         }
 
-        public async Task<UserModel> GetUserById(string id)
+        public async Task<AzureUser> GetUserById(string id)
         {
             using (var httpClient = new HttpClient())
             {
@@ -93,11 +93,11 @@ namespace graphApiService.Repositories.Azure
                 }
                 var responseString = await response.Content?.ReadAsStringAsync();
                 var value = (JToken)JsonConvert.DeserializeObject(responseString);
-                return value.ToObject<UserModel>();
+                return value.ToObject<AzureUser>();
             }
         }
 
-        public async Task<IEnumerable<UserModel>> GetUsers()
+        public async Task<IEnumerable<AzureUser>> GetUsers()
         {
             using (var httpClient = new HttpClient())
             {
@@ -106,11 +106,11 @@ namespace graphApiService.Repositories.Azure
                 var responseString = await response?.Content?.ReadAsStringAsync();
                 var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
 
-                return value.ToObject<List<UserModel>>();
+                return value.ToObject<List<AzureUser>>();
             }
         }
 
-        public async Task PatchUser(string id, ProfileEditableDto user)
+        public async Task PatchUser(string id, ProfileEditable user)
         {
             using (var httpClient = new HttpClient())
             {
@@ -124,7 +124,7 @@ namespace graphApiService.Repositories.Azure
             }
         }
 
-        public async Task PostUser(ProfileCreatableDto user)
+        public async Task PostUser(ProfileCreatable user)
         {
             using (var httpClient = new HttpClient())
             {

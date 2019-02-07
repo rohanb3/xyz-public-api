@@ -34,7 +34,7 @@ namespace graphApiService.Controllers
         [ProducesResponseType(200, Type = typeof(List<IUser>))]
         public async Task<IActionResult> Get()
         {
-            IEnumerable<ProfileDto> users = await _userService.GetAllUsersAsync();
+            IEnumerable<Profile> users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
@@ -48,7 +48,7 @@ namespace graphApiService.Controllers
         /// <response code="404">If user was not found</response>
         [HttpGet("{id}", Name = "User")]
         //[AccessFilter("2", "2")]
-        [ProducesResponseType(200, Type = typeof(ProfileDto))]
+        [ProducesResponseType(200, Type = typeof(Profile))]
         public async Task<IActionResult> Get(string id)
         {
             try
@@ -91,18 +91,18 @@ namespace graphApiService.Controllers
         /// <summary>
         /// Creates new user
         /// </summary>
-        /// <param name="userCreatableDto">User DTO to create</param>
+        /// <param name="userCreatable">User DTO to create</param>
         /// <returns>URL to newly created user</returns>
         /// <response code="201">If user fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpPost]
 
-        [ProducesResponseType(201, Type = typeof(ProfileDto))]
-        public async Task<IActionResult> Post([FromBody] [Required] ProfileCreatableDto userCreatableDto)
+        [ProducesResponseType(201, Type = typeof(Profile))]
+        public async Task<IActionResult> Post([FromBody] [Required] ProfileCreatable userCreatable)
         {
             try
             {
-                var userToResponse = await _userService.CreateUserAsync(userCreatableDto);
+                var userToResponse = await _userService.CreateUserAsync(userCreatable);
                 return Ok(userToResponse);
             }
             catch (ApplicationException ex)
@@ -121,7 +121,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpPatch("{objectId}")]
-        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] ProfileEditableDto userToUpdate)
+        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] ProfileEditable userToUpdate)
         {
             try
             {

@@ -1,30 +1,30 @@
 ﻿using System.Linq;
 using graphApiService.Entities.User;
 
-namespace graphApiService.Services
+namespace graphApiService.Common
 {
-    public static class CastExtensions
+    public static class Extensions
     {
-        public static ProfileDto ToProfileDto(this UserModel user)
+        public static Profile ToProfileDto(this AzureUser azureUser)
         {
-            return new ProfileDto()
+            return new Profile()
             {
-                AccountEnabled = user.AccountEnabled,
-                City = user.City,
-                CompanyName = user.CompanyName,
-                DisplayName = user.DisplayName,
-                ObjectId = user.ObjectId,
-                Surname = user.Surname,
-                Role = user.Role,
-                GivenName = user.GivenName,
-                UserName = user.UserName,
-                Email = user.Email,
+                AccountEnabled = azureUser.AccountEnabled,
+                City = azureUser.City,
+                CompanyName = azureUser.CompanyName,
+                DisplayName = azureUser.DisplayName,
+                ObjectId = azureUser.ObjectId,
+                Surname = azureUser.Surname,
+                Role = azureUser.Role,
+                GivenName = azureUser.GivenName,
+                UserName = azureUser.UserName,
+                Email = azureUser.Email,
             };
         }
 
-        public static ProfileDto ToProfileDto(this ProfileCreatableDto user)
+        public static Profile ToProfileDto(this ProfileCreatable user)
         {
-            return new ProfileDto()
+            return new Profile()
             {
                 AccountEnabled = user.AccountEnabled,
                 //AvatarUrl = user.AvatarUrl,
@@ -39,9 +39,9 @@ namespace graphApiService.Services
             };
         }
 
-        public static UserModel ToUserModel(this ProfileEditableDto user)
+        public static AzureUser ToUserModel(this ProfileEditable user)
         {
-            return new UserModel()
+            return new AzureUser()
             {
                 AccountEnabled = user.AccountEnabled,
                 AvatarUrl = user.AvatarUrl,

@@ -6,10 +6,10 @@ namespace graphApiService.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<ProfileDto>> GetAllUsersAsync();
-        Task<ProfileDto> GetUserByIdAsync(string id);
-        Task UpdateUserByIdAsync(string id, ProfileEditableDto userToUpdate);
-        Task<ProfileDto> CreateUserAsync(ProfileCreatableDto user);
+        Task<IEnumerable<Profile>> GetAllUsersAsync();
+        Task<Profile> GetUserByIdAsync(string id);
+        Task UpdateUserByIdAsync(string id, ProfileEditable model);
+        Task<Profile> CreateUserAsync(ProfileCreatable model);
         Task DeleteUserByIdAsync(string id);
     }
 }

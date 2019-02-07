@@ -1,4 +1,4 @@
-﻿namespace graphApiService.Helpers.Azure
+﻿namespace graphApiService.Common.Azure
 {
     public class AzureAdGraphApiOptions
     {

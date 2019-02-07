@@ -1,9 +1,9 @@
-﻿namespace graphApiService.Helpers
+﻿namespace graphApiService.Common
 {
     public class Const
     {
         public const string RoleClaimType = "extension_Group";
-        public const string ExtensionPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Group";
+        public const string RolePropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Group";
 
         public class GraphApi
         {

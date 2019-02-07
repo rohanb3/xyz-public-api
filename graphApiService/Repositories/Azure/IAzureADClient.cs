@@ -6,10 +6,10 @@ namespace graphApiService.Repositories.Azure
 {
     public interface IAzureAdClient
     {
-        Task<UserModel> GetUserById(string id);
-        Task<IEnumerable<UserModel>> GetUsers();
-        Task PostUser(ProfileCreatableDto user);
-        Task PatchUser(string id, ProfileEditableDto user);
+        Task<AzureUser> GetUserById(string id);
+        Task<IEnumerable<AzureUser>> GetUsers();
+        Task PostUser(ProfileCreatable user);
+        Task PatchUser(string id, ProfileEditable user);
         Task DeleteUser(string id);
     }
 }

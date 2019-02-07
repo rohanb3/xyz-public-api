@@ -5,7 +5,7 @@ using Microsoft.Azure.ActiveDirectory.GraphClient;
 
 namespace graphApiService.Entities.User
 {
-    public class ProfileCreatableDto
+    public class ProfileCreatable
     {
         [Required]
         public string DisplayName { get; set; }

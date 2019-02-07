@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using graphApiService.Helpers;
+using graphApiService.Common;
 using Newtonsoft.Json;
 
 namespace graphApiService.Entities.User
 {
-    public class ProfileEditableDto
+    public class ProfileEditable
     {
         public bool? AccountEnabled { get; set; }
         public int? CompanyId { get; set; }

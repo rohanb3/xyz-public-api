@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using graphApiService.Common;
 using graphApiService.Entities.User;
-using graphApiService.Helpers.Azure;
+using graphApiService.Common.Azure;
 using graphApiService.Repositories.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Extensions.Options;
@@ -20,34 +22,31 @@ namespace graphApiService.Services
             _azureClient = azureClient ?? throw new ArgumentNullException(nameof(azureClient));
         }
 
-        public async Task<IEnumerable<ProfileDto>> GetAllUsersAsync()
+        public async Task<IEnumerable<Profile>> GetAllUsersAsync()
         {
             var users = await _azureClient.GetUsers();
-            var result = new List<ProfileDto>();
+            var result = new List<Profile>();
 
-            foreach (var user in users)
-            {
-                result.Add(user.ToProfileDto());
-            }
+            users.ToList().ForEach(user => result.Add(user.ToProfileDto()));
 
             return result;
         }
 
-        public async Task UpdateUserByIdAsync(string id, ProfileEditableDto toUpdate)
+        public async Task UpdateUserByIdAsync(string id, ProfileEditable model)
         {
             if (id == null)
             {
                 throw new ArgumentNullException(nameof(id));
             }
 
-            if (toUpdate == null)
+            if (model == null)
             {
-                throw new ArgumentNullException(nameof(toUpdate));
+                throw new ArgumentNullException(nameof(model));
             }
 
             try
             {
-                await _azureClient.PatchUser(id, toUpdate);
+                await _azureClient.PatchUser(id, model);
             }
             catch (ApplicationException)
             {
@@ -55,17 +54,17 @@ namespace graphApiService.Services
             }
         }
 
-        public async Task<ProfileDto> CreateUserAsync(ProfileCreatableDto toBeAdded)
+        public async Task<Profile> CreateUserAsync(ProfileCreatable model)
         {
-            if (toBeAdded == null)
+            if (model == null)
             {
-                throw new ArgumentNullException(nameof(toBeAdded));
+                throw new ArgumentNullException(nameof(model));
             }
 
             try
             {
-                await _azureClient.PostUser(toBeAdded);
-                return toBeAdded.ToProfileDto();
+                await _azureClient.PostUser(model);
+                return model.ToProfileDto();
             }
             catch (ApplicationException)
             {
@@ -73,7 +72,7 @@ namespace graphApiService.Services
             }
         }
 
-        public async Task<ProfileDto> GetUserByIdAsync(string id)
+        public async Task<Profile> GetUserByIdAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
             {

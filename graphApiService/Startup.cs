@@ -1,5 +1,6 @@
 ﻿using System;
-using graphApiService.Helpers.Azure;
+using graphApiService.Common;
+using graphApiService.Common.Azure;
 using graphApiService.Middlewares;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Builder;
