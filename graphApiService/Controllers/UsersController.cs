@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using graphApiService.Dtos.User;
+using graphApiService.Filters;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace graphApiService.Controllers
         /// <response code="200">If users fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
+        [AccessFilter("web","super-manager")]
         [ProducesResponseType(200, Type = typeof(List<IUser>))]
         public async Task<IActionResult> Get()
         {
@@ -45,6 +47,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{id}", Name = "User")]
+        [AccessFilter("2","2")]
         [ProducesResponseType(200, Type = typeof(UserProfileDto))]
         public async Task<IActionResult> Get(string id)
         {
@@ -93,6 +96,7 @@ namespace graphApiService.Controllers
         /// <response code="201">If user fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpPost]
+        
         [ProducesResponseType(201, Type = typeof(UserProfileDto))]
         public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
         {

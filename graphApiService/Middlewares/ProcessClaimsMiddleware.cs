@@ -19,7 +19,7 @@ namespace graphApiService.Middlewares
         { 
             foreach (var userClaim in context.User.Claims)
             {
-                if (userClaim.Type.Contains(Const.ClaimType))
+                if (userClaim.Type.Contains(Const.RoleClaimType))
                 {
                     var identity = new ClaimsIdentity();
                     identity.AddClaim(new Claim(ClaimTypes.Role, userClaim.Value));

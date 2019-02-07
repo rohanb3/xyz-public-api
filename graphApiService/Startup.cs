@@ -31,7 +31,7 @@ namespace graphApiService
                 .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
 
             services.AddSwagger();
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings// is it works on deserialize?
