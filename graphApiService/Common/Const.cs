@@ -3,7 +3,11 @@
     public class Const
     {
         public const string RoleClaimType = "extension_Group";
+
         public const string RolePropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Group";
+        public const string OnlinePropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Online";
+        public const string RetailerIdPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_RetailerId";
+        public const string CompanyIdPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_CompanyId";
 
         public class GraphApi
         {
