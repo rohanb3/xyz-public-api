@@ -32,16 +32,16 @@
             <response code="401">If authorization token is invalid</response>
             <response code="404">If user was not found</response>
         </member>
-        <member name="M:graphApiService.Controllers.UsersController.Post(graphApiService.Dtos.User.UserProfileCreatableDto)">
+        <member name="M:graphApiService.Controllers.UsersController.Post(graphApiService.Entities.User.ProfileCreatable)">
             <summary>
             Creates new user
             </summary>
-            <param name="userCreatableDto">User DTO to create</param>
+            <param name="userCreatable">User DTO to create</param>
             <returns>URL to newly created user</returns>
             <response code="201">If user fetched successfully</response>
             <response code="401">If authorization token is invalid</response>
         </member>
-        <member name="M:graphApiService.Controllers.UsersController.Patch(System.String,graphApiService.Dtos.User.UserProfileEditableDto)">
+        <member name="M:graphApiService.Controllers.UsersController.Patch(System.String,graphApiService.Entities.User.ProfileEditable)">
             <summary>
             Update user properties by objectId or userPrincipalName
             </summary>

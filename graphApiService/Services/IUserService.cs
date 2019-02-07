@@ -1,17 +1,15 @@
-﻿using graphApiService.Dtos.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using graphApiService.Entities.User;
 
 namespace graphApiService.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserProfileDto>> GetAllUsersAsync();
-        Task<UserProfileDto> GetUserByIdAsync(string id);
-        Task UpdateUserByIdAsync(string id, UserProfileEditableDto userToUpdate);
-        Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto user);
+        Task<IEnumerable<Profile>> GetAllUsersAsync();
+        Task<Profile> GetUserByIdAsync(string id);
+        Task UpdateUserByIdAsync(string id, ProfileEditable model);
+        Task<Profile> CreateUserAsync(ProfileCreatable model);
         Task DeleteUserByIdAsync(string id);
     }
 }

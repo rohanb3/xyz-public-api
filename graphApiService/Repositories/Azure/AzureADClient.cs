@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using graphApiService.Dtos.AzureAdGraphApi;
-using graphApiService.Dtos.User;
-using graphApiService.Helpers.Azure;
+using graphApiService.Common.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
-using graphApiService.Helpers;
+using graphApiService.Common;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json.Serialization;
+using graphApiService.Entities.AzureAdGraphApi;
+using graphApiService.Entities.User;
+using graphApiService.Services;
 
 namespace graphApiService.Repositories.Azure
 {
-    public class AzureADClient : IAzureADClient
+    public class AzureAdClient : IAzureAdClient
     {
         private readonly AzureAdGraphApiOptions _azureAdGraphApiOptions;
         private readonly AzureAdB2COptions _azureAdB2COptions;
         private AzureAdApiCredentials _credentials;
 
 
-        public AzureADClient(IOptionsMonitor<AzureAdGraphApiOptions> azureAdGraphApiOptionsMonitor, IOptionsMonitor<AzureAdB2COptions> azureAdB2COptionsMonitor)
+        public AzureAdClient(IOptionsMonitor<AzureAdGraphApiOptions> azureAdGraphApiOptionsMonitor, IOptionsMonitor<AzureAdB2COptions> azureAdB2COptionsMonitor)
         {
             _azureAdGraphApiOptions = azureAdGraphApiOptionsMonitor?.CurrentValue ??
                                       throw new ArgumentNullException(nameof(azureAdGraphApiOptionsMonitor));
@@ -82,7 +81,7 @@ namespace graphApiService.Repositories.Azure
             }
         }
 
-        public async Task<UserProfileDto> GetUserById(string id)
+        public async Task<AzureUser> GetUserById(string id)
         {
             using (var httpClient = new HttpClient())
             {
@@ -94,11 +93,11 @@ namespace graphApiService.Repositories.Azure
                 }
                 var responseString = await response.Content?.ReadAsStringAsync();
                 var value = (JToken)JsonConvert.DeserializeObject(responseString);
-                return value.ToObject<UserProfileDto>();
+                return value.ToObject<AzureUser>();
             }
         }
 
-        public async Task<IEnumerable<UserProfileDto>> GetUsers()
+        public async Task<IEnumerable<AzureUser>> GetUsers()
         {
             using (var httpClient = new HttpClient())
             {
@@ -107,16 +106,16 @@ namespace graphApiService.Repositories.Azure
                 var responseString = await response?.Content?.ReadAsStringAsync();
                 var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
 
-                return value.ToObject<List<UserProfileDto>>();
+                return value.ToObject<List<AzureUser>>();
             }
         }
 
-        public async Task PatchUser(string id, UserProfileEditableDto user)
+        public async Task PatchUser(string id, ProfileEditable user)
         {
             using (var httpClient = new HttpClient())
             {
                 await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
-                var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonConvert.SerializeObject(user.ToUserModel()), Encoding.UTF8, "application/json");
                 var response = await httpClient.PatchAsync(httpClient.BaseAddress, content);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -125,7 +124,7 @@ namespace graphApiService.Repositories.Azure
             }
         }
 
-        public async Task PostUser(UserProfileCreatableDto user)
+        public async Task PostUser(ProfileCreatable user)
         {
             using (var httpClient = new HttpClient())
             {

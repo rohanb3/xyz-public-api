@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using graphApiService.Dtos.User;
+using graphApiService.Entities.User;
 using graphApiService.Filters;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -30,11 +30,11 @@ namespace graphApiService.Controllers
         /// <response code="200">If users fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
-        [AccessFilter("web","super-manager")]
+        //[AccessFilter("web", "super-manager")]
         [ProducesResponseType(200, Type = typeof(List<IUser>))]
         public async Task<IActionResult> Get()
         {
-            IEnumerable<UserProfileDto> users = await _userService.GetAllUsersAsync();
+            IEnumerable<Profile> users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
@@ -47,8 +47,8 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{id}", Name = "User")]
-        [AccessFilter("2","2")]
-        [ProducesResponseType(200, Type = typeof(UserProfileDto))]
+        //[AccessFilter("2", "2")]
+        [ProducesResponseType(200, Type = typeof(Profile))]
         public async Task<IActionResult> Get(string id)
         {
             try
@@ -91,18 +91,18 @@ namespace graphApiService.Controllers
         /// <summary>
         /// Creates new user
         /// </summary>
-        /// <param name="userCreatableDto">User DTO to create</param>
+        /// <param name="userCreatable">User DTO to create</param>
         /// <returns>URL to newly created user</returns>
         /// <response code="201">If user fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpPost]
-        
-        [ProducesResponseType(201, Type = typeof(UserProfileDto))]
-        public async Task<IActionResult> Post([FromBody] [Required] UserProfileCreatableDto userCreatableDto)
+
+        [ProducesResponseType(201, Type = typeof(Profile))]
+        public async Task<IActionResult> Post([FromBody] [Required] ProfileCreatable userCreatable)
         {
             try
             {
-                var userToResponse = await _userService.CreateUserAsync(userCreatableDto);
+                var userToResponse = await _userService.CreateUserAsync(userCreatable);
                 return Ok(userToResponse);
             }
             catch (ApplicationException ex)
@@ -121,7 +121,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpPatch("{objectId}")]
-        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] UserProfileEditableDto userToUpdate)
+        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] ProfileEditable userToUpdate)
         {
             try
             {

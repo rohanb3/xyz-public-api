@@ -1,5 +1,6 @@
 ﻿using System;
-using graphApiService.Helpers.Azure;
+using graphApiService.Common;
+using graphApiService.Common.Azure;
 using graphApiService.Middlewares;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Builder;
@@ -40,7 +41,7 @@ namespace graphApiService
                 NullValueHandling = NullValueHandling.Ignore
             };
             
-            services.AddScoped<IAzureADClient, AzureADClient>();
+            services.AddScoped<IAzureAdClient, AzureAdClient>();
             services.AddScoped<IUserService, UserService>();
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
             services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));

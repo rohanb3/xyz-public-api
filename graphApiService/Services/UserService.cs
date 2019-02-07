@@ -1,53 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using graphApiService.Dtos.AzureAdGraphApi;
-using graphApiService.Dtos.User;
-using graphApiService.Helpers;
-using graphApiService.Helpers.Azure;
+using graphApiService.Common;
+using graphApiService.Entities.User;
+using graphApiService.Common.Azure;
 using graphApiService.Repositories.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
-using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace graphApiService.Services
 {
     public class UserService : IUserService
     {
-        private readonly IAzureADClient _azureClient;
+        private readonly IAzureAdClient _azureClient;
 
         public UserService(IOptionsMonitor<AzureAdGraphApiOptions> azureAdGraphApiOptionsMonitor,
             IOptionsMonitor<AzureAdB2COptions> azureAdB2COptionsMonitor,
-            IAzureADClient azureClient)
+            IAzureAdClient azureClient)
         {
             _azureClient = azureClient ?? throw new ArgumentNullException(nameof(azureClient));
         }
 
-        public async Task<IEnumerable<UserProfileDto>> GetAllUsersAsync()
+        public async Task<IEnumerable<Profile>> GetAllUsersAsync()
         {
-            var result = await _azureClient.GetUsers();
+            var users = await _azureClient.GetUsers();
+            var result = new List<Profile>();
+
+            users.ToList().ForEach(user => result.Add(user.ToProfileDto()));
+
             return result;
         }
 
-        public async Task UpdateUserByIdAsync(string id, UserProfileEditableDto userToUpdate)
+        public async Task UpdateUserByIdAsync(string id, ProfileEditable model)
         {
             if (id == null)
             {
                 throw new ArgumentNullException(nameof(id));
             }
 
-            if (userToUpdate == null)
+            if (model == null)
             {
-                throw new ArgumentNullException(nameof(userToUpdate));
+                throw new ArgumentNullException(nameof(model));
             }
 
             try
             {
-                await _azureClient.PatchUser(id, userToUpdate);
+                await _azureClient.PatchUser(id, model);
             }
             catch (ApplicationException)
             {
@@ -55,17 +54,17 @@ namespace graphApiService.Services
             }
         }
 
-        public async Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto userToBeAdded)
+        public async Task<Profile> CreateUserAsync(ProfileCreatable model)
         {
-            if (userToBeAdded == null)
+            if (model == null)
             {
-                throw new ArgumentNullException(nameof(userToBeAdded));
+                throw new ArgumentNullException(nameof(model));
             }
 
             try
             {
-                await _azureClient.PostUser(userToBeAdded);
-                return userToBeAdded.ToUserProfileDto();
+                await _azureClient.PostUser(model);
+                return model.ToProfileDto();
             }
             catch (ApplicationException)
             {
@@ -73,7 +72,7 @@ namespace graphApiService.Services
             }
         }
 
-        public async Task<UserProfileDto> GetUserByIdAsync(string id)
+        public async Task<Profile> GetUserByIdAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -82,7 +81,8 @@ namespace graphApiService.Services
 
             try
             {
-                return await _azureClient.GetUserById(id);
+                var user = await _azureClient.GetUserById(id);
+                return user.ToProfileDto();
             }
             catch (ObjectNotFoundException)
             {

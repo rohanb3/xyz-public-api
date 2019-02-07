@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Policy;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 
-namespace graphApiService.Dtos.User
+namespace graphApiService.Entities.User
 {
-    public class UserProfileCreatableDto
+    public class ProfileCreatable
     {
         [Required]
         public string DisplayName { get; set; }

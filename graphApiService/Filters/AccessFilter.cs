@@ -1,4 +1,4 @@
-﻿using graphApiService.Helpers;
+﻿using graphApiService.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
