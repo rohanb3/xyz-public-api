@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace graphApiService.Dtos.AzureAdGraphApi
+namespace graphApiService.Entities.AzureAdGraphApi
 {
     public class AzureAdApiCredentials
     {

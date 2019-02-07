@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace graphApiService.Dtos.User
+namespace graphApiService.Entities.User
 {
-    public class UserProfileDto
+    public class ProfileDto
     {
         [Required]
         public string ObjectId { get; set; }

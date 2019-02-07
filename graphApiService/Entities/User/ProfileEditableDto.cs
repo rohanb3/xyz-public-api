@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using graphApiService.Helpers;
+using Newtonsoft.Json;
 
-namespace graphApiService.Dtos.User
+namespace graphApiService.Entities.User
 {
-    public class UserProfileEditableDto
+    public class ProfileEditableDto
     {
         public bool? AccountEnabled { get; set; }
         public int? CompanyId { get; set; }
         public int? RetailerId { get; set; }
         [Phone]
         public string Phone { get; set; }
+        public string Role { get; set; }
         public string Status { get; set; }
         public string AvatarUrl { get; set; }
         [StringLength(64)]

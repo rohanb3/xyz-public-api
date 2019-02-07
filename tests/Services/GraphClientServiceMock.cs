@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
-using graphApiService.Dtos.User;
+using graphApiService.Entities.User;
 using graphApiService.Services;
 
 namespace tests.Services
 {
-    class GraphClientServiceMock: IGraphClientService
+    class GraphClientServiceMock: IUserService
     {
-        private static readonly List<UserProfileDto> MockedUsers = new List<UserProfileDto>();
+        private static readonly List<ProfileDto> MockedUsers = new List<ProfileDto>();
 
         public GraphClientServiceMock()
         {
             for (int i = 0; i < 10; i++)
             {
-                MockedUsers.Add(new UserProfileDto()
+                MockedUsers.Add(new ProfileDto()
                 {
                     AccountEnabled = true,
-                    AvatarUrl = new Url($"https://some.static.resource.com/{i}/avatar"),
+                    AvatarUrl = "https://some.static.resource.com/{i}/avatar",
                     City = $"Dnipro {i}",
                     CompanyId = i,
                     CompanyName = $"Company №{i}",
@@ -32,27 +31,36 @@ namespace tests.Services
                 });
             }
         }
+        public async Task<ProfileDto> GetUserByObjectId(string objectId)
+        {
+            return MockedUsers.FirstOrDefault(user => user.ObjectId == objectId);
+        }
 
-        public async Task<List<UserProfileDto>> GetAllUsers()
+        public async Task<IEnumerable<ProfileDto>> GetAllUsersAsync()
         {
             return MockedUsers;
         }
 
-        public async Task<UserProfileDto> GetUserByObjectId(string objectId)
+        public async Task<ProfileDto> GetUserByIdAsync(string id)
         {
-            return MockedUsers.FirstOrDefault(user => user.ObjectId == objectId);
+            throw new NotImplementedException();
         }
 
-        public async Task<UserProfileDto> UpdateUserByObjectId(string objectId, UserProfileEditableDto userToUpdate)
+        public async Task UpdateUserByIdAsync(string id, ProfileEditableDto userToUpdate)
         {
-            return MockedUsers.FirstOrDefault(user => user.ObjectId == objectId);
+            MockedUsers.FirstOrDefault(user => user.ObjectId == id);
         }
 
-        public async Task<UserProfileDto> CreateUserAsync(UserProfileCreatableDto userToCreate)
+        public async Task<ProfileDto> CreateUserAsync(ProfileCreatableDto toCreate)
         {
-            MockedUsers.Add(userToCreate.ToUserProfileDto());
+            MockedUsers.Add(toCreate.ToProfileDto());
             return MockedUsers.Find(user =>
-                user.UserName == userToCreate.SignInNames.Find(signInName => signInName.Type == "userName").Value);
+                user.UserName == toCreate.SignInNames.Find(signInName => signInName.Type == "userName").Value);
+        }
+
+        public async Task DeleteUserByIdAsync(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

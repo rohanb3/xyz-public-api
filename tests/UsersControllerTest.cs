@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using graphApiService.Dtos.User;
+using graphApiService.Entities.User;
 using graphApiService.Services;
 using tests.Services;
 using Xunit;
@@ -9,24 +8,24 @@ namespace tests
 {
     public class UsersControllerTest
     {
-        private IGraphClientService _graphClient;
+        private IUserService _userService;
         public UsersControllerTest()
         {
-            _graphClient = new GraphClientServiceMock();
+            _userService = new GraphClientServiceMock();
         }
         [Fact]
         public async void GetAll_WhenCalled_ReturnsCollectionOfUsers()
         {
             //Act
-            var result =  await _graphClient.GetAllUsers();
+            var result =  await _userService.GetAllUsersAsync();
 
-            Assert.IsType<List<UserProfileDto>>(result);
+            Assert.IsType<List<ProfileDto>>(result);
         }
         [Fact]
         public async void GetById_WhenCalled_ReturnsUser_WithConcretName()
         {
             //Act
-            var result = await _graphClient.GetUserByObjectId("1");
+            var result = await _userService.GetUserByIdAsync("1");
 
             Assert.Equal("User ¹1",result.UserName);
         }

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Linq;
-using graphApiService.Dtos.User;
-using Microsoft.Azure.ActiveDirectory.GraphClient;
+﻿using System.Linq;
+using graphApiService.Entities.User;
 
 namespace graphApiService.Services
 {
     public static class CastExtensions
     {
-        public static UserProfileDto ToUserProfileDto(this IUser user)
+        public static ProfileDto ToProfileDto(this UserModel user)
         {
-            var userRole = (user as User).GetExtendedProperties().Where(extProp =>
-                    extProp.Key.Equals("extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Group", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Value?.ToString();
-
-            return new UserProfileDto()
+            return new ProfileDto()
             {
                 AccountEnabled = user.AccountEnabled,
                 City = user.City,
@@ -20,31 +15,16 @@ namespace graphApiService.Services
                 DisplayName = user.DisplayName,
                 ObjectId = user.ObjectId,
                 Surname = user.Surname,
-                Role = userRole,
+                Role = user.Role,
                 GivenName = user.GivenName,
-                UserName = user.SignInNames.FirstOrDefault(name => name.Type == "userName")?.Value,
-                Email = user.SignInNames.FirstOrDefault(name => name.Type == "emailAddress")?.Value,
+                UserName = user.UserName,
+                Email = user.Email,
             };
         }
 
-        public static IUser ToAdUser(this UserProfileCreatableDto user)
+        public static ProfileDto ToProfileDto(this ProfileCreatableDto user)
         {
-            return new User()
-            {
-                AccountEnabled = user.AccountEnabled,
-                DisplayName = user.DisplayName,
-                CreationType = user.CreationType,
-                MailNickname = user.MailNickname,
-                PasswordProfile = user.PasswordProfile,
-                UsageLocation = user.UsageLocation,
-                SignInNames = user.SignInNames,
-                Surname = user.Surname
-            };
-        }
-
-        public static UserProfileDto ToUserProfileDto(this UserProfileCreatableDto user)
-        {
-            return new UserProfileDto()
+            return new ProfileDto()
             {
                 AccountEnabled = user.AccountEnabled,
                 //AvatarUrl = user.AvatarUrl,
@@ -56,6 +36,20 @@ namespace graphApiService.Services
                 //RetailerId = user.RetailerId,
                 UserName = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "userName")?.Value,
                 Email = user.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")?.Value,
+            };
+        }
+
+        public static UserModel ToUserModel(this ProfileEditableDto user)
+        {
+            return new UserModel()
+            {
+                AccountEnabled = user.AccountEnabled,
+                AvatarUrl = user.AvatarUrl,
+                DisplayName = user.DisplayName,
+                GivenName = user.GivenName,
+                Surname = user.Surname,
+                City = user.City,
+                Role = user.Role,
             };
         }
     }

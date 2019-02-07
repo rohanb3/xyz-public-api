@@ -1,5 +1,4 @@
-﻿using System.Security.Policy;
-using graphApiService.Dtos.User;
+﻿using graphApiService.Entities.User;
 using Xunit;
 using graphApiService.Services;
 using tests.Services;
@@ -16,7 +15,7 @@ namespace tests
         [Fact]
         public async void MergeObjects_Returns_DestinationObjectWithChangedProperties()
         {
-            var userEditableDto = new UserProfileEditableDto()
+            var userEditableDto = new ProfileEditableDto()
             {
                 AccountEnabled = false,
                 GivenName = "Changed",
