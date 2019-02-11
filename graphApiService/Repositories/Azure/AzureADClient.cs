@@ -34,6 +34,81 @@ namespace graphApiService.Repositories.Azure
                                       throw new ArgumentNullException(nameof(azureAdB2COptionsMonitor));
         }
 
+        public async Task DeleteUser(string id)
+        {
+            var response = await SendRequest(HttpMethod.Delete, Const.GraphApi.UserEntity, additional: id);
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new ObjectNotFoundException("User with current identifier does not exist");
+            }
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new AccessViolationException();
+            }
+        }
+
+        public async Task<AzureUser> GetUserById(string id)
+        {
+            var response = await SendRequest(HttpMethod.Get, Const.GraphApi.UserEntity, additional: id);
+            var responseString = await response?.Content?.ReadAsStringAsync();
+            var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new ObjectNotFoundException("User with current identifier does not exist");
+            }
+
+            return value.ToObject<AzureUser>();
+        }
+
+        public async Task<IEnumerable<AzureUser>> GetUsers()
+        {
+            var response = await SendRequest(HttpMethod.Get, Const.GraphApi.UserEntity);
+            var responseString = await response?.Content?.ReadAsStringAsync();
+            var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
+
+            return value.ToObject<List<AzureUser>>();
+        }
+
+        public async Task PatchUser(string id, ProfileEditable user)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(user.ToUserModel()), Encoding.UTF8, "application/json");
+            var response = await SendRequest(HttpMethod.Delete, Const.GraphApi.UserEntity, content, id);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Can not update user with current parameters");
+            }
+        }
+
+        public async Task PostUser(ProfileCreatable user)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var response = await SendRequest(HttpMethod.Delete, Const.GraphApi.UserEntity, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException("Can not create user with current parameters");
+            }
+        }
+
+        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                await SetClient(httpClient, $"{entity} {(string.IsNullOrEmpty(additional) ? "" : $"/{additional}")}");
+                return method == HttpMethod.Get ? await httpClient.GetAsync(httpClient.BaseAddress)
+                     : method == HttpMethod.Delete ? await httpClient.DeleteAsync(httpClient.BaseAddress)
+                     : method == HttpMethod.Post ? await httpClient.PostAsync(httpClient.BaseAddress, content)
+                     : await httpClient.PatchAsync(httpClient.BaseAddress, content);
+            }
+        }
+
+        private async Task SetClient(HttpClient client, string entity, string query = "")
+        {
+            var queryString = HttpUtility.ParseQueryString(query);
+            queryString[Const.GraphApi.ApiVersionParameter] = Const.GraphApi.ApiVersion;
+            client.BaseAddress = new Uri($"{Const.GraphApi.GraphApiEndpoint}{_azureAdB2COptions.Domain}/{entity}?{queryString}");
+            await SetCredentials(client);
+        }
+
         private async Task SetCredentials(HttpClient client)
         {
             if (_credentials == null)
@@ -56,88 +131,5 @@ namespace graphApiService.Repositories.Azure
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _credentials?.AccessToken);
         }
 
-        private async Task SetClient(HttpClient client, string entity, string query = "")
-        {
-            var queryString = HttpUtility.ParseQueryString(query);
-            queryString[Const.GraphApi.ApiVersionParameter] = Const.GraphApi.ApiVersion;
-            client.BaseAddress = new Uri($"{Const.GraphApi.GraphApiEndpoint}{_azureAdB2COptions.Domain}/{entity}?{queryString}");
-            await SetCredentials(client);
-        }
-
-        public async Task DeleteUser(string id)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
-                var response = await httpClient.DeleteAsync(httpClient.BaseAddress);
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new ObjectNotFoundException("User with current identifier does not exist");
-                }
-                if(response.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    throw new AccessViolationException();
-                }
-            }
-        }
-
-        public async Task<AzureUser> GetUserById(string id)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
-                var response = await httpClient.GetAsync(httpClient.BaseAddress);
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new ObjectNotFoundException("User with current identifier does not exist");
-                }
-                var responseString = await response.Content?.ReadAsStringAsync();
-                var value = (JToken)JsonConvert.DeserializeObject(responseString);
-                return value.ToObject<AzureUser>();
-            }
-        }
-
-        public async Task<IEnumerable<AzureUser>> GetUsers()
-        {
-            using (var httpClient = new HttpClient())
-            {
-                await SetClient(httpClient, Const.GraphApi.UserEntity);
-                var response = await httpClient.GetAsync(httpClient.BaseAddress);
-                var responseString = await response?.Content?.ReadAsStringAsync();
-                var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
-
-                return value.ToObject<List<AzureUser>>();
-            }
-        }
-
-        public async Task PatchUser(string id, ProfileEditable user)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                await SetClient(httpClient, $"{Const.GraphApi.UserEntity}/{id}");
-                var content = new StringContent(JsonConvert.SerializeObject(user.ToUserModel()), Encoding.UTF8, "application/json");
-                var response = await httpClient.PatchAsync(httpClient.BaseAddress, content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new ApplicationException("Can not update user with current parameters");
-                }
-            }
-        }
-
-        public async Task PostUser(ProfileCreatable user)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                await SetClient(httpClient, Const.GraphApi.UserEntity);
-                //var serializerSettings = new JsonSerializerSettings();
-                //serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                var content = new StringContent(JsonConvert.SerializeObject(user/*, serializerSettings*/), Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(httpClient.BaseAddress, content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new ApplicationException("Can not create user with current parameters");
-                }
-            }
-        }
     }
 }
