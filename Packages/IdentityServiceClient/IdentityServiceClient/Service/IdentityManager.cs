@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace IdentityServiceClient.Service
 {
-    public class ClientService : IClientService
+    public class IdentityManager : IIdentityManager
     {
         //TODO: check answer
         private readonly IdentityServiceClientOptions _options;
-        public ClientService(IdentityServiceClientOptions options)
+
+        public IdentityManager(IdentityServiceClientOptions options)
         {
             _options = options;
         }
@@ -34,7 +35,12 @@ namespace IdentityServiceClient.Service
             {
                 var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.GraphApi.UserEntity}");
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<ResponseModel<List<Profile>>>(content);
+                return new ResponseModel<List<Profile>>()
+                {
+                    StatusCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Payload = JsonConvert.DeserializeObject<List<Profile>>(content)
+                };
             }
         }
 
@@ -59,7 +65,7 @@ namespace IdentityServiceClient.Service
         /// <summary>
         /// Delete user by Id
         /// </summary>
-        public async Task DeleteByIdAsync(string id)
+        public async Task<ResponseModel> DeleteUserByIdAsync(string id)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -73,13 +79,15 @@ namespace IdentityServiceClient.Service
                     throw new AccessViolationException();
                 }
             }
+
+            return new ResponseModel() { StatusCode = HttpStatusCode.OK, Message = "User successefully deleted" };
         }
 
         /// <summary>
         /// Creates new user
         /// </summary>
         /// <returns></returns>
-        public async Task CreateNewUserAsync(ProfileCreatable model)
+        public async Task<ResponseModel> CreateUserAsync(ProfileCreatable model)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -89,6 +97,8 @@ namespace IdentityServiceClient.Service
                 {
                     throw new ApplicationException("Can not create user with current parameters");
                 }
+
+                return new ResponseModel() { StatusCode = HttpStatusCode.OK, Message = "User successefully created" };
             }
         }
 
@@ -96,7 +106,7 @@ namespace IdentityServiceClient.Service
         /// Upsert user fields that containse in model
         /// </summary>
         /// <returns></returns>
-        public async Task UpsertUserAsync(string id, BaseProfile model)
+        public async Task<ResponseModel> UpdateUserByIdAsync(string id, BaseProfile model)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -106,7 +116,14 @@ namespace IdentityServiceClient.Service
                 {
                     throw new ApplicationException("Can not create user with current parameters");
                 }
+
+                return new ResponseModel() { StatusCode = HttpStatusCode.OK, Message = "User successefully updated" };
             }
+        }
+
+        public Task<ResponseModel> CheckPermission(string scope, string policy)
+        {
+            throw new NotImplementedException();
         }
     }
 }

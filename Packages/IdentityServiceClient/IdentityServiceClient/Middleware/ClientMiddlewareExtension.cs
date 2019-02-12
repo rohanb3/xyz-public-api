@@ -1,8 +1,5 @@
 ﻿using IdentityServiceClient.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServiceClient.Middleware
@@ -22,7 +19,7 @@ namespace IdentityServiceClient.Middleware
             setupAction(options);
 
             services.AddSingleton<IdentityServiceClientOptions, IdentityServiceClientOptions>();
-            return services.AddSingleton<IClientService>(new ClientService(options));
+            return services.AddSingleton<IIdentityManager>(new IdentityManager(options));
         }
     }
 }

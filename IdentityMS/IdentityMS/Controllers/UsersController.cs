@@ -12,7 +12,7 @@ using Microsoft.Azure.ActiveDirectory.GraphClient;
 namespace graphApiService.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
