@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using graphApiService.Repositories.Azure;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using IdentityServiceClient.Middleware;
 
 namespace graphApiService
 {
@@ -40,11 +41,21 @@ namespace graphApiService
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
-            
+
+            //services.AddIdentityClient(options =>
+            //{
+            //    options.ServiceUrl = Configuration["IdentityServiceUri"];
+            //});
+
             services.AddScoped<IAzureAdClient, AzureAdClient>();
             services.AddScoped<IUserService, UserService>();
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
             services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));
+
+            services.AddIdentityClient(options =>
+            {
+                options.ServiceUrl = Configuration["IdentityServiceUri"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
