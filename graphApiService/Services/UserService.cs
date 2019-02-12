@@ -32,7 +32,7 @@ namespace graphApiService.Services
             return result;
         }
 
-        public async Task UpdateUserByIdAsync(string id, ProfileEditable model)
+        public async Task UpdateUserByIdAsync(string id, BaseProfile model)
         {
             if (id == null)
             {

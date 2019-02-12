@@ -17,7 +17,7 @@ namespace graphApiService.Common
                 Surname = azureUser.Surname,
                 Role = azureUser.Role,
                 GivenName = azureUser.GivenName,
-                UserName = azureUser.UserName,
+                UserName = azureUser.SignInNames.FirstOrDefault(signInName => signInName.Type == "userName")?.Value,
                 Email = azureUser.Email,
             };
         }
@@ -39,7 +39,7 @@ namespace graphApiService.Common
             };
         }
 
-        public static AzureUser ToUserModel(this ProfileEditable user)
+        public static AzureUser ToUserModel(this BaseProfile user)
         {
             return new AzureUser()
             {

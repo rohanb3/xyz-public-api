@@ -41,7 +41,7 @@
             <response code="201">If user fetched successfully</response>
             <response code="401">If authorization token is invalid</response>
         </member>
-        <member name="M:graphApiService.Controllers.UsersController.Patch(System.String,graphApiService.Entities.User.ProfileEditable)">
+        <member name="M:graphApiService.Controllers.UsersController.Patch(System.String,graphApiService.Entities.User.BaseProfile)">
             <summary>
             Update user properties by objectId or userPrincipalName
             </summary>

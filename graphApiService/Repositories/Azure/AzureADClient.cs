@@ -15,7 +15,6 @@ using System.Net;
 using System.Text;
 using graphApiService.Entities.AzureAdGraphApi;
 using graphApiService.Entities.User;
-using graphApiService.Services;
 
 namespace graphApiService.Repositories.Azure
 {
@@ -69,10 +68,10 @@ namespace graphApiService.Repositories.Azure
             return value.ToObject<List<AzureUser>>();
         }
 
-        public async Task PatchUser(string id, ProfileEditable user)
+        public async Task PatchUser(string id, BaseProfile user)
         {
             var content = new StringContent(JsonConvert.SerializeObject(user.ToUserModel()), Encoding.UTF8, "application/json");
-            var response = await SendRequest(HttpMethod.Delete, Const.GraphApi.UserEntity, content, id);
+            var response = await SendRequest(HttpMethod.Patch, Const.GraphApi.UserEntity, content, id);
             if (!response.IsSuccessStatusCode)
             {
                 throw new ApplicationException("Can not update user with current parameters");
@@ -82,7 +81,7 @@ namespace graphApiService.Repositories.Azure
         public async Task PostUser(ProfileCreatable user)
         {
             var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-            var response = await SendRequest(HttpMethod.Delete, Const.GraphApi.UserEntity, content);
+            var response = await SendRequest(HttpMethod.Post, Const.GraphApi.UserEntity, content);
             if (!response.IsSuccessStatusCode)
             {
                 throw new ApplicationException("Can not create user with current parameters");
@@ -93,7 +92,7 @@ namespace graphApiService.Repositories.Azure
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                await SetClient(httpClient, $"{entity} {(string.IsNullOrEmpty(additional) ? "" : $"/{additional}")}");
+                await SetClient(httpClient, $"{entity}{(string.IsNullOrEmpty(additional) ? "" : $"/{additional}")}");
                 return method == HttpMethod.Get ? await httpClient.GetAsync(httpClient.BaseAddress)
                      : method == HttpMethod.Delete ? await httpClient.DeleteAsync(httpClient.BaseAddress)
                      : method == HttpMethod.Post ? await httpClient.PostAsync(httpClient.BaseAddress, content)

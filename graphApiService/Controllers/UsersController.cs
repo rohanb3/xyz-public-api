@@ -121,7 +121,7 @@ namespace graphApiService.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpPatch("{objectId}")]
-        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] ProfileEditable userToUpdate)
+        public async Task<IActionResult> Patch(string objectId, [FromBody] [Required] BaseProfile userToUpdate)
         {
             try
             {

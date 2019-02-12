@@ -8,7 +8,7 @@ namespace graphApiService.Services
     {
         Task<IEnumerable<Profile>> GetAllUsersAsync();
         Task<Profile> GetUserByIdAsync(string id);
-        Task UpdateUserByIdAsync(string id, ProfileEditable model);
+        Task UpdateUserByIdAsync(string id, BaseProfile model);
         Task<Profile> CreateUserAsync(ProfileCreatable model);
         Task DeleteUserByIdAsync(string id);
     }
