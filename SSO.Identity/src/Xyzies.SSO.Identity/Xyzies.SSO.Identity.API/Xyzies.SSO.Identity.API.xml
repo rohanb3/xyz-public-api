@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xyzies.SSO.Identity.API</name>
+    </assembly>
+    <members>
+        <member name="T:Xyzies.SSO.Identity.API.Controllers.RoleController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.SSO.Identity.API.Controllers.RoleController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.SSO.Identity.API.Controllers.RoleController},Xyzies.SSO.Identity.Data.Repository.IRoleRepository)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="roleRepository"></param>
+        </member>
+        <member name="M:Xyzies.SSO.Identity.API.Controllers.RoleController.Get">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
