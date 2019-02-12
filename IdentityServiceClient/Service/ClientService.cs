@@ -1,4 +1,5 @@
-﻿using IdentityServiceClient.Model;
+﻿using IdentityServiceClient.Models;
+using IdentityServiceClient.Models.User;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

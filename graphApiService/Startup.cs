@@ -1,5 +1,4 @@
 ﻿using System;
-using graphApiService.Common;
 using graphApiService.Common.Azure;
 using graphApiService.Middlewares;
 using graphApiService.Services;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using graphApiService.Entities.User;
+using graphApiService.Models.User;
 using graphApiService.Filters;
 using graphApiService.Services;
 using Microsoft.AspNetCore.Authorization;

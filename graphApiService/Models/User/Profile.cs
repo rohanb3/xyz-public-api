@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace graphApiService.Entities.User
+namespace graphApiService.Models.User
 {
     public class Profile: BaseProfile
     {

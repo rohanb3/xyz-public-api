@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServiceClient.Model
+namespace IdentityServiceClient.Models.User
 {
     public class Profile: BaseProfile
     {

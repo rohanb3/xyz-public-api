@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using graphApiService.Entities.User;
+using graphApiService.Models.User;
 
 namespace graphApiService.Services
 {

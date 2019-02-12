@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using graphApiService.Entities.User;
+using graphApiService.Models.User;
 
 namespace graphApiService.Common
 {

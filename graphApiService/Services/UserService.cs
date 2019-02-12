@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using graphApiService.Common;
-using graphApiService.Entities.User;
+using graphApiService.Models.User;
 using graphApiService.Common.Azure;
 using graphApiService.Repositories.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;

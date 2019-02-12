@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace IdentityServiceClient.Model
+namespace IdentityServiceClient.Models
 {
     public class ResponseModel<T>
     {

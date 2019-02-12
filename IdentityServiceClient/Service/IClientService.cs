@@ -1,7 +1,6 @@
-﻿using IdentityServiceClient.Model;
-using System;
+﻿using IdentityServiceClient.Models;
+using IdentityServiceClient.Models.User;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityServiceClient.Service

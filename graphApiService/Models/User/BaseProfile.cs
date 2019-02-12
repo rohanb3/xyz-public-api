@@ -1,6 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Azure.ActiveDirectory.GraphClient;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServiceClient.Model
+namespace graphApiService.Models.User
 {
     public class BaseProfile
     {

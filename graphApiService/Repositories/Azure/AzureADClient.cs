@@ -13,8 +13,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text;
-using graphApiService.Entities.AzureAdGraphApi;
-using graphApiService.Entities.User;
+using graphApiService.Models.AzureAdGraphApi;
+using graphApiService.Models.User;
 
 namespace graphApiService.Repositories.Azure
 {

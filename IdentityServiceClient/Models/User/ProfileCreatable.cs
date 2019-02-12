@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Azure.ActiveDirectory.GraphClient;
 
-namespace graphApiService.Entities.User
+namespace IdentityServiceClient.Models.User
 {
     public class ProfileCreatable : BaseProfile
     {

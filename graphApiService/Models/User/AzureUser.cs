@@ -3,7 +3,7 @@ using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace graphApiService.Entities.User
+namespace graphApiService.Models.User
 {
     public class AzureUser
     {
