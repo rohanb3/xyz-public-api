@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>GraphApiService</name>
+        <name>IdentityMS</name>
     </assembly>
     <members>
         <member name="M:graphApiService.Controllers.UsersController.Get">

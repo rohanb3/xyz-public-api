@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>graphApiService.xml</DocumentationFile>
+    <DocumentationFile>IdentityMS.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +24,6 @@
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\IdentityServiceClient\IdentityServiceClient.csproj" />
   </ItemGroup>
 
 </Project>
