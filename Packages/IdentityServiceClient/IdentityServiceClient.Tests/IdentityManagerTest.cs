@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using IdentityServiceClient.Service;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace IdentityServiceClient.Tests
 {
@@ -11,6 +12,7 @@ namespace IdentityServiceClient.Tests
         [SetUp]
         public void Setup()
         {
+            
             _identityManager = new IdentityManager(new IdentityServiceClientOptions() { ServiceUrl = "https://localhost:5001/api" });
         }
 

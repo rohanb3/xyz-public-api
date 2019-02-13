@@ -1,5 +1,6 @@
 ﻿using IdentityServiceClient.Models;
 using IdentityServiceClient.Models.User;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,17 @@ namespace IdentityServiceClient.Service
     {
         //TODO: check answer
         private readonly IdentityServiceClientOptions _options;
+        private readonly IMemoryCache _memoryCache;
 
-        public IdentityManager(IdentityServiceClientOptions options)
+        public IdentityManager(IdentityServiceClientOptions options, IMemoryCache memoryCache)
         {
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
         public Task<bool> CheckHash(string hash)
         {
+            var a = _memoryCache.Set("key", hash);
             throw new NotImplementedException();
         }
 

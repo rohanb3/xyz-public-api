@@ -1,5 +1,5 @@
-﻿using IdentityServiceClient.Service;
-using System;
+﻿using System;
+using IdentityServiceClient.Service;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServiceClient.Middleware
@@ -18,6 +18,7 @@ namespace IdentityServiceClient.Middleware
             var options = new IdentityServiceClientOptions();
             setupAction(options);
 
+            services.AddMemoryCache();
             services.AddSingleton<IdentityServiceClientOptions, IdentityServiceClientOptions>();
             return services.AddSingleton<IIdentityManager>(new IdentityManager(options));
         }
