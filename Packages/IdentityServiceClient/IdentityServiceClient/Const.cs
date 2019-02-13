@@ -13,5 +13,11 @@ namespace IdentityServiceClient
             public const string ApiVersion = "1.6";
             public const string UserEntity = "users";
         }
+        public class Cache
+        {
+            public const string PermissionKey = "Permission";
+            public const string ExpirationKey = "Expiration";
+            public const string PermissionHash = "Hash";
+        }
     }
 }

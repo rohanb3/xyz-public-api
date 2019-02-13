@@ -16,17 +16,12 @@ namespace IdentityServiceClient.Service
         //TODO: check answer
         private readonly IdentityServiceClientOptions _options;
         private readonly IMemoryCache _memoryCache;
+        private readonly TimeSpan _expitationTime = new TimeSpan(1, 0, 0);
 
         public IdentityManager(IdentityServiceClientOptions options, IMemoryCache memoryCache)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        }
-
-        public Task<bool> CheckHash(string hash)
-        {
-            var a = _memoryCache.Set("key", hash);
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -125,9 +120,45 @@ namespace IdentityServiceClient.Service
             }
         }
 
-        public Task<ResponseModel> CheckPermission(string scope, string policy)
+        public async Task<ResponseModel> CheckPermission(string scope, string policy)
         {
-            throw new NotImplementedException();
+            return null;
+        }
+
+        public async Task CheckPermissionExpiration()
+        {
+            var cacheExpiration = (DateTime)_memoryCache.Get(Const.Cache.ExpirationKey);
+            var permissions = (List<PermissionModel>)_memoryCache.Get(Const.Cache.PermissionKey);
+            if (cacheExpiration > DateTime.Now || permissions.Count == 0)
+            {
+                await SetPermissionObject();
+            }
+        }
+
+        private async Task SetPermissionObject()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var permissionHash = new HashCode().ToHashCode();//Get hash from service
+                var cachePermissionHash = (HashCode)_memoryCache.Get(Const.Cache.PermissionHash);
+                if (permissionHash != cachePermissionHash.ToHashCode())
+                {
+                    var permissionRespose = new List<PermissionModel>();//TODO get permissions from service
+                    CleareCache();
+
+                    _memoryCache.Set(Const.Cache.PermissionKey, permissionRespose);
+                    _memoryCache.Set(Const.Cache.PermissionHash, permissionHash);
+                    _memoryCache.Set(Const.Cache.ExpirationKey, DateTime.Now.AddHours(1));
+                }
+            }
+        }
+
+        private void CleareCache()
+        {
+            _memoryCache.Remove(Const.Cache.PermissionKey);
+            _memoryCache.Remove(Const.Cache.PermissionHash);
+            _memoryCache.Remove(Const.Cache.ExpirationKey);
         }
     }
 }
+

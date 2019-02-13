@@ -1,5 +1,6 @@
 ﻿using System;
 using IdentityServiceClient.Service;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServiceClient.Middleware
@@ -20,7 +21,11 @@ namespace IdentityServiceClient.Middleware
 
             services.AddMemoryCache();
             services.AddSingleton<IdentityServiceClientOptions, IdentityServiceClientOptions>();
-            return services.AddSingleton<IIdentityManager>(new IdentityManager(options));
+            return services.AddSingleton<IIdentityManager>(im =>
+            {
+                var memoryCacheService = im.GetService<IMemoryCache>();
+                return new IdentityManager(options, memoryCacheService);
+            });
         }
     }
 }

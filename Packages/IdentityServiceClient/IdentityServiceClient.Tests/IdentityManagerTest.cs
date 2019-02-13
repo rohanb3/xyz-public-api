@@ -13,13 +13,15 @@ namespace IdentityServiceClient.Tests
         public void Setup()
         {
             
-            _identityManager = new IdentityManager(new IdentityServiceClientOptions() { ServiceUrl = "https://localhost:5001/api" });
+            _identityManager = new IdentityManager(new IdentityServiceClientOptions() { ServiceUrl = "https://localhost:5001/api" }, null);
         }
 
         [Test]
         public async Task GetAllUsers_ReturnsNotEmptyPayload()
         {
             var response = await _identityManager.GetAllUsersAsync();
+            response = await _identityManager.GetAllUsersAsync();
+            response = await _identityManager.GetAllUsersAsync();
             Assert.IsTrue(response.Payload.Count == 3);
         }
     }
