@@ -13,7 +13,7 @@ namespace IdentityServiceClient.Tests
         public void Setup()
         {
             
-            _identityManager = new IdentityManager(new IdentityServiceClientOptions() { ServiceUrl = "https://localhost:5001/api" }, null);
+            _identityManager = new IdentityManager(new IdentityServiceClientOptions() { ServiceUrl = "https://localhost:5001/api" }, new MemoryCache(new MemoryCacheOptions()));
         }
 
         [Test]
@@ -23,6 +23,13 @@ namespace IdentityServiceClient.Tests
             response = await _identityManager.GetAllUsersAsync();
             response = await _identityManager.GetAllUsersAsync();
             Assert.IsTrue(response.Payload.Count == 3);
+        }
+
+        [Test]
+        public async Task CheckPermissionTest()
+        {
+            await _identityManager.CheckPermissionExpiration();
+            Assert.IsTrue(_identityManager.CheckPermission("TEST", new string[] { "TEST" }));
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using IdentityServiceClient.Models;
+using IdentityServiceClient.Models.Role;
 using IdentityServiceClient.Models.User;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -120,16 +122,30 @@ namespace IdentityServiceClient.Service
             }
         }
 
-        public async Task<ResponseModel> CheckPermission(string scope, string policy)
+        public bool CheckPermission(string role, string[] scopes)
         {
-            return null;
+            var roles = _memoryCache.Get<List<RoleModel>>(Const.Cache.PermissionKey);
+            var roleModel = roles.FirstOrDefault(r => r.RoleName == role);
+
+            if (roleModel != null)
+            {
+                foreach (var scope in scopes)
+                {
+                    if (roleModel.Policies.FirstOrDefault(policy => policy.Scopes.FirstOrDefault(s => s.ScopeName == scope) != null) == null)
+                    {
+                        return false;
+                    };
+                }
+                return true;
+            }
+            return false;
         }
 
         public async Task CheckPermissionExpiration()
         {
-            var cacheExpiration = (DateTime)_memoryCache.Get(Const.Cache.ExpirationKey);
-            var permissions = (List<PermissionModel>)_memoryCache.Get(Const.Cache.PermissionKey);
-            if (cacheExpiration > DateTime.Now || permissions.Count == 0)
+            var cacheExpiration = _memoryCache.Get<DateTime>(Const.Cache.ExpirationKey);
+            var permissions = _memoryCache.Get<List<RoleModel>>(Const.Cache.PermissionKey);
+            if (cacheExpiration < DateTime.Now || permissions?.Count == 0)
             {
                 await SetPermissionObject();
             }
@@ -139,11 +155,31 @@ namespace IdentityServiceClient.Service
         {
             using (HttpClient client = new HttpClient())
             {
-                var permissionHash = new HashCode().ToHashCode();//Get hash from service
-                var cachePermissionHash = (HashCode)_memoryCache.Get(Const.Cache.PermissionHash);
+                var permissionHash = 1; // TODO Get hash from service
+                var cachePermissionHash = _memoryCache.Get<HashCode>(Const.Cache.PermissionHash);
                 if (permissionHash != cachePermissionHash.ToHashCode())
                 {
-                    var permissionRespose = new List<PermissionModel>();//TODO get permissions from service
+                    var permissionRespose = new List<RoleModel>()
+                    {
+                        new RoleModel()
+                        {
+                            RoleName = "TEST",
+                            Policies = new List<PolicyModel>
+                            {
+                                new PolicyModel()
+                                {
+                                    PolicyName = "TEST",
+                                    Scopes = new List<ScopeModel>()
+                                    {
+                                        new ScopeModel()
+                                        {
+                                            ScopeName="TEST"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }; // TODO get permissions from service
                     CleareCache();
 
                     _memoryCache.Set(Const.Cache.PermissionKey, permissionRespose);
@@ -154,7 +190,7 @@ namespace IdentityServiceClient.Service
         }
 
         private void CleareCache()
-        {
+        {//TODO DELETE
             _memoryCache.Remove(Const.Cache.PermissionKey);
             _memoryCache.Remove(Const.Cache.PermissionHash);
             _memoryCache.Remove(Const.Cache.ExpirationKey);

@@ -3,7 +3,7 @@ using IdentityServiceClient.Service;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdentityServiceClient.Middleware
+namespace IdentityServiceClient
 {
     public static class ClientMiddlewareExtension
     {

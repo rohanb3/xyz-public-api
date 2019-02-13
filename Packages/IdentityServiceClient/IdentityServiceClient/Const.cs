@@ -6,6 +6,10 @@ namespace IdentityServiceClient
 {
     public class Const
     {
+        public class Permissions
+        {
+            public const string RoleClaimType = "extension_Group";
+        }
         public class GraphApi
         {
             public const string GraphApiEndpoint = "https://graph.windows.net/";

@@ -17,7 +17,7 @@ namespace IdentityServiceClient.Service
         #endregion
 
         #region Permissions
-        Task<ResponseModel> CheckPermission(string scope, string policy);
+        bool CheckPermission(string role, string[] scopes);
         Task CheckPermissionExpiration();
         #endregion
 
