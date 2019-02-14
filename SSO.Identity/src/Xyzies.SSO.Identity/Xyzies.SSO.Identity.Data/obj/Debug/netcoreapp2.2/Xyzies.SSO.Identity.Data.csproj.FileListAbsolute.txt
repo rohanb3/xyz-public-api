@@ -1,0 +1,9 @@
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.deps.json
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.dll
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.pdb
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.csprojAssemblyReference.cache
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.csproj.CoreCompileInputs.cache
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.AssemblyInfoInputs.cache
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.AssemblyInfo.cs
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.dll
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.pdb
