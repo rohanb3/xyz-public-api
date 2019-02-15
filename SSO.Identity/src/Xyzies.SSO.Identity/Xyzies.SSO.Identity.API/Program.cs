@@ -20,7 +20,7 @@ namespace Xyzies.SSO.Identity.API
                     serverOptions.ListenAnyIP(port, listenOptions =>
                     {
                         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                        listenOptions.UseHttps("localhost.pfx", "Secret001");
+                        listenOptions.UseHttps();
                     });
                 })
                 .ConfigureLogging(logging =>

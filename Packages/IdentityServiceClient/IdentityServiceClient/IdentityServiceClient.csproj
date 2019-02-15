@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Company>IdentityServiceClient</Company>
+    <Company>Ardas</Company>
     <Description>This is the library that contains the client to use Identity Service</Description>
     <PackageTags>Core;IdentityService;VSP</PackageTags>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

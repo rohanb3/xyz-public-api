@@ -51,7 +51,7 @@ namespace Xyzies.SSO.Identity.API
 
                 });
 
-            string dbConnectionString = "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
+            string dbConnectionString = "Data Source=DESKTOP-R3SGAF5;Initial Catalog=timewarner_20181026;Integrated Security = true;";//Configuration["connectionStrings:db"];
             services//.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<IdentityDataContext>(ctxOptions => 
                     ctxOptions.UseSqlServer(dbConnectionString));
@@ -116,6 +116,12 @@ namespace Xyzies.SSO.Identity.API
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<IdentityDataContext>();
+                context.Database.Migrate();
             }
 
             app.UseHealthChecks("/healthz")
