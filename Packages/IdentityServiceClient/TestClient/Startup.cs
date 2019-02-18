@@ -27,7 +27,7 @@ namespace TestClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddIdentityClient(options=> new IdentityServiceClientOptions() {ServiceUrl="https://localhost:8080/api" });
+            services.AddIdentityClient(options => options.ServiceUrl = "https://localhost:8081/api" );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.2",
-    "signature": "3171bb7372696289f0bcd243782ffb2aa3cc0d0e"
+    "signature": "99709907c78b0f97009d55c89508fd5a5291b3c2"
   },
   "compilationOptions": {
     "defines": [
@@ -24,6 +24,7 @@
     ".NETCoreApp,Version=v2.2": {
       "Xyzies.SSO.Identity.API/1.0.0": {
         "dependencies": {
+          "ExpressionDebugger": "2.0.0",
           "IdentityServer4.AspNetIdentity": "2.3.0",
           "Mapster": "3.3.1",
           "Microsoft.AspNetCore.App": "2.2.0",
@@ -40,6 +41,33 @@
         },
         "compile": {
           "Xyzies.SSO.Identity.API.dll": {}
+        }
+      },
+      "ExpressionDebugger/2.0.0": {
+        "dependencies": {
+          "ExpressionTranslator": "2.0.0",
+          "Microsoft.CodeAnalysis.CSharp": "2.8.0",
+          "System.Runtime.Loader": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/ExpressionDebugger.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/ExpressionDebugger.dll": {}
+        }
+      },
+      "ExpressionTranslator/2.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/ExpressionTranslator.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/ExpressionTranslator.dll": {}
         }
       },
       "IdentityModel/3.10.0": {
@@ -810,8 +838,16 @@
         }
       },
       "System.Reflection.TypeExtensions/4.5.1": {},
+      "System.Runtime.Loader/4.3.0": {
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
       "Xyzies.SSO.Identity.Data/1.0.0": {
         "dependencies": {
+          "ExpressionDebugger": "2.0.0",
           "Mapster": "3.3.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.2.1",
           "Newtonsoft.Json": "12.0.1"
@@ -3744,6 +3780,20 @@
       "serviceable": false,
       "sha512": ""
     },
+    "ExpressionDebugger/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dgkVnS3/KCN4QObLo9WoTC+JRPRZ00lJSDQbmvAWqNSD1B/dG2x3FC9FU8bAJ1xOJvZTIA8jxpNcy9a3YsUMRg==",
+      "path": "expressiondebugger/2.0.0",
+      "hashPath": "expressiondebugger.2.0.0.nupkg.sha512"
+    },
+    "ExpressionTranslator/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BWIG6MGyB0RQbaQItM89WkHla1EnCjUljFwoVtGUla9ULGmF3o6+VkD6/Vf4hQhNypv9zwYucUwdDHfk+2Av5g==",
+      "path": "expressiontranslator/2.0.0",
+      "hashPath": "expressiontranslator.2.0.0.nupkg.sha512"
+    },
     "IdentityModel/3.10.0": {
       "type": "package",
       "serviceable": true,
@@ -4065,6 +4115,13 @@
       "sha512": "sha512-fO8GMEkgoKioJ7cglZbhcnBgkCWWn9poS3G2jevS+fuwW9xJXMx7/1kr7dkwOJfo0pWqxLFWVcxlOr+WeK5ipA==",
       "path": "system.reflection.typeextensions/4.5.1",
       "hashPath": "system.reflection.typeextensions.4.5.1.nupkg.sha512"
+    },
+    "System.Runtime.Loader/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DHMaRn8D8YCK2GG2pw+UzNxn/OHVfaWx7OTLBD/hPegHZZgcZh3H6seWegrC4BYwsfuGrywIuT+MQs+rPqRLTQ==",
+      "path": "system.runtime.loader/4.3.0",
+      "hashPath": "system.runtime.loader.4.3.0.nupkg.sha512"
     },
     "Xyzies.SSO.Identity.Data/1.0.0": {
       "type": "project",

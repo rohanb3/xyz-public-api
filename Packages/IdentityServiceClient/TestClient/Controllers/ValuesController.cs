@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServiceClient.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TestClient.Controllers
@@ -10,11 +11,17 @@ namespace TestClient.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IIdentityManager _identityManager;
+        public ValuesController(IIdentityManager identityManager)
+        {
+            _identityManager = identityManager;
+        }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = await _identityManager.GetAllUsersAsync();
+            return Ok(result);
         }
 
         // GET api/values/5

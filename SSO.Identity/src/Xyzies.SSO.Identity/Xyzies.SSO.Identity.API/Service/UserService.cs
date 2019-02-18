@@ -21,6 +21,7 @@ namespace Xyzies.SSO.Identity.API.Service
         public async Task<IEnumerable<Profile>> GetAllUsersAsync()
         {
             var users = await _azureClient.GetUsers();
+            var result = new List<Profile>();
             try
             {
                 return users.Adapt<List<Profile>>();

@@ -22,6 +22,9 @@ using Xyzies.SSO.Identity.API.Models.User;
 using Xyzies.SSO.Identity.Data.Entity;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using ExpressionDebugger;
 
 namespace Xyzies.SSO.Identity.API
 {
@@ -114,9 +117,17 @@ namespace Xyzies.SSO.Identity.API
                     string.Concat(Assembly.GetExecutingAssembly().GetName().Name, ".xml")));
             });
 
+            var opt = new ExpressionCompilationOptions { IsRelease = !Debugger.IsAttached };
+            TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo(opt);
+
             //Scan for our mappings
             TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
-            TypeAdapterConfig<AzureUser, Profile>.NewConfig().MapToTargetWith((src, dest) => dest.Email = src.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress").Value, true);
+            TypeAdapterConfig<AzureUser, Profile>.NewConfig().Map(dest => dest.Email, src => GetEmail(src.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")));
+        }
+
+        private string GetEmail(Data.Entity.SignInName name)
+        {
+            return name?.Value;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
