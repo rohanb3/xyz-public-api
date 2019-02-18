@@ -50,7 +50,7 @@
             <response code="401">If authorization token is invalid</response>
             <response code="404">If user was not found</response>
         </member>
-        <member name="M:Xyzies.SSO.Identity.API.Controllers.UsersController.Post(Xyzies.SSO.Identity.API.Models.User.ProfileCreatable)">
+        <member name="M:Xyzies.SSO.Identity.API.Controllers.UsersController.Post(Xyzies.SSO.Identity.Service.Models.User.ProfileCreatable)">
             <summary>
             Creates new user
             </summary>
@@ -59,7 +59,7 @@
             <response code="201">If user fetched successfully</response>
             <response code="401">If authorization token is invalid</response>
         </member>
-        <member name="M:Xyzies.SSO.Identity.API.Controllers.UsersController.Patch(System.String,Xyzies.SSO.Identity.API.Models.User.BaseProfile)">
+        <member name="M:Xyzies.SSO.Identity.API.Controllers.UsersController.Patch(System.String,Xyzies.SSO.Identity.Service.Models.User.BaseProfile)">
             <summary>
             Update user properties by objectId or userPrincipalName
             </summary>

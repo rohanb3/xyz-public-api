@@ -2,29 +2,6 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.2": {
-      "ExpressionDebugger/2.0.0": {
-        "type": "package",
-        "dependencies": {
-          "ExpressionTranslator": "2.0.0",
-          "Microsoft.CodeAnalysis.CSharp": "2.8.0",
-          "System.Runtime.Loader": "4.3.0"
-        },
-        "compile": {
-          "lib/netstandard2.0/ExpressionDebugger.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/ExpressionDebugger.dll": {}
-        }
-      },
-      "ExpressionTranslator/2.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/ExpressionTranslator.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/ExpressionTranslator.dll": {}
-        }
-      },
       "IdentityModel/3.10.0": {
         "type": "package",
         "dependencies": {
@@ -4237,20 +4214,6 @@
           }
         }
       },
-      "System.Runtime.Loader/4.3.0": {
-        "type": "package",
-        "dependencies": {
-          "System.IO": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Runtime": "4.3.0"
-        },
-        "compile": {
-          "ref/netstandard1.5/System.Runtime.Loader.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.5/System.Runtime.Loader.dll": {}
-        }
-      },
       "System.Runtime.Numerics/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -4905,7 +4868,6 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.2",
         "dependencies": {
-          "ExpressionDebugger": "2.0.0",
           "Mapster": "3.3.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.2.1",
           "Newtonsoft.Json": "12.0.1"
@@ -4916,37 +4878,24 @@
         "runtime": {
           "bin/placeholder/Xyzies.SSO.Identity.Data.dll": {}
         }
+      },
+      "Xyzies.SSO.Identity.Service/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.2",
+        "dependencies": {
+          "Mapster": "3.3.1",
+          "Xyzies.SSO.Identity.Data": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Xyzies.SSO.Identity.Service.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Xyzies.SSO.Identity.Service.dll": {}
+        }
       }
     }
   },
   "libraries": {
-    "ExpressionDebugger/2.0.0": {
-      "sha512": "dgkVnS3/KCN4QObLo9WoTC+JRPRZ00lJSDQbmvAWqNSD1B/dG2x3FC9FU8bAJ1xOJvZTIA8jxpNcy9a3YsUMRg==",
-      "type": "package",
-      "path": "expressiondebugger/2.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "expressiondebugger.2.0.0.nupkg.sha512",
-        "expressiondebugger.nuspec",
-        "lib/netstandard2.0/ExpressionDebugger.dll"
-      ]
-    },
-    "ExpressionTranslator/2.0.0": {
-      "sha512": "BWIG6MGyB0RQbaQItM89WkHla1EnCjUljFwoVtGUla9ULGmF3o6+VkD6/Vf4hQhNypv9zwYucUwdDHfk+2Av5g==",
-      "type": "package",
-      "path": "expressiontranslator/2.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "expressiontranslator.2.0.0.nupkg.sha512",
-        "expressiontranslator.nuspec",
-        "lib/net40/ExpressionTranslator.dll",
-        "lib/net45/ExpressionTranslator.dll",
-        "lib/netstandard1.3/ExpressionTranslator.dll",
-        "lib/netstandard2.0/ExpressionTranslator.dll"
-      ]
-    },
     "IdentityModel/3.10.0": {
       "sha512": "PJ8F5HOauI52OhiJZ7E46/AyNmqKMOWGmruHx6Ajv2evNFB/9P+MknY72zr8V5cjnwbVPDHNUS3IUUSG/l3/kA==",
       "type": "package",
@@ -11678,38 +11627,6 @@
         "system.runtime.interopservices.runtimeinformation.nuspec"
       ]
     },
-    "System.Runtime.Loader/4.3.0": {
-      "sha512": "DHMaRn8D8YCK2GG2pw+UzNxn/OHVfaWx7OTLBD/hPegHZZgcZh3H6seWegrC4BYwsfuGrywIuT+MQs+rPqRLTQ==",
-      "type": "package",
-      "path": "system.runtime.loader/4.3.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "ThirdPartyNotices.txt",
-        "dotnet_library_license.txt",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net462/_._",
-        "lib/netstandard1.5/System.Runtime.Loader.dll",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/netstandard1.5/System.Runtime.Loader.dll",
-        "ref/netstandard1.5/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/de/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/es/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/fr/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/it/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/ja/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/ko/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/ru/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/zh-hans/System.Runtime.Loader.xml",
-        "ref/netstandard1.5/zh-hant/System.Runtime.Loader.xml",
-        "system.runtime.loader.4.3.0.nupkg.sha512",
-        "system.runtime.loader.nuspec"
-      ]
-    },
     "System.Runtime.Numerics/4.3.0": {
       "sha512": "yMH+MfdzHjy17l2KESnPiF2dwq7T+xLnSJar7slyimAkUh/gTrS9/UQOtv7xarskJ2/XDSNvfLGOBQPjL7PaHQ==",
       "type": "package",
@@ -13357,11 +13274,15 @@
       "type": "project",
       "path": "../Xyzies.SSO.Identity.Data/Xyzies.SSO.Identity.Data.csproj",
       "msbuildProject": "../Xyzies.SSO.Identity.Data/Xyzies.SSO.Identity.Data.csproj"
+    },
+    "Xyzies.SSO.Identity.Service/1.0.0": {
+      "type": "project",
+      "path": "../Xyzies.SSO.Identity.Service/Xyzies.SSO.Identity.Service.csproj",
+      "msbuildProject": "../Xyzies.SSO.Identity.Service/Xyzies.SSO.Identity.Service.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.2": [
-      "ExpressionDebugger >= 2.0.0",
       "IdentityServer4.AspNetIdentity >= 2.3.0",
       "Mapster >= 3.3.1",
       "Microsoft.AspNetCore.App >= 2.2.0",
@@ -13371,7 +13292,8 @@
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.2.0",
       "Swashbuckle.AspNetCore >= 4.0.1",
       "Swashbuckle.AspNetCore.Annotations >= 4.0.1",
-      "Xyzies.SSO.Identity.Data >= 1.0.0"
+      "Xyzies.SSO.Identity.Data >= 1.0.0",
+      "Xyzies.SSO.Identity.Service >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -13406,6 +13328,9 @@
           "projectReferences": {
             "C:\\Users\\User\\Desktop\\xyz-vsp-be-dotnet\\SSO.Identity\\src\\Xyzies.SSO.Identity\\Xyzies.SSO.Identity.Data\\Xyzies.SSO.Identity.Data.csproj": {
               "projectPath": "C:\\Users\\User\\Desktop\\xyz-vsp-be-dotnet\\SSO.Identity\\src\\Xyzies.SSO.Identity\\Xyzies.SSO.Identity.Data\\Xyzies.SSO.Identity.Data.csproj"
+            },
+            "C:\\Users\\User\\Desktop\\xyz-vsp-be-dotnet\\SSO.Identity\\src\\Xyzies.SSO.Identity\\Xyzies.SSO.Identity.Service\\Xyzies.SSO.Identity.Service.csproj": {
+              "projectPath": "C:\\Users\\User\\Desktop\\xyz-vsp-be-dotnet\\SSO.Identity\\src\\Xyzies.SSO.Identity\\Xyzies.SSO.Identity.Service\\Xyzies.SSO.Identity.Service.csproj"
             }
           }
         }
@@ -13419,10 +13344,6 @@
     "frameworks": {
       "netcoreapp2.2": {
         "dependencies": {
-          "ExpressionDebugger": {
-            "target": "Package",
-            "version": "[2.0.0, )"
-          },
           "IdentityServer4.AspNetIdentity": {
             "target": "Package",
             "version": "[2.3.0, )"

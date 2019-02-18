@@ -34,3 +34,5 @@ C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyz
 C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.API\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.API.csproj.CopyComplete
 C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.API\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.API.dll
 C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.API\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.API.pdb
+C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.API\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Service.dll
+C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.API\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Service.pdb

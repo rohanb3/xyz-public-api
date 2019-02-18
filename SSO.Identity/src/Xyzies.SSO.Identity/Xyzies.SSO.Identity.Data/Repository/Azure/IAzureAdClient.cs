@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xyzies.SSO.Identity.Data.Entity;
+using Xyzies.SSO.Identity.Data.Entity.Azure;
 
 namespace Xyzies.SSO.Identity.Data.Repository.Azure
 {

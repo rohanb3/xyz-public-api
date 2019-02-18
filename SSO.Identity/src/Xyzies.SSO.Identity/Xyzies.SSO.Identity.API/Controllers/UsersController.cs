@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Xyzies.SSO.Identity.API.Models.User;
-using Xyzies.SSO.Identity.API.Service;
+using Xyzies.SSO.Identity.Service;
+using Xyzies.SSO.Identity.Service.Models.User;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {

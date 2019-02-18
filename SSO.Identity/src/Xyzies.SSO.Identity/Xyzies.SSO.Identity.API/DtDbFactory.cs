@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xyzies.SSO.Identity.Data;
+﻿using Xyzies.SSO.Identity.Data;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 
 namespace Xyzies.SSO.Identity.API
 {
-    
+
     public class IdentityDataContextFactory : IDesignTimeDbContextFactory<IdentityDataContext>
     {
         public IdentityDataContext CreateDbContext(string[] args)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
 using Xyzies.SSO.Identity.Data.Entity.Relationship;
 
 namespace Xyzies.SSO.Identity.Data.Entity

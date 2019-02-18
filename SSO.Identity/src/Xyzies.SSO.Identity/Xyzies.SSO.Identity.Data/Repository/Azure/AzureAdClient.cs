@@ -10,10 +10,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using Xyzies.SSO.Identity.Data.Entity;
-using Xyzies.SSO.Identity.Data.Entity.AzureAdGraphApi;
 using Xyzies.SSO.Identity.Data.Helpers;
-using System.Linq;
+using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
+using Xyzies.SSO.Identity.Data.Entity.Azure;
 
 namespace Xyzies.SSO.Identity.Data.Repository.Azure
 {

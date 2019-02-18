@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IdentityServiceClient
+﻿namespace IdentityServiceClient
 {
     public class IdentityServiceClientOptions
     {

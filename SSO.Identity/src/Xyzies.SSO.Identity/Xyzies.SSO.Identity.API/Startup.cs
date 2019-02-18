@@ -10,21 +10,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
-using Xyzies.SSO.Identity.API.Service;
 using Xyzies.SSO.Identity.Data;
 using Xyzies.SSO.Identity.Data.Repository;
-using Mapster;
-using Xyzies.SSO.Identity.Data.Entity.AzureAdGraphApi;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Xyzies.SSO.Identity.API.Models.User;
-using Xyzies.SSO.Identity.Data.Entity;
-using System.Linq;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq.Expressions;
-using ExpressionDebugger;
+using Xyzies.SSO.Identity.Service;
+using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
+using Xyzies.SSO.Identity.Data.Entity.Azure;
+using Xyzies.SSO.Identity.Service.Mapping;
 
 namespace Xyzies.SSO.Identity.API
 {
@@ -44,7 +38,7 @@ namespace Xyzies.SSO.Identity.API
             //services.AddIdentity<ApplicationUser, IdentityRole>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()
             //    .AddDefaultTokenProviders();
-
+                       
             services.AddIdentityServer(c =>
             {
 
@@ -117,17 +111,8 @@ namespace Xyzies.SSO.Identity.API
                     string.Concat(Assembly.GetExecutingAssembly().GetName().Name, ".xml")));
             });
 
-            var opt = new ExpressionCompilationOptions { IsRelease = !Debugger.IsAttached };
-            TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo(opt);
 
-            //Scan for our mappings
-            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
-            TypeAdapterConfig<AzureUser, Profile>.NewConfig().Map(dest => dest.Email, src => GetEmail(src.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")));
-        }
-
-        private string GetEmail(Data.Entity.SignInName name)
-        {
-            return name?.Value;
+            UserMappingConfigurations.ConfigureUserMappers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
