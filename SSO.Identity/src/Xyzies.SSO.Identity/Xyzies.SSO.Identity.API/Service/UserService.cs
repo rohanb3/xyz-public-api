@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Mapster;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xyzies.SSO.Identity.API.Models.User;
-using Xyzies.SSO.Identity.API.Service.Clients;
+using Xyzies.SSO.Identity.Data.Entity;
+using Xyzies.SSO.Identity.Data.Repository.Azure;
 
 namespace Xyzies.SSO.Identity.API.Service
 {
@@ -19,11 +21,14 @@ namespace Xyzies.SSO.Identity.API.Service
         public async Task<IEnumerable<Profile>> GetAllUsersAsync()
         {
             var users = await _azureClient.GetUsers();
-            var result = new List<Profile>();
-
-            users.ToList().ForEach(user => result.Add(user/*.ToProfileDto()*/));
-
-            return result;
+            try
+            {
+                return users.Adapt<List<Profile>>();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task UpdateUserByIdAsync(string id, BaseProfile model)
@@ -40,7 +45,7 @@ namespace Xyzies.SSO.Identity.API.Service
 
             try
             {
-                await _azureClient.PatchUser(id, model);
+                await _azureClient.PatchUser(id, model.Adapt<AzureUser>());
             }
             catch (ApplicationException)
             {
@@ -57,16 +62,16 @@ namespace Xyzies.SSO.Identity.API.Service
 
             try
             {
-                await _azureClient.PostUser(model);
-                return new Profile
-                {
-                    AccountEnabled = model.AccountEnabled,
-                    DisplayName = model.DisplayName,
-                    City = model.City,
-                    GivenName = model.GivenName,
-                    UserName = model.SignInNames.FirstOrDefault(signInName => signInName.Type == "userName")?.Value,
-                    Email = model.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")?.Value,
-                };
+                await _azureClient.PostUser(model.Adapt<AzureUser>());
+                return model.Adapt<Profile>();
+                //{
+                //    AccountEnabled = model.AccountEnabled,
+                //    DisplayName = model.DisplayName,
+                //    City = model.City,
+                //    GivenName = model.GivenName,
+                //    UserName = model.SignInNames.FirstOrDefault(signInName => signInName.Type == "userName")?.Value,
+                //    Email = model.SignInNames.FirstOrDefault(signInName => signInName.Type == "emailAddress")?.Value,
+                //};
             }
             catch (ApplicationException)
             {
@@ -84,7 +89,7 @@ namespace Xyzies.SSO.Identity.API.Service
             try
             {
                 var user = await _azureClient.GetUserById(id);
-                return null;/*.ToProfileDto()*/;
+                return user.Adapt<Profile>();
             }
             catch (KeyNotFoundException)
             {

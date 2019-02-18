@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xyzies.SSO.Identity.API.Helpers;
+using Xyzies.SSO.Identity.Data.Helpers;
 
-namespace Xyzies.SSO.Identity.API.Models.User
+namespace Xyzies.SSO.Identity.Data.Entity
 {
     public class AzureUser
     {

@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -11,11 +10,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using Xyzies.SSO.Identity.API.Helpers;
-using Xyzies.SSO.Identity.API.Models.AzureAdGraphApi;
-using Xyzies.SSO.Identity.API.Models.User;
+using Xyzies.SSO.Identity.Data.Entity;
+using Xyzies.SSO.Identity.Data.Entity.AzureAdGraphApi;
+using Xyzies.SSO.Identity.Data.Helpers;
+using System.Linq;
 
-namespace Xyzies.SSO.Identity.API.Service.Clients
+namespace Xyzies.SSO.Identity.Data.Repository.Azure
 {
     public class AzureAdClient : IAzureAdClient
     {
@@ -67,9 +67,9 @@ namespace Xyzies.SSO.Identity.API.Service.Clients
             return value.ToObject<List<AzureUser>>();
         }
 
-        public async Task PatchUser(string id, BaseProfile user)
+        public async Task PatchUser(string id, AzureUser user)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(user/*.ToUserModel()*/), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
             var response = await SendRequest(HttpMethod.Patch, Consts.GraphApi.UserEntity, content, id);
             if (!response.IsSuccessStatusCode)
             {
@@ -77,7 +77,7 @@ namespace Xyzies.SSO.Identity.API.Service.Clients
             }
         }
 
-        public async Task PostUser(ProfileCreatable user)
+        public async Task PostUser(AzureUser user)
         {
             var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
             var response = await SendRequest(HttpMethod.Post, Consts.GraphApi.UserEntity, content);

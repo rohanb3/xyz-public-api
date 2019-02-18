@@ -16,3 +16,6 @@ C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyz
 C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.AssemblyInfo.cs
 C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.dll
 C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.pdb
+C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\bin\Debug\netcoreapp2.2\System.Net.Http.Formatting.dll
+C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\bin\Debug\netcoreapp2.2\System.Net.Http.Formatting.xml
+C:\Users\User\Desktop\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Data\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.csproj.CopyComplete

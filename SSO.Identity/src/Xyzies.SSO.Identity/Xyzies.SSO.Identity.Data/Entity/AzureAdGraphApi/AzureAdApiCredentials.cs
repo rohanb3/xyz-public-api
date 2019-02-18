@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Xyzies.SSO.Identity.API.Models.AzureAdGraphApi
+namespace Xyzies.SSO.Identity.Data.Entity.AzureAdGraphApi
 {
     public class AzureAdApiCredentials
     {
