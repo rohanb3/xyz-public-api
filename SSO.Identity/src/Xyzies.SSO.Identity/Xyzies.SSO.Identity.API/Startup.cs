@@ -17,6 +17,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using Xyzies.SSO.Identity.API.Models.AzureAdGraphApi;
+using Xyzies.SSO.Identity.API.Service;
+using Xyzies.SSO.Identity.API.Service.Clients;
 using Xyzies.SSO.Identity.Data;
 using Xyzies.SSO.Identity.Data.Repository;
 
@@ -51,7 +54,7 @@ namespace Xyzies.SSO.Identity.API
 
                 });
 
-            string dbConnectionString = "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
+            string dbConnectionString = "Data Source=DESKTOP-MDU10E0;Initial Catalog=timewarner_20181026;Integrated Security=True";//User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
             services//.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<IdentityDataContext>(ctxOptions => 
                     ctxOptions.UseSqlServer(dbConnectionString));
@@ -86,9 +89,12 @@ namespace Xyzies.SSO.Identity.API
 
             services.AddScoped<DbContext, IdentityDataContext>();
             services.AddScoped<IRoleRepository, RoleRepository>();
-
+            services.AddScoped<IAzureAdClient, AzureAdClient>();
+            services.AddScoped<IUserService, UserService>();
             #endregion
 
+            services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
+            services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info
@@ -116,6 +122,12 @@ namespace Xyzies.SSO.Identity.API
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<IdentityDataContext>();
+                context.Database.Migrate();
             }
 
             app.UseHealthChecks("/healthz")

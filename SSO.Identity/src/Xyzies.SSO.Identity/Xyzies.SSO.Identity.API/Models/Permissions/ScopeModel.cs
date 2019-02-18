@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xyzies.SSO.Identity.API.Models
+namespace Xyzies.SSO.Identity.API.Models.Permissions
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class ScopeModel

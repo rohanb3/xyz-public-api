@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Xyzies.SSO.Identity.API.Models;
+using Xyzies.SSO.Identity.API.Models.Permissions;
 using Xyzies.SSO.Identity.Data.Repository;
 
 namespace Xyzies.SSO.Identity.API.Controllers

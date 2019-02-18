@@ -14,7 +14,7 @@ namespace Xyzies.SSO.Identity.API
         public IdentityDataContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<IdentityDataContext>();
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=timewarner_20181026_test;User ID=sa;Password=secret123");
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-MDU10E0;Initial Catalog=timewarner_20181026_test;Integrated Security=SSPI;");//User ID=sa;Password=secret123");
 
             return new IdentityDataContext(optionsBuilder.Options);
         }
