@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xyzies.SSO.Identity.Data", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xyzies.SSO.Identity.Tests", "Xyzies.SSO.Identity.Tests\Xyzies.SSO.Identity.Tests.csproj", "{F0065D0A-7D0A-4DB3-B1BE-FC5D9301D430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xyzies.SSO.Identity.Service", "Xyzies.SSO.Identity.Service\Xyzies.SSO.Identity.Service.csproj", "{BFB2E0AD-E2F0-4E61-A782-CD1BFA90118C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xyzies.SSO.Identity.Services", "Xyzies.SSO.Identity.Service\Xyzies.SSO.Identity.Services.csproj", "{BFB2E0AD-E2F0-4E61-A782-CD1BFA90118C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

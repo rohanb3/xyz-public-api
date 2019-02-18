@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
-using Xyzies.SSO.Identity.Service.Models.User;
+using Xyzies.SSO.Identity.Services.Models.User;
 
-namespace Xyzies.SSO.Identity.Service
+namespace Xyzies.SSO.Identity.Services.Service
 {
     public class UserService : IUserService
     {

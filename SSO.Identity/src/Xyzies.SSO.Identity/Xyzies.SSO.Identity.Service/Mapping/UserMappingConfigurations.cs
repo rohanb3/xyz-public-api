@@ -1,9 +1,9 @@
 ﻿using Mapster;
 using System.Linq;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
-using Xyzies.SSO.Identity.Service.Models.User;
+using Xyzies.SSO.Identity.Services.Models.User;
 
-namespace Xyzies.SSO.Identity.Service.Mapping
+namespace Xyzies.SSO.Identity.Services.Mapping
 {
     public static class UserMappingConfigurations
     {

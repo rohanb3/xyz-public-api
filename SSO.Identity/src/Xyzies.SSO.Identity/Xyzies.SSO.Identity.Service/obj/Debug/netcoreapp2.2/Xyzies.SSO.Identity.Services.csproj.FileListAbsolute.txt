@@ -1,0 +1,14 @@
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.csprojAssemblyReference.cache
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.csproj.CoreCompileInputs.cache
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.AssemblyInfoInputs.cache
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.AssemblyInfo.cs
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.deps.json
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.dll
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.pdb
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.dll
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\System.Net.Http.Formatting.dll
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Data.pdb
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\bin\Debug\netcoreapp2.2\System.Net.Http.Formatting.xml
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.csproj.CopyComplete
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.dll
+C:\Repos\xyz\xyz-vsp-be-dotnet\SSO.Identity\src\Xyzies.SSO.Identity\Xyzies.SSO.Identity.Service\obj\Debug\netcoreapp2.2\Xyzies.SSO.Identity.Services.pdb

@@ -15,10 +15,10 @@ using Xyzies.SSO.Identity.Data.Repository;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Xyzies.SSO.Identity.Service;
 using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
-using Xyzies.SSO.Identity.Service.Mapping;
+using Xyzies.SSO.Identity.Services.Mapping;
+using Xyzies.SSO.Identity.Services.Service;
 
 namespace Xyzies.SSO.Identity.API
 {

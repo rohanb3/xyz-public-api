@@ -6,15 +6,13 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.2": {
-      "Xyzies.SSO.Identity.Data/1.0.0": {
+      "Xyzies.SSO.Identity.Services/1.0.0": {
         "dependencies": {
           "Mapster": "3.3.1",
-          "Microsoft.EntityFrameworkCore.SqlServer": "2.2.1",
-          "Newtonsoft.Json": "12.0.1",
-          "System.Net.Http.Formatting": "5.2.6.0"
+          "Xyzies.SSO.Identity.Data": "1.0.0"
         },
         "runtime": {
-          "Xyzies.SSO.Identity.Data.dll": {}
+          "Xyzies.SSO.Identity.Services.dll": {}
         }
       },
       "Mapster/3.3.1": {
@@ -532,7 +530,18 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.Net.Http.Formatting/5.2.6.0": {
+      "Xyzies.SSO.Identity.Data/1.0.0": {
+        "dependencies": {
+          "Mapster": "3.3.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "2.2.1",
+          "Newtonsoft.Json": "12.0.1",
+          "System.Net.Http.Formatting": "5.2.6.0"
+        },
+        "runtime": {
+          "Xyzies.SSO.Identity.Data.dll": {}
+        }
+      },
+      "System.Net.Http.Formatting.Reference/5.2.6.0": {
         "runtime": {
           "System.Net.Http.Formatting.dll": {
             "assemblyVersion": "5.2.6.0",
@@ -543,7 +552,7 @@
     }
   },
   "libraries": {
-    "Xyzies.SSO.Identity.Data/1.0.0": {
+    "Xyzies.SSO.Identity.Services/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -947,7 +956,12 @@
       "path": "system.threading.tasks/4.3.0",
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
     },
-    "System.Net.Http.Formatting/5.2.6.0": {
+    "Xyzies.SSO.Identity.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Net.Http.Formatting.Reference/5.2.6.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

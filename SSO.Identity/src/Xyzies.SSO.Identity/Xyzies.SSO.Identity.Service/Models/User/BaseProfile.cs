@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Xyzies.SSO.Identity.Service.Models.User
+namespace Xyzies.SSO.Identity.Services.Models.User
 {
     public class BaseProfile
     {

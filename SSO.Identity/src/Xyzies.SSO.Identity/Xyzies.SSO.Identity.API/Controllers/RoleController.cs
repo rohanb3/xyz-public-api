@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Xyzies.SSO.Identity.Data.Repository;
-using Xyzies.SSO.Identity.Service.Models.Permissions;
+using Xyzies.SSO.Identity.Services.Models.Permissions;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {

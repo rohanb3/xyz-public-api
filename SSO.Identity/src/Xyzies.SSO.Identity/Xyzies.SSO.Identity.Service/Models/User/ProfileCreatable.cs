@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
 
-namespace Xyzies.SSO.Identity.Service.Models.User
+namespace Xyzies.SSO.Identity.Services.Models.User
 {
     public class ProfileCreatable : BaseProfile
     {

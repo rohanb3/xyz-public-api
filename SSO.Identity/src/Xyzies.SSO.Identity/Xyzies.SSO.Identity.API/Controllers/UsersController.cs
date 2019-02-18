@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Xyzies.SSO.Identity.Service;
-using Xyzies.SSO.Identity.Service.Models.User;
+using Xyzies.SSO.Identity.Services.Models.User;
+using Xyzies.SSO.Identity.Services.Service;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {
