@@ -1,9 +1,0 @@
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\bin\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.deps.json
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\bin\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.dll
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\bin\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.pdb
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\obj\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.csprojAssemblyReference.cache
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\obj\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.csproj.CoreCompileInputs.cache
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\obj\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.AssemblyInfoInputs.cache
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\obj\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.AssemblyInfo.cs
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\obj\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.dll
-C:\Repos\xyz\xyz-vsp-be-dotnet\Dispute\src\Xyzies.TWC.DisputeService\Xyzies.TWC.DisputeService.Data\obj\Debug\netcoreapp2.2\Xyzies.TWC.DisputeService.Data.pdb
