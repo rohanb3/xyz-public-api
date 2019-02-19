@@ -57,7 +57,7 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
             return value.ToObject<AzureUser>();
         }
 
-        public async Task<IEnumerable<AzureUser>> GetUsers(string filter)
+        public async Task<IEnumerable<AzureUser>> GetUsers(string filter = null)
         {
             var response = await SendRequest(HttpMethod.Get, Consts.GraphApi.UserEntity, query: filter);
             var responseString = await response?.Content?.ReadAsStringAsync();

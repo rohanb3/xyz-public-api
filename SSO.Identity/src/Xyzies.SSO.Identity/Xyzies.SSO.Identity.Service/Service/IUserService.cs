@@ -7,7 +7,7 @@ namespace Xyzies.SSO.Identity.Services.Service
 {
     public interface IUserService
     {
-        Task<IEnumerable<Profile>> GetAllUsersAsync(UserFilteringParams filter);
+        Task<IEnumerable<Profile>> GetAllUsersAsync(UserFilteringParams filter = null);
         Task<Profile> GetUserByIdAsync(string id);
         Task UpdateUserByIdAsync(string id, BaseProfile model);
         Task<Profile> CreateUserAsync(ProfileCreatable model);

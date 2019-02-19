@@ -18,7 +18,7 @@ namespace Xyzies.SSO.Identity.Services.Service
             _azureClient = azureClient ?? throw new ArgumentNullException(nameof(azureClient));
         }
 
-        public async Task<IEnumerable<Profile>> GetAllUsersAsync(UserFilteringParams filter)
+        public async Task<IEnumerable<Profile>> GetAllUsersAsync(UserFilteringParams filter = null)
         {
             var users = await _azureClient.GetUsers(FilterConditions.GetUserFilterString(filter));
 

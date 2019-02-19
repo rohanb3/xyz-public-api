@@ -85,9 +85,15 @@ namespace Xyzies.SSO.Identity.Services.Service
                 filtersByFields.Add(GenerateOrSequence(companyIdsFilter));
             }
 
-            if (filters.ManagerId != null)
+            if (filters.ManagerIds != null && filters.ManagerIds.Length != 0)
             {
-                filtersByFields.Add(Equal(Consts.ManagerIdPropertyName, filters.ManagerId.ToString()));
+                List<string> managerIdsFilter = new List<string>();
+                foreach (var managerId in filters.ManagerIds)
+                {
+                    managerIdsFilter.Add(Equal(Consts.ManagerIdPropertyName, managerId.ToString()));
+                }
+
+                filtersByFields.Add(GenerateOrSequence(managerIdsFilter));
             }
 
             return filtersByFields.Count != 0 ? $"$filter={GenerateAndSequence(filtersByFields)}" : "";
