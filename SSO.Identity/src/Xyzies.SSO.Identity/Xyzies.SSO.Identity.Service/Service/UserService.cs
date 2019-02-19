@@ -57,7 +57,7 @@ namespace Xyzies.SSO.Identity.Services.Service
             try
             {
                 await _azureClient.PostUser(model.Adapt<AzureUser>());
-                return model.Adapt<Profile>();                
+                return model.Adapt<Profile>();
             }
             catch (ApplicationException)
             {
