@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Xyzies.SSO.Identity.API.Models;
 using Xyzies.SSO.Identity.Data.Repository;
+using Xyzies.SSO.Identity.Services.Models.Permissions;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {

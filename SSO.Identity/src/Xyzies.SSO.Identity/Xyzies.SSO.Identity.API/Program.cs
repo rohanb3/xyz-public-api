@@ -14,15 +14,15 @@ namespace Xyzies.SSO.Identity.API
 
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseKestrel()
-                .ConfigureKestrel(serverOptions =>
-                {
-                    serverOptions.ListenAnyIP(port, listenOptions =>
-                    {
-                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                        listenOptions.UseHttps("localhost.pfx", "Secret001");
-                    });
-                })
+                //.UseKestrel()
+                //.ConfigureKestrel(serverOptions =>
+                //{
+                //    serverOptions.ListenAnyIP(port, listenOptions =>
+                //    {
+                //        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                //        listenOptions.UseHttps("localhost.pfx", "Secret001");
+                //    });
+                //})
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();

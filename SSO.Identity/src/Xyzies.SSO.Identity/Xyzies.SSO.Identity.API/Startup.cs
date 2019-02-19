@@ -1,24 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Xyzies.SSO.Identity.Data;
 using Xyzies.SSO.Identity.Data.Repository;
+using Xyzies.SSO.Identity.Data.Repository.Azure;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
+using Xyzies.SSO.Identity.Data.Entity.Azure;
+using Xyzies.SSO.Identity.Services.Mapping;
+using Xyzies.SSO.Identity.Services.Service;
 
 namespace Xyzies.SSO.Identity.API
 {
@@ -38,10 +38,10 @@ namespace Xyzies.SSO.Identity.API
             //services.AddIdentity<ApplicationUser, IdentityRole>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()
             //    .AddDefaultTokenProviders();
-
+                       
             services.AddIdentityServer(c =>
             {
-                
+
             });
 
             // For Azure Custom Identity Provider
@@ -51,9 +51,9 @@ namespace Xyzies.SSO.Identity.API
 
                 });
 
-            string dbConnectionString = "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
+            string dbConnectionString = "Data Source=DESKTOP-R3SGAF5;Initial Catalog=timewarner_20181026;Integrated Security=True";//User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
             services//.AddEntityFrameworkSqlServer()
-                .AddDbContextPool<IdentityDataContext>(ctxOptions => 
+                .AddDbContextPool<IdentityDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));
 
             // Response compression
@@ -70,10 +70,14 @@ namespace Xyzies.SSO.Identity.API
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            };
             services.AddHealthChecks();
-                // TODO: Add check for database connection
-                //.AddCheck(new SqlConnectionHealthCheck("MyDatabase", Configuration["ConnectionStrings:DefaultConnection"]));
+            // TODO: Add check for database connection
+            //.AddCheck(new SqlConnectionHealthCheck("MyDatabase", Configuration["ConnectionStrings:DefaultConnection"]));
 
             services.AddCors(setup => setup
                 .AddPolicy("dev", policy =>
@@ -86,9 +90,12 @@ namespace Xyzies.SSO.Identity.API
 
             services.AddScoped<DbContext, IdentityDataContext>();
             services.AddScoped<IRoleRepository, RoleRepository>();
-
+            services.AddScoped<IAzureAdClient, AzureAdClient>();
+            services.AddScoped<IUserService, UserService>();
             #endregion
 
+            services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
+            services.Configure<AzureAdGraphApiOptions>(Configuration.GetSection("AzureAdGraphApi"));
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info
@@ -103,6 +110,9 @@ namespace Xyzies.SSO.Identity.API
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
                     string.Concat(Assembly.GetExecutingAssembly().GetName().Name, ".xml")));
             });
+
+
+            UserMappingConfigurations.ConfigureUserMappers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,6 +126,12 @@ namespace Xyzies.SSO.Identity.API
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<IdentityDataContext>();
+                context.Database.Migrate();
             }
 
             app.UseHealthChecks("/healthz")

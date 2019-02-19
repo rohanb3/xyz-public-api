@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.3.0" />
+    <PackageReference Include="Mapster" Version="3.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xyzies.SSO.Identity.Data\Xyzies.SSO.Identity.Data.csproj" />
+    <ProjectReference Include="..\Xyzies.SSO.Identity.Service\Xyzies.SSO.Identity.Services.csproj" />
   </ItemGroup>
 
 </Project>
