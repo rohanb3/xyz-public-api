@@ -57,9 +57,9 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
             return value.ToObject<AzureUser>();
         }
 
-        public async Task<IEnumerable<AzureUser>> GetUsers()
+        public async Task<IEnumerable<AzureUser>> GetUsers(string filter)
         {
-            var response = await SendRequest(HttpMethod.Get, Consts.GraphApi.UserEntity);
+            var response = await SendRequest(HttpMethod.Get, Consts.GraphApi.UserEntity, query: filter);
             var responseString = await response?.Content?.ReadAsStringAsync();
             var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
 
@@ -86,11 +86,11 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
             }
         }
 
-        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null)
+        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null, string query = null)
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                await SetClient(httpClient, $"{entity}{(string.IsNullOrEmpty(additional) ? "" : $"/{additional}")}");
+                await SetClient(httpClient, $"{entity}{(string.IsNullOrEmpty(additional) ? "" : $"/{additional}")}", query);
                 return method == HttpMethod.Get ? await httpClient.GetAsync(httpClient.BaseAddress)
                      : method == HttpMethod.Delete ? await httpClient.DeleteAsync(httpClient.BaseAddress)
                      : method == HttpMethod.Post ? await httpClient.PostAsync(httpClient.BaseAddress, content)

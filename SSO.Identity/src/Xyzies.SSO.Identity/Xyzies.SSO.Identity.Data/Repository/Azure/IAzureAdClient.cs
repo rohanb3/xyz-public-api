@@ -7,7 +7,7 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
     public interface IAzureAdClient
     {
         Task<AzureUser> GetUserById(string id);
-        Task<IEnumerable<AzureUser>> GetUsers();
+        Task<IEnumerable<AzureUser>> GetUsers(string filter);
         Task PostUser(AzureUser user);
         Task PatchUser(string id, AzureUser user);
         Task DeleteUser(string id);

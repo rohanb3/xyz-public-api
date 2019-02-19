@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Xyzies.SSO.Identity.Services.Models.User;
+using Xyzies.SSO.Identity.Data.Entity;
 using Xyzies.SSO.Identity.Services.Service;
+using Xyzies.SSO.Identity.Services.Models.User;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {
-    // TODO ADD MAPPER, TOO MANY MODEL
     [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -28,9 +28,9 @@ namespace Xyzies.SSO.Identity.API.Controllers
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
         //[AccessFilter("web", "super-manager")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] UserFilteringParams filter)
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync(filter);
             return Ok(users);
         }
 
