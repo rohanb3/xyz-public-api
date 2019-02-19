@@ -9,6 +9,8 @@
         public const string RetailerIdPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_RetailerId";
         public const string CompanyIdPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_CompanyId";
 
+        public const string ManagerIdPropertyName = "ManagerIdPropertyName_Will_Changed";
+
         public class GraphApi
         {
             public const string GraphApiEndpoint = "https://graph.windows.net/";

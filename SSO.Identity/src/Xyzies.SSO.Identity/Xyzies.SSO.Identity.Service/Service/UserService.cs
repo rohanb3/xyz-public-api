@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xyzies.SSO.Identity.Data.Entity;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
 using Xyzies.SSO.Identity.Services.Models.User;
@@ -17,9 +18,9 @@ namespace Xyzies.SSO.Identity.Services.Service
             _azureClient = azureClient ?? throw new ArgumentNullException(nameof(azureClient));
         }
 
-        public async Task<IEnumerable<Profile>> GetAllUsersAsync()
+        public async Task<IEnumerable<Profile>> GetAllUsersAsync(UserFilteringParams filter = null)
         {
-            var users = await _azureClient.GetUsers();
+            var users = await _azureClient.GetUsers(FilterConditions.GetUserFilterString(filter));
 
             return users.Adapt<List<Profile>>();
         }
