@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xyzies.SSO.Identity.Data.Entity;
 using Xyzies.SSO.Identity.Data.Helpers;
 
-// TODO: Add tests
 namespace Xyzies.SSO.Identity.Services.Service
 {
     public class FilterConditions
@@ -16,6 +16,16 @@ namespace Xyzies.SSO.Identity.Services.Service
         /// <returns></returns>
         public static string And(string left, string right)
         {
+            if(string.IsNullOrEmpty(left))
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (string.IsNullOrEmpty(right))
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
             return $"{left} and {right}";
         }
 
@@ -27,6 +37,16 @@ namespace Xyzies.SSO.Identity.Services.Service
         /// <returns></returns>
         public static string Or(string left, string right)
         {
+            if (string.IsNullOrEmpty(left))
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (string.IsNullOrEmpty(right))
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
             return $"{left} or {right}";
         }
 
@@ -38,6 +58,16 @@ namespace Xyzies.SSO.Identity.Services.Service
         /// <returns></returns>
         public static string Equal(string propertyName, string propertyValue)
         {
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
+            if (string.IsNullOrEmpty(propertyValue))
+            {
+                throw new ArgumentNullException(nameof(propertyValue));
+            }
+
             return $"{propertyName} eq '{propertyValue}'";
         }
 
