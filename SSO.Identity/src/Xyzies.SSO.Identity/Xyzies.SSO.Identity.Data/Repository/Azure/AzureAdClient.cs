@@ -100,7 +100,7 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
 
         private async Task SetClient(HttpClient client, string entity, string query = "")
         {
-            var queryString = HttpUtility.ParseQueryString(query);
+            var queryString = HttpUtility.ParseQueryString(string.IsNullOrEmpty(query) ? "" : query);
             queryString[Consts.GraphApi.ApiVersionParameter] = Consts.GraphApi.ApiVersion;
             client.BaseAddress = new Uri($"{Consts.GraphApi.GraphApiEndpoint}{_azureAdB2COptions.Domain}/{entity}?{queryString}");
             await SetCredentials(client);
