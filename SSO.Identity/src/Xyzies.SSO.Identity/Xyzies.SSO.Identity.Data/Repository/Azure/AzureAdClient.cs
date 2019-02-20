@@ -86,7 +86,7 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
             }
         }
 
-        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null, string query = null)
+        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null, string query = "")
         {
             using (HttpClient httpClient = new HttpClient())
             {
