@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xyzies.TWC.Public.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Xyzies.TWC.Public.Api.AppDataContextFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.AppDataContextFactory.CreateDbContext(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.BranchController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Controllers.BranchController},Xyzies.TWC.Public.Data.Repositories.Interfaces.IBranchRepository)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="branchRepository"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Get">
+            <summary>
+            GET api/branches
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Get(System.Int32)">
+            <summary>
+            GET api/branch/5
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.CompanyController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Controllers.CompanyController},Xyzies.TWC.Public.Data.Repositories.Interfaces.ICompanyRepository)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="companyRepository"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(System.Int32)">
+            <summary>
+            GET api/company/5
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
