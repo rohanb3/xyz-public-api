@@ -26,8 +26,8 @@ namespace Xyzies.SSO.Identity.Data.Entity.Azure
 
         public string Status { get; set; }
 
-        //[JsonProperty(Consts.RolePropertyName)]
-        //public string Role { get; set; }
+        [JsonProperty(Consts.RolePropertyName)]
+        public string Role { get; set; }
 
         public string AvatarUrl { get; set; }
 
