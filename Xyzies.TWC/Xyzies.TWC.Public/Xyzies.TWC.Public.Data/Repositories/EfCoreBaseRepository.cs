@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -28,23 +29,21 @@ namespace Xyzies.TWC.Public.Data.Repositories
         /// 
         /// </summary>
         /// <param name="dbContext"></param>
-        public EfCoreBaseRepository(AppDataContext dbContext)
+        public EfCoreBaseRepository(DbContext dbContext)
             : base(dbContext)
         {
             // For unit testing in memory db
             //if (!dbContext.Database.ProviderName.Equals("Microsoft.EntityFrameworkCore.InMemory"))
-           // {
-                // TODO: Attached-mode
-                //var dbConnection = dbContext.Database.GetDbConnection();
+            //{
+            //    var dbConnection = dbContext.Database.GetDbConnection();
 
-                //// For attached scenario
-                //if (dbConnection.State == ConnectionState.Closed ||
-                //    dbConnection.State == ConnectionState.Broken)
-                //{
-                //    dbConnection.Open();
-                //}
+            //    // For attached scenario
+            //    if (dbConnection.State == ConnectionState.Closed ||
+            //        dbConnection.State == ConnectionState.Broken)
+            //    {
+            //        dbConnection.Open();
+            //    }
             //}
-
             Data = dbContext.Set<TEntity>() ?? throw new InvalidOperationException("DbContext has no entity");
         }
 

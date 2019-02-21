@@ -2,10 +2,13 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Data.Entities;
+using Xyzies.TWC.Public.Data.Enums;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Controllers
@@ -38,9 +41,26 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get()
         {
-            var branches = (await _branchRepository.GetAsync())?.ToList();
+            var branches = new List<Branch>();
+            try
+            {
+                branches = (await _branchRepository.GetAsync())?.ToList();
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            if (branches.Count.Equals(0))
+            {
+                return NotFound();
+            }
             var results = new List<BranchModel>();
 
             foreach (var branch in branches)
@@ -56,11 +76,15 @@ namespace Xyzies.TWC.Public.Api.Controllers
                     ZipCode = branch.ZipCode,
                     GeoLat = branch.GeoLat,
                     GeoLon = branch.GeoLon,
-                    Status = branch.Status,
-                    State = branch.State
+                    Status = Enum.GetName(typeof(Status), branch.Status),
+                    State = branch.State,
+                    CreatedDate = branch.CreatedDate,
+                    ModifiedDate = branch.ModifiedDate,
+                    CreatedBy = branch.CreatedBy,
+                    ModifiedBy = branch.ModifiedBy,
                 });
             }
-            
+
             return Ok(branches);
         }
 
@@ -70,44 +94,79 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BranchModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public async Task<IActionResult> Get(int id)
         {
-            var branch = (await _branchRepository.GetAsync(id));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Branch branchDetails = null;
+            try
+            {
+                branchDetails = await _branchRepository.GetAsync(id);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            if (branchDetails == null)
+            {
+                return NotFound();
+            }
+
             var branchModel = new BranchModel
             {
-                BranchName = branch.BranchName,
-                Email = branch.Email,
-                Phone = branch.Phone,
-                Fax = branch.Fax,
-                Address = branch.Address,
-                City = branch.City,
-                ZipCode = branch.ZipCode,
-                GeoLat = branch.GeoLat,
-                GeoLon = branch.GeoLon,
-                Status = branch.Status,
-                State = branch.State
+                BranchName = branchDetails.BranchName,
+                Email = branchDetails.Email,
+                Phone = branchDetails.Phone,
+                Fax = branchDetails.Fax,
+                Address = branchDetails.Address,
+                City = branchDetails.City,
+                ZipCode = branchDetails.ZipCode,
+                GeoLat = branchDetails.GeoLat,
+                GeoLon = branchDetails.GeoLon,
+                Status = Enum.GetName(typeof(Status), branchDetails.Status),
+                State = branchDetails.State,
+                CreatedDate = branchDetails.CreatedDate,
+                ModifiedDate = branchDetails.ModifiedDate,
+                CreatedBy = branchDetails.CreatedBy,
+                ModifiedBy = branchDetails.ModifiedBy,
+
+                BranchContacts = branchDetails.BranchContacts
             };
 
-            //branchModel.BranchContact = (await _branchContactRepository.GetAsync(branchModel.BranchId));
-
-
-            return Ok(branch);
+            return Ok(branchDetails);
         }
 
-        // POST api/values
+        // POST api/branch
         [HttpPost]
-        public void Post([FromBody] string value)
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created /* 201 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        public void Post([FromBody] BranchModel branch)
         {
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
+        /// <summary>
+        /// PUT api/branch/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        [HttpPut("{id}", Name = "UpdateBranch")]
+        //[ProducesResponseType(typeof(ApiResponse<bool>), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/values/5
+        // DELETE api/branch/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Core;
 using Xyzies.TWC.Public.Data.Entities;
@@ -8,9 +10,7 @@ using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories
 {
-    public class BranchRepository : EfCoreBaseRepository<Guid, Branch>, 
-        //IRepository<Guid, Branch>,
-        IBranchRepository
+    public class BranchRepository : EfCoreBaseRepository<int, Branch>, IBranchRepository
     {
         public BranchRepository(AppDataContext dbContext)
             : base(dbContext)
@@ -18,18 +18,13 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         }
 
-        public override async Task<IQueryable<Branch>> GetAsync()
-        {
-            return await Task.FromResult(base.Data.AsQueryable());
-        }
+        public override async Task<IQueryable<Branch>> GetAsync() =>
+            await Task.FromResult(base.Data
+                .AsQueryable());
 
-        ///// <inheritdoc />
-        public async Task<Branch> GetAsync(int id)
-        {
-            return Data.FirstOrDefaultAsync(a => a.Id.Equals(id)).Result;
-        }
-
-        /// <inheritdoc />
-        public override IQueryable<Branch> Get() => this.GetAsync().Result;
+        public override async Task<Branch> GetAsync(int id) =>
+            await Data
+            .Include(r => r.BranchContacts)
+            .FirstOrDefaultAsync<Branch>(entity => entity.Id.Equals(id));
     }
 }

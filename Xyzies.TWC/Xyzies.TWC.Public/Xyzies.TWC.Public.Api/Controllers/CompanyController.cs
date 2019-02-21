@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Controllers
@@ -34,15 +35,31 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// GET api/company
         /// </summary>
         /// <returns></returns>
         [HttpGet, HttpHead]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public async Task<IActionResult> Get()
         {
-            var companies = (await _companyRepository.GetAsync()).ToList();
-            
+            var companies = new List<Company>();
+            try
+            {
+                companies = (await _companyRepository.GetAsync())?.ToList();
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            if (companies.Count.Equals(0))
+            {
+                return NotFound();
+            }
+
             return Ok(companies);
         }
 
@@ -52,26 +69,57 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Company companyDetails = null;
+            try
+            {
+                companyDetails = await _companyRepository.GetAsync(id);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            if (companyDetails == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(companyDetails);
         }
 
-        // POST api/values
+        // POST api/company
         [HttpPost]
+        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public void Post([FromBody] string value)
         {
 
         }
 
-        // PUT api/values/5
+        // PUT api/company/5
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public void Put(int id, [FromBody] string value)
         {
 
         }
 
-        // DELETE api/values/5
+        // DELETE api/company/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

@@ -5,8 +5,7 @@ using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Data.Repositories.Interfaces
 {
-    public interface IBranchRepository : IRepository<Guid, Branch>, IDisposable
+    public interface IBranchRepository : IRepository<int, Branch>, IDisposable
     {
-        Task<Branch> GetAsync(int id);
     }
 }

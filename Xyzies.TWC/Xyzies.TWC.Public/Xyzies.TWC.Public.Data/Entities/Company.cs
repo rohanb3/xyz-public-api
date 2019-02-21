@@ -6,10 +6,10 @@ using Xyzies.TWC.Public.Data.Core;
 namespace Xyzies.TWC.Public.Data.Entities
 {
     [Table("TWC_Companies")]
-    [ComplexType]
-    public class Company : BaseEntity<Guid>
+    public class Company : BaseEntity<int>
     {
-        public int CompanyID { get; set; }
+        [Column("CompanyID")]
+        public new int Id { get; set; }
         public string CompanyName { get; set; }
         public string LegalName { get; set; }
         public string Email { get; set; }
@@ -80,6 +80,6 @@ namespace Xyzies.TWC.Public.Data.Entities
         public int? CompanyStatusChangedBy { get; set; }
 
         [NotMapped]
-        public virtual ICollection<Branch> Branches { get; set; }
+        public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
     }
 }

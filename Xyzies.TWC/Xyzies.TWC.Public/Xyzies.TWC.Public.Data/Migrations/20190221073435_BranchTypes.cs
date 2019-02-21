@@ -14,7 +14,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     BranchContactTypeID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -25,8 +25,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 name: "TWC_Companies",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    CompanyID = table.Column<int>(nullable: false),
+                    CompanyID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CompanyName = table.Column<string>(nullable: true),
                     LegalName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
@@ -98,7 +98,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TWC_Companies", x => x.Id);
+                    table.PrimaryKey("PK_TWC_Companies", x => x.CompanyID);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,17 +107,22 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     BranchID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    BranchName = table.Column<string>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    Phone = table.Column<string>(nullable: true),
-                    Fax = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<string>(nullable: true),
-                    GeoLat = table.Column<int>(nullable: true),
-                    GeoLon = table.Column<int>(nullable: true),
-                    Status = table.Column<string>(nullable: true),
-                    CompanyID = table.Column<Guid>(nullable: true)
+                    BranchName = table.Column<string>(maxLength: 250, nullable: false),
+                    Email = table.Column<string>(maxLength: 50, nullable: false),
+                    Phone = table.Column<string>(maxLength: 50, nullable: true),
+                    Fax = table.Column<string>(maxLength: 50, nullable: true),
+                    Address = table.Column<string>(maxLength: 50, nullable: true),
+                    City = table.Column<string>(maxLength: 50, nullable: true),
+                    ZipCode = table.Column<string>(maxLength: 50, nullable: true),
+                    GeoLat = table.Column<string>(maxLength: 50, nullable: true),
+                    GeoLon = table.Column<string>(maxLength: 50, nullable: true),
+                    Status = table.Column<int>(nullable: true),
+                    State = table.Column<string>(maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    ModifiedBy = table.Column<int>(nullable: true),
+                    CompanyID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -126,34 +131,34 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         name: "FK_TWC_Branches_TWC_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "TWC_Companies",
-                        principalColumn: "Id",
+                        principalColumn: "CompanyID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TWS_BranchContact",
+                name: "TWC_BranchContact",
                 columns: table => new
                 {
                     BranchContactID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    PersonName = table.Column<string>(nullable: true),
-                    PersonLastName = table.Column<string>(nullable: true),
-                    PersonTitle = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: false),
+                    PersonName = table.Column<string>(maxLength: 50, nullable: true),
+                    PersonLastName = table.Column<string>(maxLength: 50, nullable: true),
+                    PersonTitle = table.Column<string>(maxLength: 100, nullable: true),
+                    Value = table.Column<string>(maxLength: 250, nullable: false),
                     BranchContactTypeId = table.Column<int>(nullable: false),
                     BranchId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TWS_BranchContact", x => x.BranchContactID);
+                    table.PrimaryKey("PK_TWC_BranchContact", x => x.BranchContactID);
                     table.ForeignKey(
-                        name: "FK_TWS_BranchContact_TWC_BranchContactType_BranchContactTypeId",
+                        name: "FK_TWC_BranchContact_TWC_BranchContactType_BranchContactTypeId",
                         column: x => x.BranchContactTypeId,
                         principalTable: "TWC_BranchContactType",
                         principalColumn: "BranchContactTypeID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TWS_BranchContact_TWC_Branches_BranchId",
+                        name: "FK_TWC_BranchContact_TWC_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "TWC_Branches",
                         principalColumn: "BranchID",
@@ -161,25 +166,25 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TWC_Branches_CompanyID",
-                table: "TWC_Branches",
-                column: "CompanyID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TWS_BranchContact_BranchContactTypeId",
-                table: "TWS_BranchContact",
+                name: "IX_TWC_BranchContact_BranchContactTypeId",
+                table: "TWC_BranchContact",
                 column: "BranchContactTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TWS_BranchContact_BranchId",
-                table: "TWS_BranchContact",
+                name: "IX_TWC_BranchContact_BranchId",
+                table: "TWC_BranchContact",
                 column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TWC_Branches_CompanyID",
+                table: "TWC_Branches",
+                column: "CompanyID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TWS_BranchContact");
+                name: "TWC_BranchContact");
 
             migrationBuilder.DropTable(
                 name: "TWC_BranchContactType");

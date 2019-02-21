@@ -41,6 +41,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Put(System.Int32,System.String)">
+            <summary>
+            PUT api/branch/5
+            </summary>
+            <param name="id"></param>
+            <param name="value"></param>
+        </member>
         <member name="T:Xyzies.TWC.Public.Api.Controllers.CompanyController">
             <summary>
             
@@ -55,7 +62,7 @@
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get">
             <summary>
-            
+            GET api/company
             </summary>
             <returns></returns>
         </member>

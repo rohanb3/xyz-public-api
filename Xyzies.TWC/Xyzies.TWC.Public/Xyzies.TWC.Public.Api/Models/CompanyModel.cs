@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
@@ -31,7 +30,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public string FedId { get; set; }
         public int TypeOfCompany { get; set; }
         public string StateEstablished { get; set; }
-        public Byte CompanyType { get; set; }
+        public byte CompanyType { get; set; }
         public string CallerId { get; set; }
         public bool IsAgreement { get; set; }
         public string ActivityStatus { get; set; }
@@ -78,7 +77,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public DateTime CompanyStatusChangedOn { get; set; }
         public int CompanyStatusChangedBy { get; set; }
 
-        public IList<BranchModel> Branches { get; set; } = new List<BranchModel>();
+        public IList<Branch> Branches { get; set; } = new List<Branch>();
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

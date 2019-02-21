@@ -10,7 +10,7 @@ using Xyzies.TWC.Public.Data;
 namespace Xyzies.TWC.Public.Data.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20190220074244_BranchTypes")]
+    [Migration("20190221073435_BranchTypes")]
     partial class BranchTypes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,29 +28,49 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .HasColumnName("BranchID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .HasMaxLength(50);
 
                     b.Property<string>("BranchName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(250);
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasMaxLength(50);
 
-                    b.Property<Guid?>("CompanyID");
+                    b.Property<int?>("CompanyID");
+
+                    b.Property<int?>("CreatedBy");
+
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(50);
 
-                    b.Property<string>("Fax");
+                    b.Property<string>("Fax")
+                        .HasMaxLength(50);
 
-                    b.Property<int?>("GeoLat");
+                    b.Property<string>("GeoLat")
+                        .HasMaxLength(50);
 
-                    b.Property<int?>("GeoLon");
+                    b.Property<string>("GeoLon")
+                        .HasMaxLength(50);
 
-                    b.Property<string>("Phone");
+                    b.Property<int?>("ModifiedBy");
 
-                    b.Property<string>("Status");
+                    b.Property<DateTime?>("ModifiedDate");
 
-                    b.Property<string>("ZipCode");
+                    b.Property<string>("Phone")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("State")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("Status");
+
+                    b.Property<string>("ZipCode")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -70,14 +90,18 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("BranchId");
 
-                    b.Property<string>("PersonLastName");
+                    b.Property<string>("PersonLastName")
+                        .HasMaxLength(50);
 
-                    b.Property<string>("PersonName");
+                    b.Property<string>("PersonName")
+                        .HasMaxLength(50);
 
-                    b.Property<string>("PersonTitle");
+                    b.Property<string>("PersonTitle")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Value")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(250);
 
                     b.HasKey("Id");
 
@@ -85,7 +109,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("TWS_BranchContact");
+                    b.ToTable("TWC_BranchContact");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContactType", b =>
@@ -95,7 +119,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .HasColumnName("BranchContactTypeID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -104,8 +129,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("CompanyID")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("AccountManager");
 
@@ -134,8 +161,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("CellNumber");
 
                     b.Property<string>("City");
-
-                    b.Property<int>("CompanyID");
 
                     b.Property<Guid?>("CompanyKey");
 

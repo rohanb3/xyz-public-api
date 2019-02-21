@@ -87,6 +87,8 @@ namespace Xyzies.TWC.Public.Api
             
             services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
+
             #endregion
 
             services.AddSwaggerGen(options =>

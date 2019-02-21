@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
@@ -19,11 +17,15 @@ namespace Xyzies.TWC.Public.Api.Models
         public string ZipCode { get; set; }
         public string GeoLat { get; set; }
         public string GeoLon { get; set; }
-        public int? Status { get; set; }
+        public string Status { get; set; }
         public string State { set; get; }
-        
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public int? CreatedBy { get; set; }
+        public int? ModifiedBy { get; set; }
 
-        public virtual ICollection<BranchContact> BranchContact { get; set; }
+
+        public virtual ICollection<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
