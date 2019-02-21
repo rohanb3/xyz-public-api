@@ -14,12 +14,20 @@ namespace Xyzies.TWC.Public.Data.Repositories
         {
 
         }
-
+        /// <inheritdoc />
         public override async Task<IQueryable<Company>> GetAsync() =>
             await Task.FromResult(base.Data
                 .AsQueryable());
 
+        /// <inheritdoc />
         public override async Task<Company> GetAsync(int id) =>
             await Data.Include(r => r.Branches).FirstOrDefaultAsync<Company>(entity => entity.Id.Equals(id));
+
+        /// <inheritdoc />
+        public override int Add(Company entity)
+        {
+            var id = Data.Add(entity).Entity.Id;
+            return id;
+        }
     }
 }

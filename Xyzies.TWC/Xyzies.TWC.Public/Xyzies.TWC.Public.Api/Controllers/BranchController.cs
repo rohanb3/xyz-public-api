@@ -143,13 +143,48 @@ namespace Xyzies.TWC.Public.Api.Controllers
             return Ok(branchDetails);
         }
 
-        // POST api/branch
+        /// <summary>
+        /// POST api/branch
+        /// </summary>
+        /// <param name="branch"></param>
         [HttpPost]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created /* 201 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        public void Post([FromBody] BranchModel branch)
+        public async Task<IActionResult> Post([FromBody] BranchModel branchModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var branch = new Branch
+            {
+                BranchName = branchModel.BranchName,
+                Email = branchModel.Email,
+                Phone = branchModel.Phone,
+                Fax = branchModel.Fax,
+                Address = branchModel.Address,
+                City = branchModel.City,
+                ZipCode = branchModel.ZipCode,
+                GeoLat = branchModel.GeoLat,
+                GeoLon = branchModel.GeoLon,
+                Status = (int)Enum.Parse(typeof(Status), branchModel.Status),
+                State = branchModel.State,
+                CreatedDate = branchModel.CreatedDate,
+                ModifiedDate = branchModel.ModifiedDate,
+                CreatedBy = branchModel.CreatedBy,
+                ModifiedBy = branchModel.ModifiedBy,
+            };
+            int branchId;
+            try
+            {
+                branchId = _branchRepository.Add(branch);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(branchId);
         }
 
         /// <summary>

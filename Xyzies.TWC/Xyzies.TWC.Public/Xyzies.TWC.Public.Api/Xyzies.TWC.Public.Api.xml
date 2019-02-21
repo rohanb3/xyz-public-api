@@ -41,6 +41,12 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Post(Xyzies.TWC.Public.Api.Models.BranchModel)">
+            <summary>
+            POST api/branch
+            </summary>
+            <param name="branch"></param>
+        </member>
         <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Put(System.Int32,System.String)">
             <summary>
             PUT api/branch/5

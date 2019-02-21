@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Xyzies.TWC.Public.Data.Core;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
@@ -26,5 +24,12 @@ namespace Xyzies.TWC.Public.Data.Repositories
             await Data
             .Include(r => r.BranchContacts)
             .FirstOrDefaultAsync<Branch>(entity => entity.Id.Equals(id));
+
+        /// <inheritdoc />
+        public override int Add(Branch entity)
+        {
+            var id = Data.Add(entity).Entity.Id;
+            return id;
+        }
     }
 }

@@ -50,7 +50,10 @@ namespace Xyzies.TWC.Public.Api
 
                 });
 
-            string dbConnectionString = $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False"; //
+            string dbConnectionString = $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
+            //$"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False"; //
+            //"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
+
             //Configuration["connectionStrings:db"];
             services//.AddEntityFrameworkSqlServer()
                 .AddDbContext<AppDataContext>(ctxOptions =>
