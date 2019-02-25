@@ -1,7 +1,4 @@
-USE [TestDB]
-GO
-
---ALTER TABLE [TWC_Role] ADD [IsCustom] bit NOT NULL DEFAULT(0);
+ALTER TABLE [TWC_Role] ADD [IsCustom] bit NOT NULL DEFAULT(0);
 
 CREATE TABLE [Permissions] (
     [Id] uniqueidentifier NOT NULL,

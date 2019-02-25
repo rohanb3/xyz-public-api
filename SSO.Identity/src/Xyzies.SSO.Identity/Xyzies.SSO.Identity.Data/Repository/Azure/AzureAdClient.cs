@@ -48,7 +48,7 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
         {
             var response = await SendRequest(HttpMethod.Get, Consts.GraphApi.UserEntity, additional: id);
             var responseString = await response?.Content?.ReadAsStringAsync();
-            var value = ((JToken)JsonConvert.DeserializeObject(responseString))["value"];
+            var value = ((JToken)JsonConvert.DeserializeObject(responseString));
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 throw new KeyNotFoundException("User with current identifier does not exist");
@@ -86,7 +86,7 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
             }
         }
 
-        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null, string query = null)
+        private async Task<HttpResponseMessage> SendRequest(HttpMethod method, string entity, StringContent content = null, string additional = null, string query = "")
         {
             using (HttpClient httpClient = new HttpClient())
             {

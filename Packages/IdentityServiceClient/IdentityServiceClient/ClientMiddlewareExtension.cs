@@ -8,7 +8,7 @@ namespace IdentityServiceClient
     public static class ClientMiddlewareExtension
     {
         /// <summary>
-        /// Needs to setup ServiceApiUri
+        /// Needs to setup ServiceApiUri, Add Middleware HttpContextMiddlewareExtension.UseHttpContextManager()
         /// </summary>
         /// <param name="services"></param>
         /// <param name="setupAction"></param>
@@ -24,7 +24,7 @@ namespace IdentityServiceClient
             return services.AddSingleton<IIdentityManager>(im =>
             {
                 var memoryCacheService = im.GetService<IMemoryCache>();
-                return new IdentityManager(options, memoryCacheService);
+                return new IdentityManager(options);
             });
         }
     }
