@@ -15,15 +15,16 @@ namespace Xyzies.TWC.Public.Api
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .UseKestrel()
+
                 //.ConfigureKestrel(serverOptions =>
                 //{
                 //    serverOptions.ListenAnyIP(port, listenOptions =>
                 //    {
                 //        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                //        //listenOptions.UseHttps("localhost.pfx", "Secret001");
+                //        listenOptions.UseHttps("localhost.pfx", "Secret001");
                 //    });
                 //})
-                
+
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();

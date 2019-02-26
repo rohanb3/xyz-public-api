@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,7 +15,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using Xyzies.TWC.Public.Api.Managers;
+using Xyzies.TWC.Public.Api.Managers.Interfaces;
+using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data;
+using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
@@ -51,10 +56,11 @@ namespace Xyzies.TWC.Public.Api
                 });
 
             string dbConnectionString = $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
-            //$"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False"; //
-            //"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
+            //LOCAL: $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
+            //REMOTE: $"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
+            //RELEASE: Configuration["connectionStrings:db"];
 
-            //Configuration["connectionStrings:db"];
+
             services//.AddEntityFrameworkSqlServer()
                 .AddDbContext<AppDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));
@@ -91,6 +97,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IBranchManager, BranchManager>();
 
             #endregion
 
@@ -115,14 +122,17 @@ namespace Xyzies.TWC.Public.Api
         {
             if (env.IsDevelopment())
             {
-
+                app.UseDeveloperExceptionPage();
             }
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
+            TypeAdapterConfig<Branch, BranchModel>.NewConfig();
+            TypeAdapterConfig<Company, CompanyModel>.NewConfig();
+
             app.UseHealthChecks("/healthz")
                 .UseHttpsRedirection()
                 .UseCors("dev")

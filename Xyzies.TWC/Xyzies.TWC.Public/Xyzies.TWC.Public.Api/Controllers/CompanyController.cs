@@ -4,8 +4,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
@@ -38,13 +40,21 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// GET api/company
         /// </summary>
         /// <returns></returns>
-        [HttpGet, HttpHead]
+        [HttpGet(Name = "GetListCompanies")]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(
+            [FromQuery] BranchFilter filterModel,
+            [FromQuery] Sortable sortable,
+            [FromQuery] Paginable paginable)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var companies = new List<Company>();
             try
             {
@@ -59,7 +69,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return NotFound();
             }
-
+            var companyModels = companies.Adapt<CompanyModel[]>();
             return Ok(companies);
         }
 
@@ -68,7 +78,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCompanyDetails")]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -93,7 +103,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return NotFound();
             }
-
+            var companyDetailModel = companyDetails.Adapt<CompanyModel>();
             return Ok(companyDetails);
         }
 
@@ -106,87 +116,18 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public  IActionResult Post([FromBody] CompanyModel companyModel)
+        public IActionResult Post([FromBody] CompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var company = new Company()
-            {
-                CompanyName = companyModel.CompanyName,
-                LegalName = companyModel.LegalName,
-                Email = companyModel.Email,
-                Phone = companyModel.Phone,
-                Address = companyModel.Address,
-                City = companyModel.City,
-                State = companyModel.State,
-                ZipCode = companyModel.ZipCode,
-                 StoreID = companyModel.StoreID,
-                 CreatedDate = companyModel.CreatedDate,
-                 ModifiedDate = companyModel.ModifiedDate,
-                 CreatedBy = companyModel.CreatedBy,
-                 ModifiedBy = companyModel.ModifiedBy,
-                 Agentid = companyModel.Agentid,
-                 Status = companyModel.Status,
-                 StoreLocationCount = companyModel.StoreLocationCount,
-                PrimaryContactName = companyModel.PrimaryContactName,
-                PrimaryContactTitle = companyModel.PrimaryContactTitle,
-                Fax = companyModel.Fax,
-                FedId = companyModel.FedId,
-                 TypeOfCompany = companyModel.TypeOfCompany,
-                StateEstablished = companyModel.StateEstablished,
-                 CompanyType = companyModel.CompanyType,
-                CallerId = companyModel.CallerId,
-                 IsAgreement = companyModel.IsAgreement,
-                ActivityStatus = companyModel.ActivityStatus,
-                 CompanyKey = companyModel.CompanyKey,
-                FirstName = companyModel.FirstName,
-                LastName = companyModel.LastName,
-                CellNumber = companyModel.CellNumber,
-                BankNumber = companyModel.BankNumber,
-                BankName = companyModel.BankName,
-                BankAccountNumber = companyModel.BankAccountNumber,
-                XyziesId = companyModel.XyziesId,
-                 ApprovedDate = companyModel.ApprovedDate,
-                 BankInfoGiven = companyModel.BankInfoGiven,
-                 AccountManager = companyModel.AccountManager,
-                CrmCompanyId = companyModel.CrmCompanyId,
-                 IsCallCenter = companyModel.IsCallCenter,
-                 ParentCompanyId = companyModel.ParentCompanyId,
-                 TeamKey = companyModel.TeamKey,
-                 RetailerGroupKey = companyModel.RetailerGroupKey,
-                SocialMediaAccount = companyModel.SocialMediaAccount,
-                RetailerGoogleAccount = companyModel.RetailerGoogleAccount,
-                 PaymentMode = companyModel.PaymentMode,
-                 CustomerDemographicId = companyModel.CustomerDemographicId,
-                 LocationTypeId = companyModel.LocationTypeId,
-                 IsOwnerPassBackground = companyModel.IsOwnerPassBackground,
-                 IsWebsite = companyModel.IsWebsite,
-                 IsSellsLifelineWireless = companyModel.IsSellsLifelineWireless,
-                 NumberofStores = companyModel.NumberofStores,
-                BusinessDescription = companyModel.BusinessDescription,
-                WebsiteList = companyModel.WebsiteList,
-                 IsSpectrum = companyModel.IsSpectrum,
-                 BusinessSource = companyModel.BusinessSource,
-                GeoLat = companyModel.GeoLat,
-                GeoLon = companyModel.GeoLon,
-                 IsMarketPlace = companyModel.IsMarketPlace,
-                MarketPlaceName = companyModel.MarketPlaceName,
-                PhysicalName = companyModel.PhysicalName,
-                MarketStrategy = companyModel.MarketStrategy,
-                 NoSyncInfusion = companyModel.NoSyncInfusion,
-                StorePhoneNumber = companyModel.StorePhoneNumber,
-                 ReferralUserId = companyModel.ReferralUserId,
-                 CompanyStatusKey = companyModel.CompanyStatusKey,
-                 CompanyStatusChangedOn = companyModel.CompanyStatusChangedOn,
-                 CompanyStatusChangedBy = companyModel.CompanyStatusChangedBy
-            };
+            var companyEntity = companyModel.Adapt<Company>();
 
             int companyId;
             try
             {
-                companyId = _companyRepository.Add(company);
+                companyId = _companyRepository.Add(companyEntity);
             }
             catch (SqlException ex)
             {
@@ -195,15 +136,43 @@ namespace Xyzies.TWC.Public.Api.Controllers
             return Ok(companyId);
         }
 
-        // PUT api/company/5
+        /// <summary>
+        /// // PUT api/company/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="companyModel"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] CompanyModel companyModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            bool result = false;
+            var companyEntity = companyModel.Adapt<Company>();
+            companyEntity.Id = id;
+
+            try
+            {
+                result = _companyRepository.Update(companyEntity);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            if (result.Equals(false))
+            {
+                return NotFound($"Update failed. Company with id={id} not found");
+            }
+
+            return Ok(result);
         }
 
         // DELETE api/company/5

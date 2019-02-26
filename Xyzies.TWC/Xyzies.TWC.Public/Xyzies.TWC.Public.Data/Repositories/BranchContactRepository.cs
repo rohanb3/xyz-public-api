@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Xyzies.TWC.Public.Data.Entities;
+﻿using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories
@@ -14,10 +10,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
         {
 
         }
-
-        public override async Task<IQueryable<BranchContact>> GetAsync() =>
-            await Task.FromResult(base.Data
-                .AsQueryable());
     }
 }
 

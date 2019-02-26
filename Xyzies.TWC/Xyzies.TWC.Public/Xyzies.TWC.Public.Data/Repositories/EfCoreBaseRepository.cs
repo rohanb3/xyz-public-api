@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -177,7 +176,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         #region Helpers
 
-        private bool Commit(Action action)
+        internal bool Commit(Action action)
         {
             action.Invoke();
             DbContext.SaveChanges();
@@ -188,6 +187,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         private T Commit<T>(Func<T> action)
         {
             T result = action.Invoke();
+
             DbContext.SaveChanges();
 
             return result;

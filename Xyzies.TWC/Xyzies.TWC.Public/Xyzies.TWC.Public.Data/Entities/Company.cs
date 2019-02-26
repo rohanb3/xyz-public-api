@@ -32,7 +32,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string FedId { get; set; }
         public int? TypeOfCompany { get; set; }
         public string StateEstablished { get; set; }
-        public Byte? CompanyType { get; set; }
+        public byte? CompanyType { get; set; }
         public string CallerId { get; set; }
         public bool? IsAgreement { get; set; }
         public string ActivityStatus { get; set; }
@@ -79,7 +79,6 @@ namespace Xyzies.TWC.Public.Data.Entities
         public DateTime? CompanyStatusChangedOn { get; set; }
         public int? CompanyStatusChangedBy { get; set; }
 
-        [NotMapped]
-        public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
+        public virtual IEnumerable<Branch> Branches { get; set; } = new List<Branch>();
     }
 }

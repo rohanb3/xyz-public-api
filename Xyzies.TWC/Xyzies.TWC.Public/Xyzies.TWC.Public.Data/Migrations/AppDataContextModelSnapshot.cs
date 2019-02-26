@@ -23,7 +23,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("BranchID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
@@ -36,14 +35,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("City")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("CompanyID");
-
                     b.Property<int?>("CreatedBy");
 
-                    b.Property<DateTime?>("CreatedDate");
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasComputedColumnSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(50);
 
                     b.Property<string>("Fax")
@@ -57,7 +55,11 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("ModifiedBy");
 
-                    b.Property<DateTime?>("ModifiedDate");
+                    b.Property<DateTime?>("ModifiedDate")
+                        .ValueGeneratedOnUpdate()
+                        .HasComputedColumnSql("GETUTCDATE()");
+
+                    b.Property<int>("ParentCompanyId");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50);
@@ -70,9 +72,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("ZipCode")
                         .HasMaxLength(50);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("BranchID");
 
-                    b.HasIndex("CompanyID");
+                    b.HasIndex("ParentCompanyId");
 
                     b.ToTable("TWC_Branches");
                 });
@@ -81,12 +84,19 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("BranchContactID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("BranchContactTypeId");
 
-                    b.Property<int?>("BranchId");
+                    b.Property<int>("BranchPrimaryContactId");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasComputedColumnSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .ValueGeneratedOnUpdate()
+                        .HasComputedColumnSql("GETUTCDATE()");
 
                     b.Property<string>("PersonLastName")
                         .HasMaxLength(50);
@@ -99,30 +109,31 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasMaxLength(250);
+                        .HasMaxLength(100);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("BranchContactID");
 
                     b.HasIndex("BranchContactTypeId");
 
-                    b.HasIndex("BranchId");
+                    b.HasIndex("BranchPrimaryContactId");
 
-                    b.ToTable("TWC_BranchContact");
+                    b.ToTable("TWC_BranchContacts");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContactType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("BranchContactTypeID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasMaxLength(50);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("BranchContactTypeID");
 
-                    b.ToTable("TWC_BranchContactType");
+                    b.ToTable("TWC_BranchContactTypes");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
@@ -275,9 +286,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "ParentCompany")
                         .WithMany("Branches")
-                        .HasForeignKey("CompanyID");
+                        .HasForeignKey("ParentCompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
@@ -287,9 +299,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .HasForeignKey("BranchContactTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Branch", "Branch")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Branch", "BranchPrimaryContact")
                         .WithMany("BranchContacts")
-                        .HasForeignKey("BranchId");
+                        .HasForeignKey("BranchPrimaryContactId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

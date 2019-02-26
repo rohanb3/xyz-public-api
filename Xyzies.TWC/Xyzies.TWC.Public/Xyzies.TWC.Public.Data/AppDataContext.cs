@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Xyzies.TWC.Public.Data.Entities;
+using Xyzies.TWC.Public.Data.Entities.EntityConfigurations;
 
 namespace Xyzies.TWC.Public.Data
 {
-    public class AppDataContext: DbContext
+    public class AppDataContext : DbContext
     {
         public AppDataContext(DbContextOptions<AppDataContext> options)
             : base(options)
@@ -23,12 +24,11 @@ namespace Xyzies.TWC.Public.Data
 
         #endregion
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.Entity<Branch>().HasOne(i=>i.Company).WithMany(p=>p.Branches);
-            builder.Entity<BranchContact>().HasOne(i => i.Branch).WithMany(p => p.BranchContacts);
-            builder.Entity<BranchContact>().HasOne(i => i.BranchContactType).WithMany(p => p.BranchContacts);
-
+            modelBuilder.ApplyConfiguration(new BranchConfiguration());
+            modelBuilder.ApplyConfiguration(new BranchContactConfiguration());
+            modelBuilder.ApplyConfiguration(new BranchContactTypeConfiguration());
         }
     }
 }

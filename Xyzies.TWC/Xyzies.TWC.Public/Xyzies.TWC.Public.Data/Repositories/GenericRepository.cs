@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
 using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Repositories

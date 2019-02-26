@@ -41,7 +41,7 @@ namespace Xyzies.TWC.Public.Data.Core
         /// <param name="id"></param>
         /// <returns></returns>
         Task<TEntity> GetAsync(TKey id);
-        
+
         /// <summary>
         /// Get entities by expression
         /// </summary>

@@ -120,10 +120,5 @@ namespace Xyzies.TWC.Public.Data.Core
 
         /// <inheritdoc />
         public abstract Task RemoveAllAsync();
-
-        public Task<TEntity> GetAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

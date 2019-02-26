@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
@@ -10,7 +11,11 @@ namespace Xyzies.TWC.Public.Api.Models
         public int CompanyID { get; set; }
         public string CompanyName { get; set; }
         public string LegalName { get; set; }
+
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
+
+        [Phone(ErrorMessage = "Please enter valid phone no.")]
         public string Phone { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
@@ -26,7 +31,10 @@ namespace Xyzies.TWC.Public.Api.Models
         public int StoreLocationCount { get; set; }
         public string PrimaryContactName { get; set; }
         public string PrimaryContactTitle { get; set; }
+
+        [Phone(ErrorMessage = "Please enter valid fax no.")]
         public string Fax { get; set; }
+
         public string FedId { get; set; }
         public int TypeOfCompany { get; set; }
         public string StateEstablished { get; set; }
@@ -77,6 +85,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public DateTime CompanyStatusChangedOn { get; set; }
         public int CompanyStatusChangedBy { get; set; }
 
+        [ScaffoldColumn(false)]
         public IList<Branch> Branches { get; set; } = new List<Branch>();
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

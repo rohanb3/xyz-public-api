@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System;
+using Mapster;
 using System.Linq;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
+using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
-using Xyzies.TWC.Public.Data.Enums;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Controllers
@@ -20,6 +21,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     [ApiController]
     public class BranchController : ControllerBase
     {
+        private readonly IBranchManager _branchRequestManager = null;
         private readonly IBranchRepository _branchRepository = null;
         private readonly ILogger<BranchController> _logger = null;
 
@@ -28,64 +30,41 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
+        /// <param name="branchRequestManager"></param>
         public BranchController(ILogger<BranchController> logger,
-            IBranchRepository branchRepository)
+            IBranchRepository branchRepository, IBranchManager branchRequestManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _branchRepository = branchRepository ?? throw new ArgumentNullException(nameof(branchRepository));
+            _branchRequestManager = branchRequestManager;
         }
 
         /// <summary>
         /// GET api/branches
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
+        [HttpGet(Name = "GetListBranches")]
+        [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get()
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 404 */)]
+        public async Task<IActionResult> Get(
+            [FromQuery] BranchFilter filterModel,
+            [FromQuery] Sortable sortable,
+            [FromQuery] Paginable paginable)
         {
-            var branches = new List<Branch>();
-            try
+            if (!ModelState.IsValid)
             {
-                branches = (await _branchRepository.GetAsync())?.ToList();
-            }
-            catch (SqlException ex)
-            {
-                return BadRequest(ex.Message);
+                return BadRequest(ModelState);
             }
 
-            if (branches.Count.Equals(0))
+            var result = await _branchRequestManager.GetBranches(filterModel, sortable, paginable);
+            if (!result.Data.Any())
             {
-                return NotFound();
-            }
-            var results = new List<BranchModel>();
-
-            foreach (var branch in branches)
-            {
-                results.Add(new BranchModel
-                {
-                    BranchName = branch.BranchName,
-                    Email = branch.Email,
-                    Phone = branch.Phone,
-                    Fax = branch.Fax,
-                    Address = branch.Address,
-                    City = branch.City,
-                    ZipCode = branch.ZipCode,
-                    GeoLat = branch.GeoLat,
-                    GeoLon = branch.GeoLon,
-                    Status = Enum.GetName(typeof(Status), branch.Status),
-                    State = branch.State,
-                    CreatedDate = branch.CreatedDate,
-                    ModifiedDate = branch.ModifiedDate,
-                    CreatedBy = branch.CreatedBy,
-                    ModifiedBy = branch.ModifiedBy,
-                });
+                return NoContent();
             }
 
-            return Ok(branches);
+            return Ok(result);
         }
 
         /// <summary>
@@ -93,7 +72,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetBranchDetails")]
         [ProducesResponseType(typeof(BranchModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -104,81 +83,46 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Branch branchDetails = null;
+            Branch branchDetail = null;
             try
             {
-                branchDetails = await _branchRepository.GetAsync(id);
+                branchDetail = await _branchRepository.GetAsync(id);
             }
             catch (SqlException ex)
             {
                 return BadRequest(ex.Message);
             }
 
-            if (branchDetails == null)
+            if (branchDetail == null)
             {
                 return NotFound();
             }
+            var branchDetailModel = branchDetail.Adapt<BranchModel>();
 
-            var branchModel = new BranchModel
-            {
-                BranchName = branchDetails.BranchName,
-                Email = branchDetails.Email,
-                Phone = branchDetails.Phone,
-                Fax = branchDetails.Fax,
-                Address = branchDetails.Address,
-                City = branchDetails.City,
-                ZipCode = branchDetails.ZipCode,
-                GeoLat = branchDetails.GeoLat,
-                GeoLon = branchDetails.GeoLon,
-                Status = Enum.GetName(typeof(Status), branchDetails.Status),
-                State = branchDetails.State,
-                CreatedDate = branchDetails.CreatedDate,
-                ModifiedDate = branchDetails.ModifiedDate,
-                CreatedBy = branchDetails.CreatedBy,
-                ModifiedBy = branchDetails.ModifiedBy,
-
-                BranchContacts = branchDetails.BranchContacts
-            };
-
-            return Ok(branchDetails);
+            return Ok(branchDetail);
         }
 
         /// <summary>
-        /// POST api/branch
+        /// 
         /// </summary>
-        /// <param name="branch"></param>
-        [HttpPost]
+        /// <param name="branchModel"></param>
+        /// <returns></returns>
+        [HttpPost(Name = "CreateBranch")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created /* 201 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        public async Task<IActionResult> Post([FromBody] BranchModel branchModel)
+        public IActionResult Post([FromBody] BranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var branch = new Branch
-            {
-                BranchName = branchModel.BranchName,
-                Email = branchModel.Email,
-                Phone = branchModel.Phone,
-                Fax = branchModel.Fax,
-                Address = branchModel.Address,
-                City = branchModel.City,
-                ZipCode = branchModel.ZipCode,
-                GeoLat = branchModel.GeoLat,
-                GeoLon = branchModel.GeoLon,
-                Status = (int)Enum.Parse(typeof(Status), branchModel.Status),
-                State = branchModel.State,
-                CreatedDate = branchModel.CreatedDate,
-                ModifiedDate = branchModel.ModifiedDate,
-                CreatedBy = branchModel.CreatedBy,
-                ModifiedBy = branchModel.ModifiedBy,
-            };
+            var branchEntity = branchModel.Adapt<Branch>();
+
             int branchId;
             try
             {
-                branchId = _branchRepository.Add(branch);
+                branchId = _branchRepository.Add(branchEntity);
             }
             catch (SqlException ex)
             {
@@ -188,17 +132,41 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// PUT api/branch/5
+        /// api/branch/5
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="value"></param>
+        /// <param name="branchModel"></param>
         [HttpPut("{id}", Name = "UpdateBranch")]
-        //[ProducesResponseType(typeof(ApiResponse<bool>), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] BranchModel branchModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool result = false;
+            var branchEntity = branchModel.Adapt<Branch>();
+            branchEntity.Id = id;
+
+            try
+            {
+                result = _branchRepository.Update(branchEntity);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            if (result.Equals(false))
+            {
+                return NotFound($"Update failed. Branch with id={id} not found");
+            }
+
+            return Ok(result);
         }
 
         // DELETE api/branch/5
