@@ -6,18 +6,15 @@
         {
             public const string RoleClaimType = "extension_Group";
         }
-        public class GraphApi
+        public class IndentityApi
         {
-            public const string GraphApiEndpoint = "https://graph.windows.net/";
-            public const string ApiVersionParameter = "api-version";
-            public const string ApiVersion = "1.6";
             public const string UserEntity = "users";
+            public const string RoleEntity = "role";
         }
-        public class Cache
+        public class Auth
         {
-            public const string PermissionKey = "Permission";
-            public const string ExpirationKey = "Expiration";
-            public const string PermissionHash = "Hash";
+            public const string AuthHeader = "Authorization";
+            public const string BearerToken = "Bearer ";
         }
     }
 }

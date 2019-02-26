@@ -1,7 +1,6 @@
 ﻿using IdentityServiceClient.Models;
-using IdentityServiceClient.Models.Role;
 using IdentityServiceClient.Models.User;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,14 +15,14 @@ namespace IdentityServiceClient.Service
     public class IdentityManager : IIdentityManager
     {
         //TODO: check answer
+
         private readonly IdentityServiceClientOptions _options;
-        private readonly IMemoryCache _memoryCache;
         private readonly TimeSpan _expitationTime = new TimeSpan(1, 0, 0);
 
-        public IdentityManager(IdentityServiceClientOptions options, IMemoryCache memoryCache)
+        public HttpContext Context { get; set; }
+        public IdentityManager(IdentityServiceClientOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
         /// <summary>
@@ -34,7 +33,8 @@ namespace IdentityServiceClient.Service
         {
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.GraphApi.UserEntity}");
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}");
                 var content = await response.Content.ReadAsStringAsync();
                 return new ResponseModel<List<Profile>>()
                 {
@@ -53,13 +53,19 @@ namespace IdentityServiceClient.Service
         {
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.GraphApi.UserEntity}/{id}");
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}/{id}");
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     throw new KeyNotFoundException("User with current identifier does not exist");
                 }
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<ResponseModel<Profile>>(content);
+                return new ResponseModel<Profile>()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Message = "OK",
+                    Payload = JsonConvert.DeserializeObject<Profile>(content)
+                };
             }
         }
 
@@ -70,7 +76,8 @@ namespace IdentityServiceClient.Service
         {
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.DeleteAsync($"{_options.ServiceUrl}/{Const.GraphApi.UserEntity}/{id}");
+                SetAuthHeader(client);
+                var response = await client.DeleteAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}/{id}");
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
                     throw new KeyNotFoundException("User with current identifier does not exist");
@@ -92,8 +99,9 @@ namespace IdentityServiceClient.Service
         {
             using (HttpClient client = new HttpClient())
             {
+                SetAuthHeader(client);
                 var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{_options.ServiceUrl}/{Const.GraphApi.UserEntity}", content);
+                var response = await client.PostAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}", content);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new ApplicationException("Can not create user with current parameters");
@@ -111,8 +119,9 @@ namespace IdentityServiceClient.Service
         {
             using (HttpClient client = new HttpClient())
             {
+                SetAuthHeader(client);
                 var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                var response = await client.PatchAsync($"{_options.ServiceUrl}/{Const.GraphApi.UserEntity}", content);
+                var response = await client.PatchAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}", content);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new ApplicationException("Can not create user with current parameters");
@@ -122,78 +131,141 @@ namespace IdentityServiceClient.Service
             }
         }
 
-        public bool CheckPermission(string role, string[] scopes)
-        {
-            var roles = _memoryCache.Get<List<RoleModel>>(Const.Cache.PermissionKey);
-            var roleModel = roles.FirstOrDefault(r => r.RoleName == role);
-
-            if (roleModel != null)
-            {
-                foreach (var scope in scopes)
-                {
-                    if (roleModel.Policies.FirstOrDefault(policy => policy.Scopes.FirstOrDefault(s => s.ScopeName == scope) != null) == null)
-                    {
-                        return false;
-                    };
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public async Task CheckPermissionExpiration()
-        {
-            var cacheExpiration = _memoryCache.Get<DateTime>(Const.Cache.ExpirationKey);
-            var permissions = _memoryCache.Get<List<RoleModel>>(Const.Cache.PermissionKey);
-            if (cacheExpiration < DateTime.Now || permissions?.Count == 0)
-            {
-                await SetPermissionObject();
-            }
-        }
-
-        private async Task SetPermissionObject()
+        /// <summary>
+        /// Get all users with current role
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<ResponseModel<List<Profile>>> GetUsersByRole(string role)
         {
             using (HttpClient client = new HttpClient())
             {
-                var permissionHash = 1; // TODO Get hash from service
-                var cachePermissionHash = _memoryCache.Get<HashCode>(Const.Cache.PermissionHash);
-                if (permissionHash != cachePermissionHash.ToHashCode())
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}?role={role}");
+                var content = await response.Content.ReadAsStringAsync();
+                return new ResponseModel<List<Profile>>()
                 {
-                    var permissionRespose = new List<RoleModel>()
-                    {
-                        new RoleModel()
-                        {
-                            RoleName = "TEST",
-                            Policies = new List<PolicyModel>
-                            {
-                                new PolicyModel()
-                                {
-                                    PolicyName = "TEST",
-                                    Scopes = new List<ScopeModel>()
-                                    {
-                                        new ScopeModel()
-                                        {
-                                            ScopeName="TEST"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }; // TODO get permissions from service
-                    CleareCache();
-
-                    _memoryCache.Set(Const.Cache.PermissionKey, permissionRespose);
-                    _memoryCache.Set(Const.Cache.PermissionHash, permissionHash);
-                    _memoryCache.Set(Const.Cache.ExpirationKey, DateTime.Now.AddHours(1));
-                }
+                    StatusCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Payload = JsonConvert.DeserializeObject<List<Profile>>(content)
+                };
             }
         }
 
-        private void CleareCache()
-        {//TODO DELETE
-            _memoryCache.Remove(Const.Cache.PermissionKey);
-            _memoryCache.Remove(Const.Cache.PermissionHash);
-            _memoryCache.Remove(Const.Cache.ExpirationKey);
+        /// <summary>
+        /// Get all users with current managerId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<ResponseModel<List<Profile>>> GetUsersByManager(string managerId)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}?managerId={managerId}");
+                var content = await response.Content.ReadAsStringAsync();
+                return new ResponseModel<List<Profile>>()
+                {
+                    StatusCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Payload = JsonConvert.DeserializeObject<List<Profile>>(content)
+                };
+            }
+        }
+
+        /// <summary>
+        /// Get all users with current managerIds
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<ResponseModel<List<Profile>>> GetUsersByManagers(List<string> managerIds)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}?{GenerateQueryString(managerIds, "managerId")}");
+                var content = await response.Content.ReadAsStringAsync();
+                return new ResponseModel<List<Profile>>()
+                {
+                    StatusCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Payload = JsonConvert.DeserializeObject<List<Profile>>(content)
+                };
+            }
+        }
+
+        /// <summary>
+        /// Get all users with current companyId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<ResponseModel<List<Profile>>> GetUsersByCompany(string companyId)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}?companyId={companyId}");
+                var content = await response.Content.ReadAsStringAsync();
+                return new ResponseModel<List<Profile>>()
+                {
+                    StatusCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Payload = JsonConvert.DeserializeObject<List<Profile>>(content)
+                };
+            }
+        }
+
+        /// <summary>
+        /// Get all users with current companyIds
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<ResponseModel<List<Profile>>> GetUsersByCompanies(List<string> companyIds)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                SetAuthHeader(client);
+                var response = await client.GetAsync($"{_options.ServiceUrl}/{Const.IndentityApi.UserEntity}?{GenerateQueryString(companyIds, "companyId")}");
+                var content = await response.Content.ReadAsStringAsync();
+                return new ResponseModel<List<Profile>>()
+                {
+                    StatusCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Payload = JsonConvert.DeserializeObject<List<Profile>>(content)
+                };
+            }
+        }
+
+        public async Task<bool> HasPermission(string role, string[] scopes)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                SetAuthHeader(client);
+                var request = new HttpRequestMessage(HttpMethod.Head,
+                    $"{_options.ServiceUrl}/{Const.IndentityApi.RoleEntity}?{GenerateQueryString(scopes.ToList(), "scope")}&role={role}");
+                var response = await client.SendAsync(request);
+                return response.StatusCode == HttpStatusCode.OK;
+            }
+        }
+
+        private string GenerateQueryString(List<string> values, string parameter)
+        {
+            string query = "";
+            foreach (var value in values)
+            {
+                query += $"{parameter}={value}{(value == values.Last() ? "" : "&")}";
+            }
+            return query;
+        }
+
+        private void SetAuthHeader(HttpClient client)
+        {
+            client.DefaultRequestHeaders.Add("Authorization", $"{Context.Request.Headers["Authorization"]}");
         }
     }
 }

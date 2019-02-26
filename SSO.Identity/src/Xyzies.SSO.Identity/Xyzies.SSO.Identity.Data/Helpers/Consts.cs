@@ -2,14 +2,13 @@
 {
     public class Consts
     {
+        private const string _extensionPropertyTemplate = "extension_dc2c5f0a6f0845c385858b049a55e71e_";
         public const string RoleClaimType = "extension_Group";
 
-        public const string RolePropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Group";
-        public const string OnlinePropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_Online";
-        public const string RetailerIdPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_RetailerId";
-        public const string CompanyIdPropertyName = "extension_64dd8c06b51f4cb69670d2ffeacb6c8e_CompanyId";
-
-        public const string ManagerIdPropertyName = "ManagerIdPropertyName_Will_Changed";
+        public const string RolePropertyName = _extensionPropertyTemplate + "Group";
+        public const string RetailerIdPropertyName = _extensionPropertyTemplate + "RetailerId";
+        public const string CompanyIdPropertyName = _extensionPropertyTemplate + "CompanyId";
+        public const string ManagerIdPropertyName = _extensionPropertyTemplate + "ManagerId";
 
         public class GraphApi
         {
@@ -20,9 +19,20 @@
         }
         public class Roles
         {
-            public const string Saller = "Saller";
+            public const string SalesRep = "SalesRep";
             public const string SuperAdmin = "SuperAdmin";
             public const string Admin = "Admin";
+        }
+        public class Cache
+        {
+            public const string PermissionKey = "Permission";
+            public const string ExpirationKey = "Expiration";
+        }
+        public class Scopes
+        {
+            public const string Full = "xyzies.sso.identity.full";
+            public const string Edit = "xyzies.sso.identity.edit";
+            public const string Read = "xyzies.sso.identity.read";
         }
 
     }
