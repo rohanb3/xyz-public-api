@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServiceClient.Filters
 {
-    public class AccessFilter : Attribute, IActionFilter
+    public class AccessFilter : Attribute, IAsyncActionFilter
     {
         public string Scopes { get; set; }
         public IIdentityManager _manager;
@@ -22,8 +22,8 @@ namespace IdentityServiceClient.Filters
         public void OnActionExecuted(ActionExecutedContext context)
         {
         }
-
-        public void OnActionExecuting(ActionExecutingContext context)
+        
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             _manager = context.HttpContext.RequestServices.GetService<IIdentityManager>();
             var bearerToken = (context.HttpContext.Request.Headers[Const.Auth.AuthHeader]).ToString();
@@ -34,7 +34,7 @@ namespace IdentityServiceClient.Filters
                 var tokenS = handler.ReadJwtToken(bearerToken);
                 var role = tokenS.Claims.FirstOrDefault(claim => claim.Type == Const.Permissions.RoleClaimType)?.Value;
                 var scopes = Scopes.Split(',');
-                var hashPermission = Task.Run(() => _manager.HasPermission(role, scopes)).GetAwaiter().GetResult();
+                var hashPermission = await _manager.HasPermission(role, scopes);
                 if (!hashPermission)
                 {
                     context.Result = new ContentResult { StatusCode = 403 };
@@ -44,7 +44,8 @@ namespace IdentityServiceClient.Filters
             {
                 context.Result = new ContentResult { StatusCode = 403 };
             }
-        }
 
+            await next();
+        }
     }
 }

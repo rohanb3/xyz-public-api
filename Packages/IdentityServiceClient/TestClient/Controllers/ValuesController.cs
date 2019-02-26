@@ -2,7 +2,7 @@
 using IdentityServiceClient.Service;
 using IdentityServiceClient.Filters;
 using Microsoft.AspNetCore.Mvc;
-using IdentityServiceClient;
+using IdentityServiceClient.Constants;
 
 namespace TestClient.Controllers
 {
@@ -17,7 +17,7 @@ namespace TestClient.Controllers
         }
         // GET api/values
         [HttpGet]
-        [AccessFilter(Const.Scopes.Full)]
+        [AccessFilter(Scopes.Full)]
         public async Task<ActionResult> Get()
         {
             var result = await _identityManager.GetAllUsersAsync();

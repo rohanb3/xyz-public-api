@@ -12,7 +12,7 @@ using System.Net;
 
 namespace Xyzies.SSO.Identity.API.Filters
 {
-    public class AccessFilter : Attribute, IActionFilter
+    public class AccessFilter : Attribute, IAsyncActionFilter
     {
         public string Scopes { get; set; }
         public IPermissionService _permissionService;
@@ -24,18 +24,19 @@ namespace Xyzies.SSO.Identity.API.Filters
         public void OnActionExecuted(ActionExecutedContext context)
         {
         }
-
-        public void OnActionExecuting(ActionExecutingContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             _permissionService = context.HttpContext.RequestServices.GetService<IPermissionService>();
             var role = context.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == Consts.RoleClaimType)?.Value;
             var scopes = Scopes.Split(',');
-            Task.Run(() => _permissionService.CheckPermissionExpiration()).Wait();
+            await _permissionService.CheckPermissionExpiration();
             var hasPermission = _permissionService.CheckPermission(role, scopes);
             if (!hasPermission)
             {
                 context.Result = new ContentResult { StatusCode = 403 };
             }
+
+            await next();
         }
     }
 }
