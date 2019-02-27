@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Xyzies.TWC.Public.Api.Controllers;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
@@ -13,29 +12,30 @@ using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 namespace Xyzies.TWC.Public.Api.Managers
 {
     /// <inheritdoc />
-    public class BranchManager : IBranchManager
+    public class CompanyManager : ICompanyManager
     {
 
-        private readonly ILogger<BranchManager> _logger = null;
-        private readonly IBranchRepository _branchRepository = null;
+        private readonly ILogger<CompanyManager> _logger = null;
+        private readonly ICompanyRepository _companyRepository = null;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="branchRepository"></param>
-        public BranchManager(ILogger<BranchManager> logger, IBranchRepository branchRepository)
+        /// <param name="companyRepository"></param>
+        public CompanyManager(ILogger<CompanyManager> logger, ICompanyRepository companyRepository)
         {
             _logger = logger;
-            _branchRepository = branchRepository;
+            _companyRepository = companyRepository;
 
         }
+
         /// <summary>
         /// Getting all branches or first 15 by defolt
         /// </summary>
-        public async Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter, Sortable sortable, Paginable paginable)
+        public async Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter, Sortable sortable, Paginable paginable)
         {
-            IQueryable<Branch> queryable = await _branchRepository.GetAsync();
+            IQueryable<Company> queryable = await _companyRepository.GetAsync();
 
             if (!string.IsNullOrEmpty(filter.State))
             {
@@ -52,14 +52,14 @@ namespace Xyzies.TWC.Public.Api.Managers
                 queryable = queryable.Where(x => x.Email.ToLower().Contains(filter.Email.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(filter.BranchName))
+            if (!string.IsNullOrEmpty(filter.CompanyName))
             {
-                queryable = queryable.Where(x => x.BranchName.ToLower().Contains(filter.BranchName.ToLower()));
+                queryable = queryable.Where(x => x.CompanyName.ToLower().Contains(filter.CompanyName.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(filter.BranchId))
+            if (!string.IsNullOrEmpty(filter.CompanyId))
             {
-                queryable = queryable.Where(x => x.Id.Equals(filter.BranchId));
+                queryable = queryable.Where(x => x.Id.Equals(filter.CompanyId));
             }
 
             // Calculate total count
@@ -67,9 +67,9 @@ namespace Xyzies.TWC.Public.Api.Managers
             int totalCount = queryableCount.Count();
 
             // Sorting
-            if (sortable.SortBy.ToLower() == "createddate" )
+            if (sortable.SortBy.ToLower() == "createddate")
             {
-                if (sortable.SortOrder.ToLower().Equals("desc"))
+                if (sortable.SortOrder.Equals("desc"))
                 {
                     queryable = queryable.OrderByDescending(x => x.CreatedDate);
                 }
@@ -84,11 +84,11 @@ namespace Xyzies.TWC.Public.Api.Managers
                 }
                 else queryable = queryable.OrderBy(x => x.CreatedDate);
             }
-            if (sortable.SortBy.ToLower() == "branchname")
+            if (sortable.SortBy.ToLower() == "companyname")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    queryable = queryable.OrderBy(x => x.BranchName);
+                    queryable = queryable.OrderBy(x => x.CompanyName);
                 }
                 else queryable = queryable.OrderBy(x => x.CreatedDate);
             }
@@ -96,11 +96,11 @@ namespace Xyzies.TWC.Public.Api.Managers
             // Pagination
             queryable = queryable.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
 
-            return new PagingResult<BranchModel>
+            return new PagingResult<CompanyModel>
             {
-                Total = totalCount,
+                Total = 7,
                 ItemsPerPage = paginable.Take.Value,
-                Data = queryable.ToList().Adapt<List<BranchModel>>()
+                Data = queryable.ToList().Adapt<List<CompanyModel>>()
             };
         }
     }

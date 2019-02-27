@@ -98,6 +98,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IBranchManager, BranchManager>();
+            services.AddScoped<ICompanyManager, CompanyManager>();
 
             #endregion
 

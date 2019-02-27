@@ -61,14 +61,14 @@
             
             </summary>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Controllers.CompanyController},Xyzies.TWC.Public.Data.Repositories.Interfaces.ICompanyRepository)">
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Controllers.CompanyController},Xyzies.TWC.Public.Data.Repositories.Interfaces.ICompanyRepository,Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager)">
             <summary>
             
             </summary>
             <param name="logger"></param>
             <param name="companyRepository"></param>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             GET api/company
             </summary>
@@ -260,12 +260,41 @@
             Getting all branches or first 15 by defolt
             </summary>
         </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.CompanyManager">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Managers.CompanyManager},Xyzies.TWC.Public.Data.Repositories.Interfaces.ICompanyRepository)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="companyRepository"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            Getting all branches or first 15 by defolt
+            </summary>
+        </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager">
             <summary>
             Facade of manage a branch requests
             </summary>
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranches(Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            
+            </summary>
+            <param name="filter"></param>
+            <param name="sortable"></param>
+            <param name="paginable"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             
             </summary>

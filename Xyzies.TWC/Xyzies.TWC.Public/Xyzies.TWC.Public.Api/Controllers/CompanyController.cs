@@ -8,6 +8,7 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
+using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
@@ -23,17 +24,18 @@ namespace Xyzies.TWC.Public.Api.Controllers
     {
         private readonly ICompanyRepository _companyRepository = null;
         private readonly ILogger<CompanyController> _logger = null;
-
+        private readonly ICompanyManager _companyManager = null;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="companyRepository"></param>
         public CompanyController(ILogger<CompanyController> logger,
-            ICompanyRepository companyRepository)
+            ICompanyRepository companyRepository, ICompanyManager companyManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
+            _companyManager = companyManager;
         }
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public async Task<IActionResult> Get(
-            [FromQuery] BranchFilter filterModel,
+            [FromQuery] CompanyFilter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
@@ -55,22 +57,30 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var companies = new List<Company>();
-            try
+            var result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
+            if (!result.Data.Any())
             {
-                companies = (await _companyRepository.GetAsync())?.ToList();
-            }
-            catch (SqlException ex)
-            {
-                return BadRequest(ex.Message);
+                return NoContent();
             }
 
-            if (companies.Count.Equals(0))
-            {
-                return NotFound();
-            }
-            var companyModels = companies.Adapt<CompanyModel[]>();
-            return Ok(companies);
+            return Ok(result);
+
+            //var companies = new List<Company>();
+            //try
+            //{
+            //    companies = (await _companyRepository.GetAsync())?.ToList();
+            //}
+            //catch (SqlException ex)
+            //{
+            //    return BadRequest(ex.Message);
+            //}
+
+            //if (companies.Count.Equals(0))
+            //{
+            //    return NotFound();
+            //}
+            //var companyModels = companies.Adapt<CompanyModel[]>();
+            //return Ok(companies);
         }
 
         /// <summary>
