@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
@@ -13,17 +14,21 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchBuilder.Property(p => p.Email).HasMaxLength(50);
             branchBuilder.Property(p => p.Phone).HasMaxLength(50);
             branchBuilder.Property(p => p.Fax).HasMaxLength(50);
-            branchBuilder.Property(p => p.Address).HasMaxLength(50);
+            branchBuilder.Property(p => p.AddressLine1).HasMaxLength(50);
+            branchBuilder.Property(p => p.AddressLine2).HasMaxLength(50);
             branchBuilder.Property(p => p.City).HasMaxLength(50);
             branchBuilder.Property(p => p.ZipCode).HasMaxLength(50);
             branchBuilder.Property(p => p.GeoLat).HasMaxLength(50);
-            branchBuilder.Property(p => p.GeoLon).HasMaxLength(50);
+            branchBuilder.Property(p => p.GeoLng).HasMaxLength(50);
             branchBuilder.Property(p => p.State).HasMaxLength(50);
             branchBuilder.Property(p => p.CreatedDate).HasComputedColumnSql("GETUTCDATE()");
-            branchBuilder.Property(p => p.ModifiedDate).HasComputedColumnSql("GETUTCDATE()").ValueGeneratedOnUpdate().Metadata.IsStoreGeneratedAlways = true;
-            branchBuilder.Property(p => p.ParentCompanyId);
+            branchBuilder.Property(p => p.ModifiedDate)
+                .HasComputedColumnSql("GETUTCDATE()")
+                .ValueGeneratedOnUpdate()
+                .Metadata
+                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
 
-            branchBuilder.HasOne(n => n.ParentCompany);
+            branchBuilder.HasOne(n => n.Company);
         }
     }
 }

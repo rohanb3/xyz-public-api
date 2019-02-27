@@ -41,13 +41,13 @@ namespace Xyzies.TWC.Public.Api.Models
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }
 
-        public int ParentCompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         [ScaffoldColumn(false)]
         public virtual IList<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
 
-        [ScaffoldColumn(false)]
-        public virtual Company ParentCompany { get; set; }
+        //[ScaffoldColumn(false)]
+        //public virtual Company ParentCompany { get; set; }
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
