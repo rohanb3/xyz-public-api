@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
+using Xyzies.TWC.DisputeService.Data;
 using Xyzies.TWC.OptymyzeClient.Client;
 
 namespace Xyzies.TWC.DisputeService.API
@@ -59,7 +61,11 @@ namespace Xyzies.TWC.DisputeService.API
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
-            //services.AddEntityFrameworkSqlServer()
+            string dbConnectionString = //Configuration["connectionStrings:db"];
+                "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123";
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContextPool<DisputeDataContext>(ctxOptions =>
+                    ctxOptions.UseSqlServer(dbConnectionString));
 
             services.AddSwaggerGen(options =>
             {
