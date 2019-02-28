@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+// Issue: https://stackoverflow.com/questions/30400358/cant-find-system-net-http-formatting-dll
 //using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,8 +12,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xyzies.SSO.Identity.Data.Helpers;
-using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
+using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
 
 namespace Xyzies.SSO.Identity.Data.Repository.Azure
 {
@@ -21,7 +22,6 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
         private readonly AzureAdGraphApiOptions _azureAdGraphApiOptions;
         private readonly AzureAdB2COptions _azureAdB2COptions;
         private AzureAdApiCredentials _credentials;
-
 
         public AzureAdClient(IOptionsMonitor<AzureAdGraphApiOptions> azureAdGraphApiOptionsMonitor, IOptionsMonitor<AzureAdB2COptions> azureAdB2COptionsMonitor)
         {
