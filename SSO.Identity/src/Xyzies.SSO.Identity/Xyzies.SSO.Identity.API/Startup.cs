@@ -60,7 +60,11 @@ namespace Xyzies.SSO.Identity.API
             //    });
 
             // TODO: DB connection string
-            string dbConnectionString = "Data Source=DESKTOP-MDU10E0;Initial Catalog=timewarner_20181026;Integrated Security=True";//User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
+            string dbConnectionString = Configuration.GetConnectionString("db");
+            if (string.IsNullOrEmpty(dbConnectionString))
+            {
+                StartupException.Throw("Missing the connection string to database");
+            }
             services //.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<IdentityDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));

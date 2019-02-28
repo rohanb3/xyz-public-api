@@ -61,8 +61,13 @@ namespace Xyzies.TWC.DisputeService.API
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
-            string dbConnectionString = //Configuration["connectionStrings:db"];
-                "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123";
+            string dbConnectionString = Configuration.GetConnectionString("db");
+            if (string.IsNullOrEmpty(dbConnectionString))
+            {
+                StartupException.Throw("Missing the connection string to database");
+            }
+
+                // "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123";
             services.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<DisputeDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));
