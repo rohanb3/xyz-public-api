@@ -6,22 +6,22 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Mapster;
 using Xyzies.SSO.Identity.Data;
 using Xyzies.SSO.Identity.Data.Repository;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
-using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Xyzies.SSO.Identity.Services.Mapping;
 using Xyzies.SSO.Identity.Services.Service;
-using Microsoft.AspNetCore.Authentication;
 using Xyzies.SSO.Identity.Services.Middleware;
-using Mapster;
 using Xyzies.SSO.Identity.Services.Service.Roles;
 using Xyzies.SSO.Identity.Services.Service.Permission;
 
@@ -59,8 +59,9 @@ namespace Xyzies.SSO.Identity.API
 
             //    });
 
+            // TODO: DB connection string
             string dbConnectionString = "Data Source=DESKTOP-MDU10E0;Initial Catalog=timewarner_20181026;Integrated Security=True";//User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
-            services//.AddEntityFrameworkSqlServer()
+            services //.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<IdentityDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));
 
@@ -76,8 +77,6 @@ namespace Xyzies.SSO.Identity.API
 
             services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
@@ -96,6 +95,8 @@ namespace Xyzies.SSO.Identity.API
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             #region DI configuration
 
             services.AddScoped<DbContext, IdentityDataContext>();
@@ -104,6 +105,7 @@ namespace Xyzies.SSO.Identity.API
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IAzureAdClient, AzureAdClient>();
             services.AddScoped<IUserService, UserService>();
+
             #endregion
 
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
@@ -131,11 +133,7 @@ namespace Xyzies.SSO.Identity.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-
-            }
-            else
+            if (!env.IsDevelopment())
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
