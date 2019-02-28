@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
+//using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xyzies.SSO.Identity.Data.Helpers;
 using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
@@ -122,7 +122,9 @@ namespace Xyzies.SSO.Identity.Data.Repository.Azure
 
                     FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
                     HttpResponseMessage response = await httpClient.PostAsync(_azureAdGraphApiOptions.RequestUri, content);
-                    _credentials = await response.Content.ReadAsAsync<AzureAdApiCredentials>(new[] { new JsonMediaTypeFormatter() });
+                    // TODO: Check this line
+                    // NOTE: Try to build on linux
+                    _credentials = await response.Content.ReadAsAsync<AzureAdApiCredentials>(); // new[] { new JsonMediaTypeFormatter() }
                 }
             }
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _credentials?.AccessToken);
