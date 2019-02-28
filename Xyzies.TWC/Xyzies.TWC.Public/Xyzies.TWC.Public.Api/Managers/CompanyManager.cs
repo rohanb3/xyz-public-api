@@ -30,9 +30,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
         }
 
-        /// <summary>
-        /// Getting all branches or first 15 by defolt
-        /// </summary>
+        /// <inheritdoc />
         public async Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter, Sortable sortable, Paginable paginable)
         {
             IQueryable<Company> queryable = await _companyRepository.GetAsync();

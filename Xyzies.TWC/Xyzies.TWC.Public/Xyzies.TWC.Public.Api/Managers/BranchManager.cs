@@ -30,78 +30,147 @@ namespace Xyzies.TWC.Public.Api.Managers
             _branchRepository = branchRepository;
 
         }
-        /// <summary>
-        /// Getting all branches or first 15 by defolt
-        /// </summary>
+
+        /// <inheritdoc />
         public async Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter, Sortable sortable, Paginable paginable)
         {
-            IQueryable<Branch> queryable = await _branchRepository.GetAsync();
+            IQueryable<Branch> query = await _branchRepository.GetAsync();
 
+            query = Filtering(filter, query);
+
+            // Calculate total count
+            var queryableCount = query;
+            int totalCount = queryableCount.Count();
+
+            query = Sorting(sortable, query);
+
+            query = Pagination(paginable, query);
+
+            return new PagingResult<BranchModel>
+            {
+                Total = totalCount,
+                ItemsPerPage = paginable.Take.Value,
+                Data = query.ToList().Adapt<List<BranchModel>>()
+            };
+        }
+
+        /// <inheritdoc />
+        public async Task<PagingResult<BranchModel>> GetBranchesByCompany(int companyId, BranchFilter filter, Sortable sortable, Paginable paginable)
+        {
+            IQueryable<Branch> query = await _branchRepository.GetAsync(x => x.CompanyId.Equals(companyId));
+
+            query = Filtering(filter, query);
+
+            var queryableCount = query;
+            int totalCount = queryableCount.Count();
+
+            query = Sorting(sortable, query);
+
+            query = Pagination(paginable, query);
+
+            return new PagingResult<BranchModel>
+            {
+                Total = totalCount,
+                ItemsPerPage = paginable.Take.Value,
+                Data = query.ToList().Adapt<List<BranchModel>>()
+            };
+        }
+
+        /// <inheritdoc />
+        public IQueryable<Branch> Filtering(BranchFilter filter, IQueryable<Branch> query)
+        {
             if (!string.IsNullOrEmpty(filter.State))
             {
-                queryable = queryable.Where(x => x.State.ToLower().Equals(filter.State.ToLower()));
+                query = query.Where(x => x.State.ToLower().Equals(filter.State.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(filter.City))
             {
-                queryable = queryable.Where(x => x.City.ToLower().Contains(filter.City.ToLower()));
+                query = query.Where(x => x.City.ToLower().Contains(filter.City.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(filter.Email))
             {
-                queryable = queryable.Where(x => x.Email.ToLower().Contains(filter.Email.ToLower()));
+                query = query.Where(x => x.Email.ToLower().Contains(filter.Email.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(filter.BranchName))
             {
-                queryable = queryable.Where(x => x.BranchName.ToLower().Contains(filter.BranchName.ToLower()));
+                query = query.Where(x => x.BranchName.ToLower().Contains(filter.BranchName.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(filter.BranchId))
             {
-                queryable = queryable.Where(x => x.Id.Equals(filter.BranchId));
+                query = query.Where(x => x.Id.Equals(filter.BranchId));
             }
+            return query;
+        }
 
-            // Calculate total count
-            var queryableCount = queryable;
-            int totalCount = queryableCount.Count();
-
-            // Sorting
-            if (sortable.SortBy.ToLower() == "createddate" )
+        /// <inheritdoc />
+        public IQueryable<Branch> Sorting(Sortable sortable, IQueryable<Branch> query)
+        {
+            if (sortable.SortBy.ToLower() == "createddate")
             {
                 if (sortable.SortOrder.ToLower().Equals("desc"))
                 {
-                    queryable = queryable.OrderByDescending(x => x.CreatedDate);
+                    query = query.OrderByDescending(x => x.CreatedDate);
                 }
-                else queryable = queryable.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.CreatedDate);
             }
 
             if (sortable.SortBy.ToLower() == "status")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    queryable = queryable.OrderBy(x => x.Status);
+                    query = query.OrderBy(x => x.Status);
                 }
-                else queryable = queryable.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.CreatedDate);
             }
+
+            if (sortable.SortBy.ToLower() == "state")
+            {
+                if (sortable.SortOrder.Equals("desc"))
+                {
+                    query = query.OrderBy(x => x.BranchName);
+                }
+                else query = query.OrderBy(x => x.CreatedDate);
+            }
+
+            if (sortable.SortBy.ToLower() == "city")
+            {
+                if (sortable.SortOrder.Equals("desc"))
+                {
+                    query = query.OrderBy(x => x.BranchName);
+                }
+                else query = query.OrderBy(x => x.CreatedDate);
+            }
+
             if (sortable.SortBy.ToLower() == "branchname")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    queryable = queryable.OrderBy(x => x.BranchName);
+                    query = query.OrderBy(x => x.BranchName);
                 }
-                else queryable = queryable.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.CreatedDate);
             }
 
-            // Pagination
-            queryable = queryable.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
-
-            return new PagingResult<BranchModel>
+            if (sortable.SortBy.ToLower() == "branchid")
             {
-                Total = totalCount,
-                ItemsPerPage = paginable.Take.Value,
-                Data = queryable.ToList().Adapt<List<BranchModel>>()
-            };
+                if (sortable.SortOrder.Equals("desc"))
+                {
+                    query = query.OrderBy(x => x.BranchName);
+                }
+                else query = query.OrderBy(x => x.CreatedDate);
+            }
+
+            return query;
         }
+
+        /// <inheritdoc />
+        public IQueryable<Branch> Pagination(Paginable paginable, IQueryable<Branch> query)
+        {
+            return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
+        }
+
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
@@ -126,7 +127,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public IActionResult Post([FromBody] CompanyModel companyModel)
+        public IActionResult Post([FromBody] UploadCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {

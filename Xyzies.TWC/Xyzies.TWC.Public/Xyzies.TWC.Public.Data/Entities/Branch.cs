@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities
@@ -29,13 +27,12 @@ namespace Xyzies.TWC.Public.Data.Entities
         // TODO: Need to discuss branch statuses
         public BranchStatus Status { get; set; }
 
-        public DateTime CreatedDate { get; private set; }
+        public DateTime? CreatedDate { get; private set; }
         public DateTime? ModifiedDate { get; private set; }
 
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }
 
-        [ForeignKey(nameof(Company))]
         public int CompanyId { get; set; }
 
         public virtual Company Company { get; set; }

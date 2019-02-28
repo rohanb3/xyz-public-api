@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities
@@ -21,12 +20,10 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         public DateTime? ModifiedDate { get; private set; }
 
-        [ForeignKey(nameof(BranchContactType))]
         public int BranchContactTypeId { get; set; }
 
         public virtual BranchContactType BranchContactType { get; set; }
 
-        [ForeignKey(nameof(BranchPrimaryContact))]
         public int BranchPrimaryContactId { get; set; }
 
         public virtual Branch BranchPrimaryContact { get; set; }

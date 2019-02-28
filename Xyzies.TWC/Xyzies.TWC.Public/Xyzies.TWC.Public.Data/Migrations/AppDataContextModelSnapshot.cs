@@ -25,7 +25,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
+                    b.Property<string>("AddressLine1")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("AddressLine2")
                         .HasMaxLength(50);
 
                     b.Property<string>("BranchName")
@@ -34,6 +37,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("City")
                         .HasMaxLength(50);
+
+                    b.Property<int>("CompanyId");
 
                     b.Property<int?>("CreatedBy");
 
@@ -50,7 +55,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("GeoLat")
                         .HasMaxLength(50);
 
-                    b.Property<string>("GeoLon")
+                    b.Property<string>("GeoLng")
                         .HasMaxLength(50);
 
                     b.Property<int?>("ModifiedBy");
@@ -59,15 +64,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .ValueGeneratedOnUpdate()
                         .HasComputedColumnSql("GETUTCDATE()");
 
-                    b.Property<int>("ParentCompanyId");
-
                     b.Property<string>("Phone")
                         .HasMaxLength(50);
 
                     b.Property<string>("State")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("Status");
+                    b.Property<int>("Status");
 
                     b.Property<string>("ZipCode")
                         .HasMaxLength(50);
@@ -75,7 +78,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.HasKey("Id")
                         .HasName("BranchID");
 
-                    b.HasIndex("ParentCompanyId");
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("TWC_Branches");
                 });
@@ -286,9 +289,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "ParentCompany")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
                         .WithMany("Branches")
-                        .HasForeignKey("ParentCompanyId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
