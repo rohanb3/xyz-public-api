@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
@@ -14,9 +15,11 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchContactBuilder.Property(p => p.PersonTitle).HasMaxLength(100);
             branchContactBuilder.Property(p => p.Value).HasMaxLength(100).IsRequired();
             branchContactBuilder.Property(p => p.CreatedDate).HasComputedColumnSql("GETUTCDATE()").ValueGeneratedOnAdd();
-            // TODO: Change
-            branchContactBuilder.Property(p => p.ModifiedDate).HasComputedColumnSql("GETUTCDATE()").ValueGeneratedOnUpdate().Metadata.IsStoreGeneratedAlways = true; ;
-
+            branchContactBuilder.Property(p => p.ModifiedDate)
+                .HasComputedColumnSql("GETUTCDATE()")
+                .ValueGeneratedOnUpdate()
+                .Metadata
+                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
             branchContactBuilder
                 .HasOne(n => n.BranchContactType)
                 .WithMany(c => c.BranchContacts)

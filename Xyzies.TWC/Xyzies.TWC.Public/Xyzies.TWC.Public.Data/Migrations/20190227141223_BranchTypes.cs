@@ -111,25 +111,26 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     Email = table.Column<string>(maxLength: 50, nullable: true),
                     Phone = table.Column<string>(maxLength: 50, nullable: true),
                     Fax = table.Column<string>(maxLength: 50, nullable: true),
-                    Address = table.Column<string>(maxLength: 50, nullable: true),
+                    State = table.Column<string>(maxLength: 50, nullable: true),
                     City = table.Column<string>(maxLength: 50, nullable: true),
                     ZipCode = table.Column<string>(maxLength: 50, nullable: true),
+                    AddressLine1 = table.Column<string>(maxLength: 50, nullable: true),
+                    AddressLine2 = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLat = table.Column<string>(maxLength: 50, nullable: true),
-                    GeoLon = table.Column<string>(maxLength: 50, nullable: true),
-                    Status = table.Column<int>(nullable: true),
-                    State = table.Column<string>(maxLength: 50, nullable: true),
+                    GeoLng = table.Column<string>(maxLength: 50, nullable: true),
+                    Status = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
                     ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
                     CreatedBy = table.Column<int>(nullable: true),
                     ModifiedBy = table.Column<int>(nullable: true),
-                    ParentCompanyId = table.Column<int>(nullable: false)
+                    CompanyId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("BranchID", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TWC_Branches_TWC_Companies_ParentCompanyId",
-                        column: x => x.ParentCompanyId,
+                        name: "FK_TWC_Branches_TWC_Companies_CompanyId",
+                        column: x => x.CompanyId,
                         principalTable: "TWC_Companies",
                         principalColumn: "CompanyID",
                         onDelete: ReferentialAction.Cascade);
@@ -178,9 +179,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 column: "BranchPrimaryContactId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TWC_Branches_ParentCompanyId",
+                name: "IX_TWC_Branches_CompanyId",
                 table: "TWC_Branches",
-                column: "ParentCompanyId");
+                column: "CompanyId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

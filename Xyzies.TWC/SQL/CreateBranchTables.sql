@@ -10,20 +10,21 @@ CREATE TABLE [TWC_Branches] (
     [Email] nvarchar(50) NULL,
     [Phone] nvarchar(50) NULL,
     [Fax] nvarchar(50) NULL,
-    [Address] nvarchar(50) NULL,
+    [State] nvarchar(50) NULL,
     [City] nvarchar(50) NULL,
     [ZipCode] nvarchar(50) NULL,
+    [AddressLine1] nvarchar(50) NULL,
+    [AddressLine2] nvarchar(50) NULL,
     [GeoLat] nvarchar(50) NULL,
-    [GeoLon] nvarchar(50) NULL,
-    [Status] int NULL,
-    [State] nvarchar(50) NULL,
+    [GeoLng] nvarchar(50) NULL,
+    [Status] int NOT NULL,
     [CreatedDate] AS GETUTCDATE(),
     [ModifiedDate] AS GETUTCDATE(),
     [CreatedBy] int NULL,
     [ModifiedBy] int NULL,
-    [ParentCompanyId] int NOT NULL,
+    [CompanyId] int NOT NULL,
     CONSTRAINT [BranchID] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_TWC_Branches_TWC_Companies_ParentCompanyId] FOREIGN KEY ([ParentCompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE
+    CONSTRAINT [FK_TWC_Branches_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE
 );
 
 CREATE TABLE [TWC_BranchContacts] (

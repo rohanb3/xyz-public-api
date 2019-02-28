@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
@@ -21,12 +22,5 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
             return branches;
         }
-
-        /// <inheritdoc />
-        //public override int Add(Branch entity)
-        //{
-        //   var id = Data.Add(entity).Entity.Id;
-        //   return id;
-        //}
     }
 }
