@@ -1,0 +1,400 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xyzies.TWC.Public.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Xyzies.TWC.Public.Api.AppDataContextFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.AppDataContextFactory.CreateDbContext(System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.BranchController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Controllers.BranchController},Xyzies.TWC.Public.Data.Repositories.Interfaces.IBranchRepository,Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="branchRepository"></param>
+            <param name="branchRequestManager"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Get(Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            GET api/branches
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Get(System.Int32)">
+            <summary>
+            GET api/branch/5
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.GetBranchOfCompany(System.Int32,Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            companies/{company_id}/branches
+            </summary>
+            <param name="company_id"></param>
+            <param name="filterModel"></param>
+            <param name="sortable"></param>
+            <param name="paginable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Post(Xyzies.TWC.Public.Api.Models.UploadBranchModel)">
+            <summary>
+            
+            </summary>
+            <param name="branchModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Put(System.Int32,Xyzies.TWC.Public.Api.Models.BranchModel)">
+            <summary>
+            api/branch/5
+            </summary>
+            <param name="id"></param>
+            <param name="branchModel"></param>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.CompanyController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Controllers.CompanyController},Xyzies.TWC.Public.Data.Repositories.Interfaces.ICompanyRepository,Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="companyRepository"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            GET api/company
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(System.Int32)">
+            <summary>
+            GET api/company/5
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Post(Xyzies.TWC.Public.Api.Models.UploadCompanyModel)">
+            <summary>
+            // POST api/company
+            </summary>
+            <param name="companyModel"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Put(System.Int32,Xyzies.TWC.Public.Api.Models.CompanyModel)">
+            <summary>
+            // PUT api/company/5
+            </summary>
+            <param name="id"></param>
+            <param name="companyModel"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.IModelHttpResult">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable">
+            <summary>
+            Represents a pagination model
+            </summary>
+        </member>
+        <member name="F:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable.DEFAULT_PER_PAGE">
+            <summary>
+            15 items per page by default. You can change this value.
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable.Skip">
+            <summary>
+            From
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable.Take">
+            <summary>
+            Take next
+            </summary>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.PagingResult`1">
+            <summary>
+            Represents a pagination result
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.PagingResult`1.Data">
+            <summary>
+            Collection of data
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.PagingResult`1.ReturnedRow">
+            <summary>
+            The actual result of returned rows
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.PagingResult`1.Total">
+            <summary>
+            Total length
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.PagingResult`1.ItemsPerPage">
+            <summary>
+            Number of items per page
+            </summary>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable">
+            <summary>
+            Represents a data sorting model
+            </summary>
+        </member>
+        <member name="F:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.DEFAULT_SORT_BY">
+            <summary>
+            Default column name
+            </summary>
+        </member>
+        <member name="F:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.DEFAULT_SORT_ORDER">
+            <summary>
+            Default sorting direction
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.SortBy">
+            <summary>
+            Criteria of sorting (column)
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.SortOrder">
+            <summary>
+            Direction of sorting (allowed for asc/desc)
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.IsAscending">
+            <summary>
+            Is it ascending sorting direction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.IsNavigationProperty(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="param"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.Direction">
+            <summary>
+            Sorting direction options
+            </summary>
+        </member>
+        <member name="F:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.Direction.Asc">
+            <summary>
+            Sorting by ascending
+            </summary>
+        </member>
+        <member name="F:Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable.Direction.Desc">
+            <summary>
+            Sorting by descending
+            </summary>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Controllers.BranchFilter">
+            <summary>
+            Filter criteria of company
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.BranchFilter.State">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.BranchFilter.City">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.BranchFilter.Email">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.BranchFilter.BranchName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Controllers.BranchFilter.BranchId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchFilter.GetBranchName">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Http.Extentions.Searchable">
+            <summary>
+            Represents a search request model
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Http.Extentions.Searchable.Search">
+            <summary>
+            Query
+            </summary>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.BranchManager">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Managers.BranchManager},Xyzies.TWC.Public.Data.Repositories.Interfaces.IBranchRepository)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="branchRepository"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranches(Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Filtering(Xyzies.TWC.Public.Api.Controllers.BranchFilter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Sorting(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Pagination(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+            <inheritdoc />
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.CompanyManager">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.#ctor(Microsoft.Extensions.Logging.ILogger{Xyzies.TWC.Public.Api.Managers.CompanyManager},Xyzies.TWC.Public.Data.Repositories.Interfaces.ICompanyRepository)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="companyRepository"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager">
+            <summary>
+            Facade of manage a branch requests
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranches(Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            Getting all branches or first 15 by defolt
+            </summary>
+            <param name="filter"></param>
+            <param name="sortable"></param>
+            <param name="paginable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Controllers.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            Getting branches by company all or first 15 by defolt
+            </summary>
+            <param name="companyId"></param>
+            <param name="filterModel"></param>
+            <param name="sortable"></param>
+            <param name="paginable"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager">
+            <summary>
+            Facade of manage a company requests
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <summary>
+            Getting all companies or first 15 by defolt
+            </summary>
+            <param name="filter"></param>
+            <param name="sortable"></param>
+            <param name="paginable"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager">
+            <summary>
+            Forcing to implement Pagination, Filtering and Sorting
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager.Filtering(Xyzies.TWC.Public.Api.Controllers.BranchFilter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+            <summary>
+            Filtering settings
+            </summary>
+            <param name="filter"></param>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager.Sorting(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+            <summary>
+            Sorting settings
+            </summary>
+            <param name="filter"></param>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager.Pagination(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+            <summary>
+            Pagination settings
+            </summary>
+            <param name="filter"></param>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Models.CompanyFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.State">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.City">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.Email">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.CompanyName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.CompanyId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Models.CompanyFilter.GetCompanyName">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
