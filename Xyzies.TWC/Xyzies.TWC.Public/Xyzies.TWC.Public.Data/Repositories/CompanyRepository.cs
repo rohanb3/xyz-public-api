@@ -30,14 +30,20 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         /// <inheritdoc />
-        public EntityState CompanyActivator(int id, bool is_enabled)
+        public async Task<bool> SetActivationState(int id, bool isEnabled)
         {
-            var company = base.Data.FirstOrDefaultAsync(x => x.Id == id).Result;
-            company.IsEnabled = is_enabled;
+            var company = await base.Data.FirstOrDefaultAsync(x => x.Id == id);
+            if (company == null)
+            {
+                return false;
+            }
 
-            var state = Data.Update(company).State;
-            DbContext.SaveChanges();
-            return state;
+            company.IsEnabled = isEnabled;
+
+            base.Data.Update(company);
+            await DbContext.SaveChangesAsync();
+
+            return true;
         }
     }
 }

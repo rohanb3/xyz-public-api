@@ -21,10 +21,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// </summary>
     [Route("api/company")]
     [ApiController]
-    public class CompanyController : ControllerBase
+    public class CompanyController : Controller
     {
-        private readonly ICompanyRepository _companyRepository = null;
         private readonly ILogger<CompanyController> _logger = null;
+        private readonly ICompanyRepository _companyRepository = null;
         private readonly ICompanyManager _companyManager = null;
 
         /// <summary>
@@ -34,11 +34,12 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="companyRepository"></param>
         /// <param name="companyManager"></param>
         public CompanyController(ILogger<CompanyController> logger,
-            ICompanyRepository companyRepository, ICompanyManager companyManager)
+            ICompanyRepository companyRepository,
+            ICompanyManager companyManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
-            _companyManager = companyManager;
+            _companyManager = companyManager ?? throw new ArgumentNullException(nameof(companyManager));
         }
 
         /// <summary>
@@ -50,6 +51,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(
             [FromQuery] Filter filterModel,
             [FromQuery] Sortable sortable,
@@ -80,6 +82,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(int id)
         {
             if (!ModelState.IsValid)
@@ -108,11 +111,12 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// // POST api/company
         /// </summary>
         /// <param name="companyModel"></param>
-        [HttpPost]
+        [HttpPost(Name = "CreateNewCompany")]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
         public IActionResult Post([FromBody] UploadCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
@@ -134,7 +138,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// // PUT api/company/5
+        /// Update a company
         /// </summary>
         /// <param name="id"></param>
         /// <param name="companyModel"></param>
@@ -144,6 +148,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
         public IActionResult Put(int id, [FromBody] CompanyModel companyModel)
         {
             if (!ModelState.IsValid)
@@ -173,30 +178,54 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// api/branches/5/is_disable
+        /// Set enable/disable state for company
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="is_enabled"></param>
+        /// <param name="isEnabled"></param>
         /// <returns></returns>
-        [HttpPatch("{id}/is_enabled")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public IActionResult Putch(int id, [FromRoute] bool is_enabled)
+        [SwaggerOperation(Tags = new[] { "Company API" })]
+        public async Task<IActionResult> Patch([FromRoute] int id, [FromQuery] bool isEnabled)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entityState = _companyRepository.CompanyActivator(id, is_enabled);
-            return Ok(entityState);
+
+            bool result = await _companyRepository.SetActivationState(id, isEnabled);
+            if (result)
+            {
+                return Ok();
+            }
+
+            return NotFound();
         }
 
-        // DELETE api/company/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
         [HttpDelete("{id}")]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
         public void Delete(int id)
         {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // TODO: Disposing
+                _companyRepository.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
