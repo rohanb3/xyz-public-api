@@ -52,7 +52,7 @@ namespace Xyzies.SSO.Identity.API
                 });
 
             string dbConnectionString = "Data Source=.;Initial Catalog=timewarner_20181026;User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
-            services//.AddEntityFrameworkSqlServer()
+            services //.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<IdentityDataContext>(ctxOptions => 
                     ctxOptions.UseSqlServer(dbConnectionString));
 
