@@ -38,5 +38,16 @@ namespace Xyzies.TWC.Public.Data.Repositories
                 .Include(b => b.BranchContacts)
                     .ThenInclude(x => x.BranchContactType)
                 .Where(predicate));
+
+        /// <inheritdoc />
+        public EntityState BranchActivator(int id, bool is_disable)
+        {
+            var branch = base.Data.FirstOrDefaultAsync(x => x.Id == id).Result;
+            branch.IsDisabled = is_disable;
+
+            var act = Data.Update(branch).State;
+            DbContext.SaveChanges();
+            return act;
+        }
     }
 }

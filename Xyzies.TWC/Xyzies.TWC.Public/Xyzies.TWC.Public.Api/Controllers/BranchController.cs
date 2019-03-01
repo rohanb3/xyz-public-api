@@ -32,7 +32,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
-        /// <param name="branchRequestManager"></param>
+        /// <param name="branchManager"></param>
         public BranchController(ILogger<BranchController> logger,
             IBranchRepository branchRepository, IBranchManager branchManager)
         {
@@ -176,7 +176,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public IActionResult Put(int id, [FromBody] BranchModel branchModel)
+        public IActionResult Put(int id, [FromBody] UploadBranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
@@ -202,6 +202,27 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// api/branches/5/is_disable
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="is_disable"></param>
+        /// <returns></returns>
+        [HttpPatch("branches/{id}/is_disable")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        public IActionResult Putch(int id, [FromRoute] bool is_disable)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var entityState = _branchRepository.BranchActivator(id, is_disable);
+            return Ok(entityState);
         }
 
         // DELETE api/branch/5

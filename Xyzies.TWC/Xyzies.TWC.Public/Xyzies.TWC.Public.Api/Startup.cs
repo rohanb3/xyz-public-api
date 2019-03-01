@@ -135,6 +135,7 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<Branch, BranchModel>.NewConfig();
             TypeAdapterConfig<Company, CompanyModel>.NewConfig();
             TypeAdapterConfig<Branch, UploadBranchModel>.NewConfig();
+            TypeAdapterConfig<UploadBranchModel, Branch>.NewConfig();
             TypeAdapterConfig<Company, UploadCompanyModel>.NewConfig();
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 

@@ -25,7 +25,8 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .HasComputedColumnSql("GETUTCDATE()")
                 .ValueGeneratedOnAdd()
                 .Metadata
-                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
+                .AfterSaveBehavior = PropertySaveBehavior.Ignore;
+
             branchBuilder.Property(p => p.ModifiedDate)
                 .HasComputedColumnSql("GETUTCDATE()")
                 .ValueGeneratedOnUpdate()

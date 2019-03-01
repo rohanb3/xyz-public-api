@@ -7,7 +7,7 @@ namespace Xyzies.TWC.Public.Api.Models
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class BranchModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string BranchName { get; set; }
 
         [MaxLength(250)]
@@ -30,6 +30,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public string GeoLon { get; set; }
         public string Status { get; set; }
         public string State { set; get; }
+
+        public bool IsDisabled { set; get; }
 
         [DataType(DataType.DateTime)]
         public DateTime? CreatedDate { get; set; }
