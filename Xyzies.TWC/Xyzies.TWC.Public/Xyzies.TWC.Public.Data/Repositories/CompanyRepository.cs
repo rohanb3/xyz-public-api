@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
@@ -14,13 +15,18 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         /// <inheritdoc />
+        public override async Task<IQueryable<Company>> GetAsync() =>
+            await Task.FromResult(base.Data
+                .Include(b => b.Branches));
+
+        /// <inheritdoc />
         public override async Task<Company> GetAsync(int id)
         {
-            var branches = await Data
+            var companies = await Data
                 .Include(x => x.Branches)
                 .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
 
-            return branches;
+            return companies;
         }
     }
 }

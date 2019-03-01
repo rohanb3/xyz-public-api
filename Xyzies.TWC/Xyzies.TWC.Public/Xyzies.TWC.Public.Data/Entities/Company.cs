@@ -5,7 +5,6 @@ using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities
 {
-    [Table("TWC_Companies")]
     public class Company : BaseEntity<int>
     {
         [Column("CompanyID")]
@@ -79,6 +78,8 @@ namespace Xyzies.TWC.Public.Data.Entities
         public DateTime? CompanyStatusChangedOn { get; set; }
         public int? CompanyStatusChangedBy { get; set; }
 
-        public virtual IEnumerable<Branch> Branches { get; set; } = new List<Branch>();
+        public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
+
+        //public virtual ICollection<User> SalesRepCount { get; set; } = new List<User>();
     }
 }

@@ -1,11 +1,11 @@
 CREATE TABLE [TWC_BranchContactTypes] (
-    [Id] int NOT NULL IDENTITY,
+    [BranchContactTypeID] int NOT NULL IDENTITY,
     [Name] nvarchar(50) NULL,
-    CONSTRAINT [BranchContactTypeID] PRIMARY KEY ([Id])
+    CONSTRAINT [BranchContactTypeID] PRIMARY KEY ([BranchContactTypeID])
 );
 
 CREATE TABLE [TWC_Branches] (
-    [Id] int NOT NULL IDENTITY,
+    [BranchID] int NOT NULL IDENTITY,
     [BranchName] nvarchar(250) NOT NULL,
     [Email] nvarchar(50) NULL,
     [Phone] nvarchar(50) NULL,
@@ -17,18 +17,21 @@ CREATE TABLE [TWC_Branches] (
     [AddressLine2] nvarchar(50) NULL,
     [GeoLat] nvarchar(50) NULL,
     [GeoLng] nvarchar(50) NULL,
+    [IsDisabled] bit NOT NULL DEFAULT 1,
     [Status] int NOT NULL,
     [CreatedDate] AS GETUTCDATE(),
     [ModifiedDate] AS GETUTCDATE(),
     [CreatedBy] int NULL,
     [ModifiedBy] int NULL,
     [CompanyId] int NOT NULL,
-    CONSTRAINT [BranchID] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_TWC_Branches_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE
+    [UserId] int NULL,
+    CONSTRAINT [BranchID] PRIMARY KEY ([BranchID]),
+    CONSTRAINT [FK_TWC_Branches_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TWC_Branches_TWC_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [TWC_Users] ([UserID]) ON DELETE NO ACTION
 );
 
 CREATE TABLE [TWC_BranchContacts] (
-    [Id] int NOT NULL IDENTITY,
+    [BranchContactID] int NOT NULL IDENTITY,
     [PersonName] nvarchar(50) NULL,
     [PersonLastName] nvarchar(50) NULL,
     [PersonTitle] nvarchar(100) NULL,
@@ -37,7 +40,52 @@ CREATE TABLE [TWC_BranchContacts] (
     [ModifiedDate] AS GETUTCDATE(),
     [BranchContactTypeId] int NOT NULL,
     [BranchPrimaryContactId] int NOT NULL,
-    CONSTRAINT [BranchContactID] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_TWC_BranchContacts_TWC_BranchContactTypes_BranchContactTypeId] FOREIGN KEY ([BranchContactTypeId]) REFERENCES [TWC_BranchContactTypes] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_TWC_BranchContacts_TWC_Branches_BranchPrimaryContactId] FOREIGN KEY ([BranchPrimaryContactId]) REFERENCES [TWC_Branches] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [BranchContactID] PRIMARY KEY ([BranchContactID]),
+    CONSTRAINT [FK_TWC_BranchContacts_TWC_BranchContactTypes_BranchContactTypeId] FOREIGN KEY ([BranchContactTypeId]) REFERENCES [TWC_BranchContactTypes] ([BranchContactTypeID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TWC_BranchContacts_TWC_Branches_BranchPrimaryContactId] FOREIGN KEY ([BranchPrimaryContactId]) REFERENCES [TWC_Branches] ([BranchID]) ON DELETE CASCADE
+);
+
+CREATE TABLE [TWC_Users] (
+    [UserID] int NOT NULL IDENTITY,
+    [CompanyID] int NULL,
+    [Email] nvarchar(50) NULL,
+    [Password] nvarchar(50) NULL,
+    [Phone] nvarchar(50) NULL,
+    [Address] nvarchar(50) NULL,
+    [City] nvarchar(50) NULL,
+    [State] nvarchar(50) NULL,
+    [ZipCode] nvarchar(50) NULL,
+    [SalesPersonID] int NULL,
+    [Role] nvarchar(50) NULL,
+    [CreatedDate] AS GETUTCDATE(),
+    [ModifiedDate] AS GETUTCDATE(),
+    [CreatedBy] nvarchar(max) NULL,
+    [ModifiedBy] nvarchar(max) NULL,
+    [Name] nvarchar(250) NULL,
+    [Active] bit NULL,
+    [Imagename] nvarchar(max) NULL,
+    [UserRefID] int NULL,
+    [LastName] nvarchar(max) NULL,
+    [Is_Agreement] bit NULL,
+    [XyziesId] nvarchar(max) NULL,
+    [ManagedBy] int NULL,
+    [Deleted] bit NULL,
+    [UserGuid] uniqueidentifier NULL,
+    [IPAddressRestriction] nvarchar(max) NULL,
+    [SocialMediaAccount] nvarchar(max) NULL,
+    [PhotoID] nvarchar(max) NULL,
+    [PasswordExpiryOn] datetime2 NULL,
+    [LoginIpAddress] nvarchar(max) NULL,
+    [IsPhoneVerified] bit NULL,
+    [IsIdentityUploaded] bit NULL,
+    [IsEmailVerified] bit NULL,
+    [IsUserPictureUploaded] bit NULL,
+    [StatusId] int NULL,
+    [IsRegisteredUser] nvarchar(max) NULL,
+    [AuthKey] nvarchar(max) NULL,
+    [InfusionSoftId] nvarchar(max) NULL,
+    [UserStatusKey] uniqueidentifier NULL,
+    [UserStatusChangedOn] datetime2 NULL,
+    [UserStatusChangedBy] int NULL,
+    CONSTRAINT [UserID] PRIMARY KEY ([UserID])
 );

@@ -51,7 +51,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 404 */)]
         public async Task<IActionResult> Get(
-            [FromQuery] BranchFilter filterModel,
+            [FromQuery] Filter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
@@ -118,7 +118,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(NotFoundResult), 404)] // By handling an exception middleware
         [SwaggerOperation(Tags = new[] { "Optimization API" })]
         public async Task<IActionResult> GetBranchOfCompany([FromRoute] int company_id,
-            [FromQuery] BranchFilter filterModel,
+            [FromQuery] Filter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {

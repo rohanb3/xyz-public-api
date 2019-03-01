@@ -30,7 +30,7 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
         /// </summary>
         public string SortBy
         {
-           get => IsNavigationProperty(_sortBy) ? $"{_sortBy}.name" : _sortBy;
+           get => _sortBy;
            set => _sortBy = value;
         }
 
@@ -56,7 +56,7 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public bool IsNavigationProperty(string param) => !string.IsNullOrEmpty(param) && (param.ToLower().Equals("branchname") || param.ToLower().Equals("status"));
+        ///*public bool IsNavigationProperty(string param) => !string.IsNullOrEmpty(param) && (param.ToLower().Equals("branchname") || p*/aram.ToLower().Equals("status"));
 
         //TODO or DELETE
         //public IQueryable<Branch> OrderQueryFilter(IQueryable<Branch> query) { }

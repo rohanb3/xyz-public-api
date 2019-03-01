@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class CompanyModel
     {
-        public int CompanyID { get; set; }
+        public int Id { get; set; }
         public string CompanyName { get; set; }
         public string LegalName { get; set; }
 
@@ -22,8 +21,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public string State { get; set; }
         public string ZipCode { get; set; }
         public int StoreID { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public int CreatedBy { get; set; }
         public int ModifiedBy { get; set; }
         public int Agentid { get; set; }
@@ -85,8 +84,11 @@ namespace Xyzies.TWC.Public.Api.Models
         public DateTime CompanyStatusChangedOn { get; set; }
         public int CompanyStatusChangedBy { get; set; }
 
-        [ScaffoldColumn(false)]
-        public IList<Branch> Branches { get; set; } = new List<Branch>();
+        public int CountSalesRep { get; set; } = 0;
+        public int CountBranch { get; set; } = 0;
+
+        public virtual IList<BranchModel> Branches { get; set; } = new List<BranchModel>();
+
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

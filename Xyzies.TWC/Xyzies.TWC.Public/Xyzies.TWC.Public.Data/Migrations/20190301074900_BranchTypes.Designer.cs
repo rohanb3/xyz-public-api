@@ -10,7 +10,7 @@ using Xyzies.TWC.Public.Data;
 namespace Xyzies.TWC.Public.Data.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20190227141223_BranchTypes")]
+    [Migration("20190301074900_BranchTypes")]
     partial class BranchTypes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("BranchID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddressLine1")
@@ -45,7 +46,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<int?>("CreatedBy");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasComputedColumnSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
@@ -59,6 +60,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("GeoLng")
                         .HasMaxLength(50);
+
+                    b.Property<bool>("IsDisabled")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
 
                     b.Property<int?>("ModifiedBy");
 
@@ -74,6 +79,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int>("Status");
 
+                    b.Property<int?>("UserId");
+
                     b.Property<string>("ZipCode")
                         .HasMaxLength(50);
 
@@ -82,6 +89,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.HasIndex("CompanyId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("TWC_Branches");
                 });
 
@@ -89,6 +98,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("BranchContactID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("BranchContactTypeId");
@@ -130,6 +140,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("BranchContactTypeID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
@@ -190,7 +201,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("CreatedBy");
 
-                    b.Property<DateTime?>("CreatedDate");
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasComputedColumnSql("GETUTCDATE()");
 
                     b.Property<string>("CrmCompanyId");
 
@@ -234,7 +247,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("ModifiedBy");
 
-                    b.Property<DateTime?>("ModifiedDate");
+                    b.Property<DateTime?>("ModifiedDate")
+                        .ValueGeneratedOnUpdate()
+                        .HasComputedColumnSql("GETUTCDATE()");
 
                     b.Property<bool?>("NoSyncInfusion");
 
@@ -278,15 +293,126 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("TypeOfCompany");
 
+                    b.Property<int?>("UserId");
+
                     b.Property<string>("WebsiteList");
 
                     b.Property<string>("XyziesId");
 
                     b.Property<string>("ZipCode");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("CompanyID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TWC_Companies");
+                });
+
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("UserID")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool?>("Active");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("AuthKey");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("CompanyID");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasComputedColumnSql("GETUTCDATE()");
+
+                    b.Property<bool?>("Deleted");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("IPAddressRestriction");
+
+                    b.Property<string>("Imagename");
+
+                    b.Property<string>("InfusionSoftId");
+
+                    b.Property<bool?>("IsEmailVerified");
+
+                    b.Property<bool?>("IsIdentityUploaded");
+
+                    b.Property<bool?>("IsPhoneVerified");
+
+                    b.Property<string>("IsRegisteredUser");
+
+                    b.Property<bool?>("IsUserPictureUploaded");
+
+                    b.Property<bool?>("Is_Agreement");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("LoginIpAddress");
+
+                    b.Property<int?>("ManagedBy");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .ValueGeneratedOnUpdate()
+                        .HasComputedColumnSql("GETUTCDATE()");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime?>("PasswordExpiryOn");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("PhotoID");
+
+                    b.Property<string>("Role")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("SalesPersonID");
+
+                    b.Property<string>("SocialMediaAccount");
+
+                    b.Property<string>("State")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("StatusId");
+
+                    b.Property<Guid?>("UserGuid");
+
+                    b.Property<int?>("UserRefID");
+
+                    b.Property<int?>("UserStatusChangedBy");
+
+                    b.Property<DateTime?>("UserStatusChangedOn");
+
+                    b.Property<Guid?>("UserStatusKey");
+
+                    b.Property<string>("XyziesId");
+
+                    b.Property<string>("ZipCode")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id")
+                        .HasName("UserID");
+
+                    b.ToTable("TWC_Users");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
@@ -295,6 +421,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .WithMany("Branches")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.User")
+                        .WithMany("Branches")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
@@ -308,6 +438,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .WithMany("BranchContacts")
                         .HasForeignKey("BranchPrimaryContactId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
+                {
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.User")
+                        .WithMany("Companies")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

@@ -97,6 +97,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBranchManager, BranchManager>();
             services.AddScoped<ICompanyManager, CompanyManager>();
 

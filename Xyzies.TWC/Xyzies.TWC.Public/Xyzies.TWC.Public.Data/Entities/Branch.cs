@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities
@@ -10,6 +11,8 @@ namespace Xyzies.TWC.Public.Data.Entities
     /// </summary>
     public class Branch : BaseEntity<int>
     {
+        [Column ("BranchID")]
+        public new int Id { get; set; }
         public string BranchName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -24,6 +27,8 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string GeoLat { get; set; }
         public string GeoLng { get; set; }
 
+        public bool IsDisabled { get; set; }
+
         // TODO: Need to discuss branch statuses
         public BranchStatus Status { get; set; }
 
@@ -37,7 +42,8 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         public virtual Company Company { get; set; }
 
-        public virtual IEnumerable<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
+        public virtual ICollection<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
+
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

@@ -26,11 +26,13 @@ namespace Xyzies.TWC.Public.Api.Controllers
         private readonly ICompanyRepository _companyRepository = null;
         private readonly ILogger<CompanyController> _logger = null;
         private readonly ICompanyManager _companyManager = null;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="companyRepository"></param>
+        /// <param name="companyManager"></param>
         public CompanyController(ILogger<CompanyController> logger,
             ICompanyRepository companyRepository, ICompanyManager companyManager)
         {
@@ -49,7 +51,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         public async Task<IActionResult> Get(
-            [FromQuery] CompanyFilter filterModel,
+            [FromQuery] Filter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
@@ -66,22 +68,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             return Ok(result);
 
-            //var companies = new List<Company>();
-            //try
-            //{
-            //    companies = (await _companyRepository.GetAsync())?.ToList();
-            //}
-            //catch (SqlException ex)
-            //{
-            //    return BadRequest(ex.Message);
-            //}
-
-            //if (companies.Count.Equals(0))
-            //{
-            //    return NotFound();
-            //}
-            //var companyModels = companies.Adapt<CompanyModel[]>();
-            //return Ok(companies);
         }
 
         /// <summary>

@@ -1,14 +1,13 @@
 ﻿using System.Linq;
-using Xyzies.TWC.Public.Api.Controllers;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
-using Xyzies.TWC.Public.Data.Entities;
+using Xyzies.TWC.Public.Api.Models;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
     /// <summary>
     /// Forcing to implement Pagination, Filtering and Sorting
     /// </summary>
-    public interface IManager
+    public interface IManager<T>
     {
         /// <summary>
         /// Filtering settings
@@ -16,7 +15,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="filter"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        IQueryable<Branch> Filtering(BranchFilter filter, IQueryable<Branch> query);
+        IQueryable<T> Filtering(Filter filter, IQueryable<T> query);
 
         /// <summary>
         /// Sorting settings
@@ -24,7 +23,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="filter"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        IQueryable<Branch> Sorting(Sortable filter, IQueryable<Branch> query);
+        IQueryable<T> Sorting(Sortable filter, IQueryable<T> query);
 
         /// <summary>
         /// Pagination settings
@@ -32,6 +31,6 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="filter"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        IQueryable<Branch> Pagination(Paginable filter, IQueryable<Branch> query);
+        IQueryable<T> Pagination(Paginable filter, IQueryable<T> query);
     }
 }
