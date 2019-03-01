@@ -54,7 +54,7 @@
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Post(Xyzies.TWC.Public.Api.Models.UploadBranchModel)">
             <summary>
-            
+            POST api/branches
             </summary>
             <param name="branchModel"></param>
             <returns></returns>
@@ -79,6 +79,9 @@
             
             </summary>
             <param name="id"></param>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Dispose(System.Boolean)">
+            <inheritdoc />
         </member>
         <member name="T:Xyzies.TWC.Public.Api.Controllers.CompanyController">
             <summary>
@@ -108,7 +111,7 @@
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Post(Xyzies.TWC.Public.Api.Models.UploadCompanyModel)">
             <summary>
-            // POST api/company
+            POST api/company
             </summary>
             <param name="companyModel"></param>
         </member>

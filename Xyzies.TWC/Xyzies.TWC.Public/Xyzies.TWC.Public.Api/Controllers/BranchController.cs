@@ -21,7 +21,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// </summary>
     [Route("api")]
     [ApiController]
-    public class BranchController : ControllerBase
+    public class BranchController : Controller
     {
         private readonly ILogger<BranchController> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
@@ -247,5 +247,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         // TODO: Dispose
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // TODO: Disposing
+                _branchRepository.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }
