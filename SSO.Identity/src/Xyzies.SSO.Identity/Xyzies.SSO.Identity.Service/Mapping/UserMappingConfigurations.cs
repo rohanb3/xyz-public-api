@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using System.Linq;
+using Xyzies.SSO.Identity.Data.Entity;
 using Xyzies.SSO.Identity.Data.Entity.Azure;
 using Xyzies.SSO.Identity.Services.Models.User;
 
