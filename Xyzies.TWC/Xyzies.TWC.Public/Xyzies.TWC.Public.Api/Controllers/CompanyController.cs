@@ -108,7 +108,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// // POST api/company
+        /// POST api/company
         /// </summary>
         /// <param name="companyModel"></param>
         [HttpPost(Name = "CreateNewCompany")]
@@ -149,7 +149,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Put(int id, [FromBody] CompanyModel companyModel)
+        public IActionResult Put([FromRoute]int id, [FromBody] CompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {
@@ -189,7 +189,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public async Task<IActionResult> Patch([FromRoute] int id, [FromQuery] bool isEnabled)
+        public async Task<IActionResult> Patch([FromRoute]int id, [FromQuery] bool isEnabled)
         {
             if (!ModelState.IsValid)
             {

@@ -142,7 +142,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// POST api/branches
         /// </summary>
         /// <param name="branchModel"></param>
         /// <returns></returns>
@@ -182,7 +182,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Put(int id, [FromBody] UploadBranchModel branchModel)
+        public IActionResult Put([FromRoute]int id, [FromBody] UploadBranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
@@ -222,7 +222,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Patch([FromRoute] int id, [FromQuery] bool isEnabled)
+        public IActionResult Patch([FromRoute]int id, [FromQuery] bool isEnabled)
         {
             if (!ModelState.IsValid)
             {
@@ -230,8 +230,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             // TODO: Refactoring
+            var entityState = _branchRepository.SetActivationState(id, isEnabled);
 
-            var entityState = _branchRepository.BranchActivator(id, isEnabled);
             return Ok(entityState);
         }
 

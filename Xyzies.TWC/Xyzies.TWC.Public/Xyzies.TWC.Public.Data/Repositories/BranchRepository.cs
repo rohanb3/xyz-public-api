@@ -39,14 +39,20 @@ namespace Xyzies.TWC.Public.Data.Repositories
                 .Where(predicate));
 
         /// <inheritdoc />
-        public EntityState BranchActivator(int id, bool is_enabled)
+        public async Task<bool> SetActivationState(int id, bool isEnabled)
         {
-            var branch = base.Data.FirstOrDefaultAsync(x => x.Id == id).Result;
-            branch.IsEnabled = is_enabled;
+            var company = await base.Data.FirstOrDefaultAsync(x => x.Id == id);
+            if (company == null)
+            {
+                return false;
+            }
 
-            var state = Data.Update(branch).State;
-            DbContext.SaveChanges();
-            return state;
+            company.IsEnabled = isEnabled;
+
+            base.Data.Update(company);
+            await DbContext.SaveChangesAsync();
+
+            return true;
         }
     }
 }

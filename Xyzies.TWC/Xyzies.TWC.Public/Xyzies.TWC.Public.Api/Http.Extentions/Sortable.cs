@@ -50,17 +50,7 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
         /// <returns></returns>
         public bool IsAscending() => string.IsNullOrEmpty(SortOrder) ? false :
             SortOrder.Equals(Direction.Asc, StringComparison.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="param"></param>
-        /// <returns></returns>
-        ///*public bool IsNavigationProperty(string param) => !string.IsNullOrEmpty(param) && (param.ToLower().Equals("branchname") || p*/aram.ToLower().Equals("status"));
-
-        //TODO or DELETE
-        //public IQueryable<Branch> OrderQueryFilter(IQueryable<Branch> query) { }
-
+        
         /// <summary>
         /// Sorting direction options
         /// </summary>
