@@ -208,20 +208,20 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// api/branches/5/is_disable
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="is_disable"></param>
+        /// <param name="is_enabled"></param>
         /// <returns></returns>
-        [HttpPatch("branches/{id}/is_disable")]
+        [HttpPatch("{id}/is_enabled")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
-        public IActionResult Putch(int id, [FromRoute] bool is_disable)
+        public IActionResult Putch(int id, [FromRoute] bool is_enabled)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var entityState = _branchRepository.BranchActivator(id, is_disable);
+            var entityState = _branchRepository.BranchActivator(id, is_enabled);
             return Ok(entityState);
         }
 

@@ -172,6 +172,27 @@ namespace Xyzies.TWC.Public.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// api/branches/5/is_disable
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="is_enabled"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/is_enabled")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        public IActionResult Putch(int id, [FromRoute] bool is_enabled)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var entityState = _companyRepository.CompanyActivator(id, is_enabled);
+            return Ok(entityState);
+        }
+
         // DELETE api/company/5
         [HttpDelete("{id}")]
         public void Delete(int id)

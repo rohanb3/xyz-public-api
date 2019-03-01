@@ -31,7 +31,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public string Status { get; set; }
         public string State { set; get; }
 
-        public bool IsDisabled { set; get; }
+        public bool IsEnabled { set; get; }
 
         [DataType(DataType.DateTime)]
         public DateTime? CreatedDate { get; set; }

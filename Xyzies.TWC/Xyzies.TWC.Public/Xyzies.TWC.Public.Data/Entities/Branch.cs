@@ -27,7 +27,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string GeoLat { get; set; }
         public string GeoLng { get; set; }
 
-        public bool IsDisabled { get; set; }
+        public bool IsEnabled { get; set; }
 
         // TODO: Need to discuss branch statuses
         public BranchStatus Status { get; set; }

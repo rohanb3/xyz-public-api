@@ -14,12 +14,15 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .HasComputedColumnSql("GETUTCDATE()")
                 .ValueGeneratedOnAdd()
                 .Metadata
-                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
+                .AfterSaveBehavior = PropertySaveBehavior.Ignore;
+
             companyBuilder.Property(p => p.ModifiedDate)
                 .HasComputedColumnSql("GETUTCDATE()")
                 .ValueGeneratedOnUpdate()
                 .Metadata
                 .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
+
+            companyBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
         }
     }
 }

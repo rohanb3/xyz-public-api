@@ -31,6 +31,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public string PrimaryContactName { get; set; }
         public string PrimaryContactTitle { get; set; }
 
+        public bool IsEnabled { get; set; }
+
         [Phone(ErrorMessage = "Please enter valid fax no.")]
         public string Fax { get; set; }
 

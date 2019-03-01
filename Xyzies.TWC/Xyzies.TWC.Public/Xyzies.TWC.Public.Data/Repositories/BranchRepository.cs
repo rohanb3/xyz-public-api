@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories
@@ -30,7 +29,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<IQueryable<Branch>> GetAsync() =>
             await Task.FromResult(base.Data
                 .Include(b => b.BranchContacts)
-                    .ThenInclude(x=>x.BranchContactType));
+                    .ThenInclude(x => x.BranchContactType));
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync(Expression<Func<Branch, bool>> predicate) =>
@@ -40,14 +39,14 @@ namespace Xyzies.TWC.Public.Data.Repositories
                 .Where(predicate));
 
         /// <inheritdoc />
-        public EntityState BranchActivator(int id, bool is_disable)
+        public EntityState BranchActivator(int id, bool is_enabled)
         {
             var branch = base.Data.FirstOrDefaultAsync(x => x.Id == id).Result;
-            branch.IsDisabled = is_disable;
+            branch.IsEnabled = is_enabled;
 
-            var act = Data.Update(branch).State;
+            var state = Data.Update(branch).State;
             DbContext.SaveChanges();
-            return act;
+            return state;
         }
     }
 }

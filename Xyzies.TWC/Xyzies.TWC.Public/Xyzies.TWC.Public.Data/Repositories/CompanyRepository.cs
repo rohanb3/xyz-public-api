@@ -28,5 +28,16 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
             return companies;
         }
+
+        /// <inheritdoc />
+        public EntityState CompanyActivator(int id, bool is_enabled)
+        {
+            var company = base.Data.FirstOrDefaultAsync(x => x.Id == id).Result;
+            company.IsEnabled = is_enabled;
+
+            var state = Data.Update(company).State;
+            DbContext.SaveChanges();
+            return state;
+        }
     }
 }

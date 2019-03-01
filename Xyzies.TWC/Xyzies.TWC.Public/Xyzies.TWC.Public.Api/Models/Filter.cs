@@ -37,7 +37,7 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public bool IsDisable { get; set; } = true;
+        public bool IsDisable { get; set; }
 
         /// <summary>
         /// 

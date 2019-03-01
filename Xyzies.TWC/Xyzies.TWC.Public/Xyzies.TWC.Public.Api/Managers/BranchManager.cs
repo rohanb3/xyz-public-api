@@ -122,7 +122,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 query = query.Where(x => x.BranchName.ToLower().Contains(filter.Name.ToLower()));
             }
 
-            query = query.Where(x => x.IsDisabled.Equals(filter.IsDisable));
+            query = query.Where(x => x.IsEnabled.Equals(filter.IsDisable));
 
             if (!string.IsNullOrEmpty(filter.Id))
             {

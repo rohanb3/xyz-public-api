@@ -33,7 +33,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .Metadata
                 .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
 
-            branchBuilder.Property(p => p.IsDisabled).HasDefaultValue(true);
+            branchBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
 
             branchBuilder.HasOne(n => n.Company);
         }
