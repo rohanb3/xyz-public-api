@@ -12,13 +12,65 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 name: "TWC_BranchContactTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    BranchContactTypeID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("BranchContactTypeID", x => x.Id);
+                    table.PrimaryKey("BranchContactTypeID", x => x.BranchContactTypeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TWC_Users",
+                columns: table => new
+                {
+                    UserID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CompanyID = table.Column<int>(nullable: true),
+                    Email = table.Column<string>(maxLength: 50, nullable: true),
+                    Password = table.Column<string>(maxLength: 50, nullable: true),
+                    Phone = table.Column<string>(maxLength: 50, nullable: true),
+                    Address = table.Column<string>(maxLength: 50, nullable: true),
+                    City = table.Column<string>(maxLength: 50, nullable: true),
+                    State = table.Column<string>(maxLength: 50, nullable: true),
+                    ZipCode = table.Column<string>(maxLength: 50, nullable: true),
+                    SalesPersonID = table.Column<int>(nullable: true),
+                    Role = table.Column<string>(maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 250, nullable: true),
+                    Active = table.Column<bool>(nullable: true),
+                    Imagename = table.Column<string>(nullable: true),
+                    UserRefID = table.Column<int>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Is_Agreement = table.Column<bool>(nullable: true),
+                    XyziesId = table.Column<string>(nullable: true),
+                    ManagedBy = table.Column<int>(nullable: true),
+                    Deleted = table.Column<bool>(nullable: true),
+                    UserGuid = table.Column<Guid>(nullable: true),
+                    IPAddressRestriction = table.Column<string>(nullable: true),
+                    SocialMediaAccount = table.Column<string>(nullable: true),
+                    PhotoID = table.Column<string>(nullable: true),
+                    PasswordExpiryOn = table.Column<DateTime>(nullable: true),
+                    LoginIpAddress = table.Column<string>(nullable: true),
+                    IsPhoneVerified = table.Column<bool>(nullable: true),
+                    IsIdentityUploaded = table.Column<bool>(nullable: true),
+                    IsEmailVerified = table.Column<bool>(nullable: true),
+                    IsUserPictureUploaded = table.Column<bool>(nullable: true),
+                    StatusId = table.Column<int>(nullable: true),
+                    IsRegisteredUser = table.Column<string>(nullable: true),
+                    AuthKey = table.Column<string>(nullable: true),
+                    InfusionSoftId = table.Column<string>(nullable: true),
+                    UserStatusKey = table.Column<Guid>(nullable: true),
+                    UserStatusChangedOn = table.Column<DateTime>(nullable: true),
+                    UserStatusChangedBy = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("UserID", x => x.UserID);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,8 +88,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     State = table.Column<string>(nullable: true),
                     ZipCode = table.Column<string>(nullable: true),
                     StoreID = table.Column<int>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
                     CreatedBy = table.Column<int>(nullable: true),
                     ModifiedBy = table.Column<int>(nullable: true),
                     Agentid = table.Column<int>(nullable: true),
@@ -94,18 +146,25 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     ReferralUserId = table.Column<int>(nullable: true),
                     CompanyStatusKey = table.Column<Guid>(nullable: true),
                     CompanyStatusChangedOn = table.Column<DateTime>(nullable: true),
-                    CompanyStatusChangedBy = table.Column<int>(nullable: true)
+                    CompanyStatusChangedBy = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TWC_Companies", x => x.CompanyID);
+                    table.PrimaryKey("CompanyID", x => x.CompanyID);
+                    table.ForeignKey(
+                        name: "FK_TWC_Companies_TWC_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "TWC_Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TWC_Branches",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    BranchID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     BranchName = table.Column<string>(maxLength: 250, nullable: false),
                     Email = table.Column<string>(maxLength: 50, nullable: true),
@@ -118,29 +177,37 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     AddressLine2 = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLat = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLng = table.Column<string>(maxLength: 50, nullable: true),
+                    IsDisabled = table.Column<bool>(nullable: false, defaultValue: true),
                     Status = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
                     ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
                     CreatedBy = table.Column<int>(nullable: true),
                     ModifiedBy = table.Column<int>(nullable: true),
-                    CompanyId = table.Column<int>(nullable: false)
+                    CompanyId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("BranchID", x => x.Id);
+                    table.PrimaryKey("BranchID", x => x.BranchID);
                     table.ForeignKey(
                         name: "FK_TWC_Branches_TWC_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "TWC_Companies",
                         principalColumn: "CompanyID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TWC_Branches_TWC_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "TWC_Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TWC_BranchContacts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    BranchContactID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     PersonName = table.Column<string>(maxLength: 50, nullable: true),
                     PersonLastName = table.Column<string>(maxLength: 50, nullable: true),
@@ -153,18 +220,18 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("BranchContactID", x => x.Id);
+                    table.PrimaryKey("BranchContactID", x => x.BranchContactID);
                     table.ForeignKey(
                         name: "FK_TWC_BranchContacts_TWC_BranchContactTypes_BranchContactTypeId",
                         column: x => x.BranchContactTypeId,
                         principalTable: "TWC_BranchContactTypes",
-                        principalColumn: "Id",
+                        principalColumn: "BranchContactTypeID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TWC_BranchContacts_TWC_Branches_BranchPrimaryContactId",
                         column: x => x.BranchPrimaryContactId,
                         principalTable: "TWC_Branches",
-                        principalColumn: "Id",
+                        principalColumn: "BranchID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -182,6 +249,16 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 name: "IX_TWC_Branches_CompanyId",
                 table: "TWC_Branches",
                 column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TWC_Branches_UserId",
+                table: "TWC_Branches",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TWC_Companies_UserId",
+                table: "TWC_Companies",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -197,6 +274,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "TWC_Companies");
+
+            migrationBuilder.DropTable(
+                name: "TWC_Users");
         }
     }
 }

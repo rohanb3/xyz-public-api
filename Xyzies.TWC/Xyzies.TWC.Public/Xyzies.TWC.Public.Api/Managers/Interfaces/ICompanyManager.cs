@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
     /// <summary>
     /// Facade of manage a company requests
     /// </summary>
-    public interface ICompanyManager
+    public interface ICompanyManager : IManager<Company>
     {
         /// <summary>
         /// Getting all companies or first 15 by defolt
@@ -16,7 +17,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="sortable"></param>
         /// <param name="paginable"></param>
         /// <returns></returns>
-        Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter, Sortable sortable, Paginable paginable);
+        Task<PagingResult<CompanyModel>> GetCompanies(Filter filter, Sortable sortable, Paginable paginable);
 
     }
 }

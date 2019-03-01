@@ -16,14 +16,14 @@ namespace Xyzies.TWC.Public.Api
                 .UseStartup<Startup>()
                 .UseKestrel()
 
-                //.ConfigureKestrel(serverOptions =>
-                //{
-                //    serverOptions.ListenAnyIP(port, listenOptions =>
-                //    {
-                //        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                //        listenOptions.UseHttps("localhost.pfx", "Secret001");
-                //    });
-                //})
+                .ConfigureKestrel(serverOptions =>
+                {
+                    serverOptions.ListenAnyIP(port, listenOptions =>
+                    {
+                        //listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                        //listenOptions.UseHttps("localhost.pfx", "Secret001");
+                    });
+                })
 
                 .ConfigureLogging(logging =>
                 {

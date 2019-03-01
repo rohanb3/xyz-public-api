@@ -31,6 +31,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public EfCoreBaseRepository(DbContext dbContext)
             : base(dbContext)
         {
+            // TODO: Check and remove
             // For unit testing in memory db
             //if (!dbContext.Database.ProviderName.Equals("Microsoft.EntityFrameworkCore.InMemory"))
             //{

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xyzies.TWC.Public.Data;
 
 namespace Xyzies.TWC.Public.Data.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20190301074900_BranchTypes")]
+    partial class BranchTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +61,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("GeoLng")
                         .HasMaxLength(50);
 
-                    b.Property<bool>("IsEnabled")
+                    b.Property<bool>("IsDisabled")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
@@ -222,10 +224,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<bool?>("IsAgreement");
 
                     b.Property<bool?>("IsCallCenter");
-
-                    b.Property<bool>("IsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
 
                     b.Property<bool?>("IsMarketPlace");
 

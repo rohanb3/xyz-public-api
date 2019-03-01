@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities
@@ -8,6 +9,9 @@ namespace Xyzies.TWC.Public.Data.Entities
     /// </summary>
     public class BranchContact : BaseEntity<int>
     {
+        [Column("BranchContactID")]
+        public new int Id { get; set; }
+
         public string PersonName { get; set; }
 
         public string PersonLastName { get; set; }

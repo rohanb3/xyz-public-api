@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Xyzies.TWC.Public.Api.Models
+﻿namespace Xyzies.TWC.Public.Api.Models
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class BranchContactModel
     {
+        public int Id { get; set; }
+
         public string PersonName { get; set; }
 
         public string PersonLastName { get; set; }
