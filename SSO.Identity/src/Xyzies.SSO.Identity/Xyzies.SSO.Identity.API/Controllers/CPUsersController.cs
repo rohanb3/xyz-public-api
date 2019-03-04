@@ -26,7 +26,7 @@ namespace Xyzies.SSO.Identity.API.Controllers
             var role = HttpContext.User.Claims.FirstOrDefault(x => x.Type == Consts.RoleClaimType)?.Value;
             var companyId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == Consts.CompanyIdPropertyName)?.Value;
 
-            var users = await _users.GetAllCpUsers(role, int.Parse(companyId));
+            var users = await _users.GetAllCpUsers(role, companyId);
             if (users == null)
             {
                 return new ContentResult { StatusCode = 403 };
@@ -41,7 +41,7 @@ namespace Xyzies.SSO.Identity.API.Controllers
             var role = HttpContext.User.Claims.FirstOrDefault(x => x.Type == Consts.RoleClaimType)?.Value;
             var companyId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == Consts.CompanyIdPropertyName)?.Value;
 
-            var user = await _users.GetUserById(id, userId, role, int.Parse(companyId));
+            var user = await _users.GetUserById(id, userId, role, companyId);
             if (user == null)
             {
                 return new ContentResult { StatusCode = 403 };

@@ -18,7 +18,7 @@ namespace Xyzies.SSO.Identity.Services.Service
             _cpUserRepo = cpUserRepo;
         }
 
-        public async Task<List<CpUser>> GetAllCpUsers(string authorRole, int companyId)
+        public async Task<List<CpUser>> GetAllCpUsers(string authorRole, string companyId)
         {
             if (authorRole == Consts.Roles.SuperAdmin)
             {
@@ -26,15 +26,15 @@ namespace Xyzies.SSO.Identity.Services.Service
                 return users.Adapt<List<CpUser>>();
             }
 
-            if (authorRole == Consts.Roles.RetailerAdmin)
+            if (authorRole == Consts.Roles.RetailerAdmin && !string.IsNullOrEmpty(companyId))
             {
-                var companyUsers = await _cpUserRepo.GetByAsync(x => x.CompanyId == companyId);
+                var companyUsers = await _cpUserRepo.GetByAsync(x => x.CompanyId == int.Parse(companyId));
                 return companyUsers.Adapt<List<CpUser>>();
             }
             return null;
         }
 
-        public async Task<CpUser> GetUserById(int id, int authorId, string authorRole, int companyId)
+        public async Task<CpUser> GetUserById(int id, int authorId, string authorRole, string companyId)
         {
             if (authorId != id && authorRole == Consts.Roles.SalesRep)
             {
@@ -47,9 +47,9 @@ namespace Xyzies.SSO.Identity.Services.Service
                 return user.Adapt<CpUser>();
             }
 
-            if (authorRole == Consts.Roles.RetailerAdmin || authorRole == Consts.Roles.SalesRep)
+            if (authorRole == Consts.Roles.RetailerAdmin || authorRole == Consts.Roles.SalesRep && !string.IsNullOrEmpty(companyId))
             {
-                var companyUser = await _cpUserRepo.GetByAsync(x => x.CompanyId == companyId && x.Id == id);
+                var companyUser = await _cpUserRepo.GetByAsync(x => x.CompanyId == int.Parse(companyId) && x.Id == id);
                 return companyUser.Adapt<CpUser>();
             }
             return null;

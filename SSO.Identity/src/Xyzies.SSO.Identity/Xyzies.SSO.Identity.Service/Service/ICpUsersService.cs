@@ -8,7 +8,7 @@ namespace Xyzies.SSO.Identity.Services.Service
 {
     public interface ICpUsersService
     {
-        Task<List<CpUser>> GetAllCpUsers(string authorRole, int companyId);
-        Task<CpUser> GetUserById(int id,int authorId, string authorRole, int companyId);
+        Task<List<CpUser>> GetAllCpUsers(string authorRole, string companyId);
+        Task<CpUser> GetUserById(int id,int authorId, string authorRole, string companyId);
     }
 }
