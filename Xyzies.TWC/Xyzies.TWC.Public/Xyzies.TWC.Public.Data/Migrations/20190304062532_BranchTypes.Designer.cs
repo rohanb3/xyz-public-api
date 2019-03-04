@@ -10,8 +10,8 @@ using Xyzies.TWC.Public.Data;
 namespace Xyzies.TWC.Public.Data.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20190301143455_AfterSaveBehaviorOnCompany")]
-    partial class AfterSaveBehaviorOnCompany
+    [Migration("20190304062532_BranchTypes")]
+    partial class BranchTypes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

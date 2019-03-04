@@ -147,6 +147,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     CompanyStatusKey = table.Column<Guid>(nullable: true),
                     CompanyStatusChangedOn = table.Column<DateTime>(nullable: true),
                     CompanyStatusChangedBy = table.Column<int>(nullable: true),
+                    IsEnabled = table.Column<bool>(nullable: false, defaultValue: true),
                     UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -177,7 +178,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     AddressLine2 = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLat = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLng = table.Column<string>(maxLength: 50, nullable: true),
-                    IsDisabled = table.Column<bool>(nullable: false, defaultValue: true),
+                    IsEnabled = table.Column<bool>(nullable: false, defaultValue: true),
                     Status = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
                     ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
