@@ -26,9 +26,11 @@ namespace Xyzies.TWC.Public.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new CompanyConfiguration());
+            modelBuilder.ApplyConfiguration(new BranchContactTypeConfiguration());
             modelBuilder.ApplyConfiguration(new BranchConfiguration());
             modelBuilder.ApplyConfiguration(new BranchContactConfiguration());
-            modelBuilder.ApplyConfiguration(new BranchContactTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

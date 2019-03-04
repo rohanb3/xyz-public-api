@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Xyzies.TWC.Public.Api.Http.Extentions;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
     /// <summary>
     /// 
     /// </summary>
-    public class CompanyFilter : Searchable
+    public class Filter //: Searchable
     {
         /// <summary>
         /// 
@@ -28,25 +27,35 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string CompanyName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string CompanyId { get; set; }
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsDisable { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string CountValue { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetCompanyName()
+        public IEnumerable<string> GetName()
         {
-            if (string.IsNullOrEmpty(CompanyName))
+            if (string.IsNullOrEmpty(Name))
             {
                 return Enumerable.Empty<string>();
             }
 
-            return CompanyName.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
+            return Name.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .ValueGeneratedOnUpdate()
                 .Metadata
                 .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
+
             branchContactBuilder
                 .HasOne(n => n.BranchContactType)
                 .WithMany(c => c.BranchContacts)

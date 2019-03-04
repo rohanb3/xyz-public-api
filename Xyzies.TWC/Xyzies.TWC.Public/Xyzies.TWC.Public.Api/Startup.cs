@@ -55,9 +55,9 @@ namespace Xyzies.TWC.Public.Api
 
                 });
 
-            string dbConnectionString = $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
+            string dbConnectionString = $"Data Source=173.82.28.90;Initial Catalog=timewarner_20181026;User ID=sa;Password=4@ndr3w.";
             //LOCAL: $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
-            //REMOTE: $"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
+            //REMOTE: $"Data Source=173.82.28.90;Initial Catalog=timewarner_20181026;User ID=sa;Password=4@ndr3w.";
             //RELEASE: Configuration["connectionStrings:db"];
 
 
@@ -97,6 +97,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBranchManager, BranchManager>();
             services.AddScoped<ICompanyManager, CompanyManager>();
 
@@ -128,17 +129,18 @@ namespace Xyzies.TWC.Public.Api
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts()
+                    .UseHttpsRedirection();
             }
 
             TypeAdapterConfig<Branch, BranchModel>.NewConfig();
             TypeAdapterConfig<Company, CompanyModel>.NewConfig();
             TypeAdapterConfig<Branch, UploadBranchModel>.NewConfig();
+            TypeAdapterConfig<UploadBranchModel, Branch>.NewConfig();
             TypeAdapterConfig<Company, UploadCompanyModel>.NewConfig();
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 
             app.UseHealthChecks("/healthz")
-                .UseHttpsRedirection()
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()

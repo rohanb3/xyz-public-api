@@ -8,6 +8,7 @@ using Xyzies.SSO.Identity.Services.Service;
 using Xyzies.SSO.Identity.Services.Models.User;
 using Xyzies.SSO.Identity.API.Filters;
 using Xyzies.SSO.Identity.Data.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {

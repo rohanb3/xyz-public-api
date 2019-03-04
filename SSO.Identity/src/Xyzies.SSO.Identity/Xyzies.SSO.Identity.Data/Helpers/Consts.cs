@@ -9,6 +9,7 @@
         public const string RetailerIdPropertyName = _extensionPropertyTemplate + "RetailerId";
         public const string CompanyIdPropertyName = _extensionPropertyTemplate + "CompanyId";
         public const string ManagerIdPropertyName = _extensionPropertyTemplate + "ManagerId";
+        public const string UserIdPropertyName = "oid";
 
         public class GraphApi
         {
@@ -21,7 +22,7 @@
         {
             public const string SalesRep = "SalesRep";
             public const string SuperAdmin = "SuperAdmin";
-            public const string Admin = "Admin";
+            public const string RetailerAdmin = "RetailerAdmin";
         }
         public class Cache
         {
