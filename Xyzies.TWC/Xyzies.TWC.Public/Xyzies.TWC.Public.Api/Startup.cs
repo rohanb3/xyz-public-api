@@ -61,7 +61,10 @@ namespace Xyzies.TWC.Public.Api
             //RELEASE: Configuration["connectionStrings:db"];
 
 
-            services//.AddEntityFrameworkSqlServer()
+            //services.AddDbContextPool<AppDataContext>(ctxOptions =>
+            //        ctxOptions.UseSqlServer(dbConnectionString));
+
+            services.AddEntityFrameworkSqlServer()
                 .AddDbContext<AppDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));
             
@@ -92,6 +95,8 @@ namespace Xyzies.TWC.Public.Api
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
+           // services.AddEntityFrameworkSqlServer();
+
             #region DI configuration
             
             services.AddScoped<DbContext, AppDataContext>();
@@ -102,7 +107,6 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyManager, CompanyManager>();
 
             #endregion
-
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info

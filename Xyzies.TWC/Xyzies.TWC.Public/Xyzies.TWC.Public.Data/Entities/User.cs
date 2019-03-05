@@ -45,11 +45,11 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         [Column("BranchID")]
         public int? BranchId { get; set; }
-        public Branch Branch { get; set; }
+        public virtual Branch Branch { get; set; }
 
         [Column("CompanyID")]
         public int? CompanyId { get; set; }
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
 
     }
 }

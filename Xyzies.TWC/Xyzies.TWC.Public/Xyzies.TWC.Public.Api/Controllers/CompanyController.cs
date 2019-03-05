@@ -48,9 +48,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <returns></returns>
         [HttpGet(Name = "GetListCompanies")]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 400 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(
             [FromQuery] CompanyFilter filterModel,
@@ -59,10 +59,18 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            var result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
+            PagingResult<CompanyModel> result = new PagingResult<CompanyModel>();
+            if (filterModel.UserIds.Count > 0)
+            {
+                return Ok(await _companyManager.GetCompanyByUser(filterModel.UserIds));
+            }
+            else
+            {
+                result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
+            }
             if (!result.Data.Any())
             {
                 return NotFound();

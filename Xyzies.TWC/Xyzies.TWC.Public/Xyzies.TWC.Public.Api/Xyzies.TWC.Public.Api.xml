@@ -257,6 +257,9 @@
         <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <inheritdoc />
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranchesByUser(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc />
+        </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Filtering(Xyzies.TWC.Public.Api.Models.BranchFilter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
             <inheritdoc />
         </member>
@@ -265,6 +268,11 @@
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Pagination(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
             <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Dispose">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.CompanyManager">
             <inheritdoc />
@@ -283,6 +291,9 @@
         <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanyById(System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanyByUser(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc />
+        </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.Filtering(Xyzies.TWC.Public.Api.Models.CompanyFilter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Company})">
             <inheritdoc />
         </member>
@@ -291,6 +302,11 @@
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.Pagination(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Company})">
             <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.Dispose">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager">
             <summary>
@@ -323,6 +339,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranchesByUser(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            
+            </summary>
+            <param name="listUsersId"></param>
+            <returns></returns>
+        </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager">
             <summary>
             Facade of manage a company requests
@@ -342,6 +365,13 @@
             
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager.GetCompanyByUser(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            
+            </summary>
+            <param name="listUsersId"></param>
             <returns></returns>
         </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager`1">

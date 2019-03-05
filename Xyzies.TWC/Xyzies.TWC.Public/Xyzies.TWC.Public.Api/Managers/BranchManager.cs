@@ -57,7 +57,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
                 bool userCountfiltr = true;
 
-                if (filter.UserCountFilter != null && branchModel.CountSalesRep != filter.UserCountFilter)
+                if (filter.UserCountFilter.HasValue && branchModel.CountSalesRep != filter.UserCountFilter)
                 {
                     userCountfiltr = false;
                 }
@@ -88,8 +88,6 @@ namespace Xyzies.TWC.Public.Api.Managers
         {
             IQueryable<Branch> query = await _branchRepository.GetAsync(x => x.Company.Id == companyId);
 
-            var tt = query.ToList();
-
             query = Filtering(filter, query);
 
             var queryableCount = query;
@@ -116,6 +114,28 @@ namespace Xyzies.TWC.Public.Api.Managers
                 ItemsPerPage = paginable.Take.Value,
                 Data = branchModelList
             };
+        }
+
+        /// <inheritdoc />
+        public async Task<List<BranchModel>> GetBranchesByUser(List<int> listUserIds)
+        {
+            var users = await _userRepository.GetAsync(x => listUserIds.Contains(x.Id));
+
+            var userGroups = users.ToList().GroupBy(x=>x.BranchId);
+
+            List<BranchModel> branches = new List<BranchModel>();
+            foreach (var grouph in userGroups)
+            {
+                var branchModel = new BranchModel();
+                foreach (var user in grouph)
+                {
+                    var branch = await _branchRepository.GetByAsync(x => x.Id == user.BranchId);
+                    branchModel = branch.Adapt<BranchModel>();
+                    branchModel.UserIds.Add(user.Id);
+                }
+                branches.Add(branchModel);
+            }
+            return branches;
         }
 
         /// <inheritdoc />
@@ -224,5 +244,13 @@ namespace Xyzies.TWC.Public.Api.Managers
             return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            _userRepository.Dispose();
+            _branchRepository.Dispose();
+        }
     }
 }

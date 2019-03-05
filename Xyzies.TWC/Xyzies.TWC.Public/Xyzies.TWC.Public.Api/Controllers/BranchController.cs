@@ -48,9 +48,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <returns></returns>
         [HttpGet("branches", Name = "GetListBranches")]
         [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 404 */)]
+        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public async Task<IActionResult> Get(
             [FromQuery] BranchFilter filterModel,
@@ -62,10 +62,18 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _branchManager.GetBranches(filterModel, sortable, paginable);
+            PagingResult<BranchModel> result = new PagingResult<BranchModel>();
+            if (filterModel.UserIds.Count > 0)
+            {
+                return Ok(await _branchManager.GetBranchesByUser(filterModel.UserIds));
+            }
+            else
+            {
+               result = await _branchManager.GetBranches(filterModel, sortable, paginable);
+            }
             if (!result.Data.Any())
             {
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(result);
@@ -115,9 +123,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="paginable"></param>
         /// <returns></returns>
         [HttpGet("companies/{companyId}/branches")]
-        [ProducesResponseType(typeof(IEnumerable<UploadBranchModel>), 200)]
-        [ProducesResponseType(typeof(NoContentResult), 204)]
-        [ProducesResponseType(typeof(NotFoundResult), 404)] // By handling an exception middleware
+        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 404 */)]
+        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 400 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> GetBranchOfCompany(
             int companyId,
@@ -133,7 +141,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             if (result.Total.Equals(0))
             {
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(result);
@@ -245,7 +253,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             throw new NotImplementedException();
         }
 
-        // TODO: Dispose
+        //TODO: Dispose
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {

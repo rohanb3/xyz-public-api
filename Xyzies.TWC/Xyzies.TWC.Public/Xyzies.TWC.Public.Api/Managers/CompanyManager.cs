@@ -59,12 +59,12 @@ namespace Xyzies.TWC.Public.Api.Managers
                 bool userCountfiltr = true;
                 bool branchCountfiltr = true;
 
-                if (filter.UserCountFilter != null && companyModel.CountSalesRep != filter.UserCountFilter)
+                if (filter.UserCountFilter.HasValue && companyModel.CountSalesRep != filter.UserCountFilter)
                 {
                     userCountfiltr = false;
                 }
 
-                if (filter.BranchCountFilter != null && companyModel.CountBranch != filter.BranchCountFilter)
+                if (filter.BranchCountFilter.HasValue && companyModel.CountBranch != filter.BranchCountFilter)
                 {
                     userCountfiltr = false;
                 }
@@ -89,6 +89,28 @@ namespace Xyzies.TWC.Public.Api.Managers
             companyDetailModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == companyDetailModel.Id).Result.ToList().Count;
             companyDetailModel.CountBranch = companyDetails.Branches.Count;
             return companyDetailModel;
+        }
+
+        /// <inheritdoc />
+        public async Task<List<CompanyModel>> GetCompanyByUser(List<int> listUserIds)
+        {
+            var users = await _userRepository.GetAsync(x => listUserIds.Contains(x.Id));
+
+            var userGroups = users.ToList().GroupBy(x => x.CompanyId);
+
+            List<CompanyModel> companies = new List<CompanyModel>();
+            foreach (var grouph in userGroups)
+            {
+                var companyModel = new CompanyModel();
+                foreach (var user in grouph)
+                {
+                    var company = await _companyRepository.GetByAsync(x => x.Id == user.CompanyId);
+                    companyModel = company.Adapt<CompanyModel>();
+                    companyModel.UserIds.Add(user.Id);
+                }
+                companies.Add(companyModel);
+            }
+            return companies;
         }
 
         /// <inheritdoc />
@@ -190,5 +212,13 @@ namespace Xyzies.TWC.Public.Api.Managers
             return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            _userRepository.Dispose();
+            _companyRepository.Dispose();
+        }
     }
 }

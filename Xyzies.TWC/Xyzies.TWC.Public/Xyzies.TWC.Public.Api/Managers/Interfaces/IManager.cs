@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Models;
 
@@ -7,7 +8,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
     /// <summary>
     /// Forcing to implement Pagination, Filtering and Sorting
     /// </summary>
-    public interface IManager<T>
+    public interface IManager<T> : IDisposable
     {
 
         /// <summary>

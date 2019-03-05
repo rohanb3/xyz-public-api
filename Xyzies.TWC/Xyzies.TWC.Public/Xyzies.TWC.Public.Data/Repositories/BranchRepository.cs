@@ -42,15 +42,15 @@ namespace Xyzies.TWC.Public.Data.Repositories
         /// <inheritdoc />
         public async Task<bool> SetActivationState(int id, bool isEnabled)
         {
-            var company = await base.Data.FirstOrDefaultAsync(x => x.Id == id);
-            if (company == null)
+            var branch = await base.Data.FirstOrDefaultAsync(x => x.Id == id);
+            if (branch == null)
             {
                 return false;
             }
 
-            company.IsEnabled = isEnabled;
+            branch.IsEnabled = isEnabled;
 
-            base.Data.Update(company);
+            base.Data.Update(branch);
             await DbContext.SaveChangesAsync();
 
             return true;

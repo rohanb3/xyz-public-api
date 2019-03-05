@@ -46,6 +46,8 @@ namespace Xyzies.TWC.Public.Api.Models
 
         public int? CountSalesRep { get; set; }
 
+        public IList<int> UserIds { get; set; } = new List<int>();
+
         public virtual IList<BranchContactModel> BranchContacts { get; set; } = new List<BranchContactModel>();
 
     }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
@@ -25,5 +26,12 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         Task<CompanyModel> GetCompanyById(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listUsersId"></param>
+        /// <returns></returns>
+        Task<List<CompanyModel>> GetCompanyByUser(List<int> listUsersId);
     }
 }

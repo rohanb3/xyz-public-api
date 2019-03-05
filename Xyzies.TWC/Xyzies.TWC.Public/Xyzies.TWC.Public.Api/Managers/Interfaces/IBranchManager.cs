@@ -2,6 +2,7 @@
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Data.Entities;
+using System.Collections.Generic;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
@@ -35,5 +36,12 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         Task<BranchModel> GetBranchById(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listUsersId"></param>
+        /// <returns></returns>
+        Task<List<BranchModel>> GetBranchesByUser(List<int> listUsersId);
     }
 }
