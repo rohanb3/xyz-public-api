@@ -1,48 +1,54 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Filter //: Searchable
+    public partial class BranchFilter
     {
         /// <summary>
         /// 
         /// </summary>
-        public string State { get; set; }
+        public string StateFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string City { get; set; }
+        public string CityFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Email { get; set; }
+        public string EmailFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Name { get; set; }
+        public string BranchNameFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Id { get; set; }
+        public string BranchIdFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsDisable { get; set; }
+        public bool IsEnabledFilter { get; set; } = true;
 
         /// <summary>
         /// 
         /// </summary>
-        public string CountValue { get; set; }
+        public int? UserCountFilter { get; set; }
+
+        /// <summary>
+        /// filter for requests from, cancels all other filters
+        /// </summary>
+        public List<int> UserIds { get; set; } = new List<int>();
 
         /// <summary>
         /// 
@@ -50,12 +56,12 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <returns></returns>
         public IEnumerable<string> GetName()
         {
-            if (string.IsNullOrEmpty(Name))
+            if (string.IsNullOrEmpty(BranchNameFilter))
             {
                 return Enumerable.Empty<string>();
             }
 
-            return Name.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
+            return BranchNameFilter.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
         }
     }
 }

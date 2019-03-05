@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
@@ -28,7 +29,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public string ZipCode { get; set; }
         public string GeoLat { get; set; }
         public string GeoLon { get; set; }
-        public string Status { get; set; }
+        public BranchStatus Status { get; set; }
         public string State { set; get; }
 
         public bool IsEnabled { set; get; }
@@ -43,7 +44,7 @@ namespace Xyzies.TWC.Public.Api.Models
 
         public int CompanyId { get; set; }
 
-        public int CountSalesRep { get; set; } = 0;
+        public int? CountSalesRep { get; set; }
 
         public virtual IList<BranchContactModel> BranchContacts { get; set; } = new List<BranchContactModel>();
 

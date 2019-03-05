@@ -46,14 +46,14 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// GET api/branches
         /// </summary>
         /// <returns></returns>
-        [HttpGet("branch", Name = "GetListBranches")]
+        [HttpGet("branches", Name = "GetListBranches")]
         [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public async Task<IActionResult> Get(
-            [FromQuery] Filter filterModel,
+            [FromQuery] BranchFilter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
@@ -76,7 +76,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("branch/{id}", Name = "GetBranchDetails")]
+        [HttpGet("branches/{id}", Name = "GetBranchDetails")]
         [ProducesResponseType(typeof(BranchModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -88,10 +88,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Branch branchDetail = null;
+            BranchModel branchDetail = null;
             try
             {
-                branchDetail = await _branchRepository.GetAsync(id);
+                branchDetail = await _branchManager.GetBranchById(id);
             }
             catch (SqlException ex)
             {
@@ -102,7 +102,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return NotFound();
             }
-            var branchDetailModel = branchDetail.Adapt<BranchModel>();
 
             return Ok(branchDetail);
         }
@@ -115,14 +114,14 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="sortable"></param>
         /// <param name="paginable"></param>
         /// <returns></returns>
-        [HttpGet("company/{company_id}/branch")]
+        [HttpGet("companies/{companyId}/branches")]
         [ProducesResponseType(typeof(IEnumerable<UploadBranchModel>), 200)]
         [ProducesResponseType(typeof(NoContentResult), 204)]
         [ProducesResponseType(typeof(NotFoundResult), 404)] // By handling an exception middleware
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> GetBranchOfCompany(
-            [FromRoute] int companyId,
-            [FromQuery] Filter filterModel,
+            int companyId,
+            [FromQuery] BranchFilter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
@@ -147,7 +146,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="branchModel"></param>
         /// <returns></returns>
         [HttpPost("branch", Name = "CreateBranch")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created /* 201 */)]
+        [ProducesResponseType(typeof(CreatedResult), (int)HttpStatusCode.Created /* 201 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]

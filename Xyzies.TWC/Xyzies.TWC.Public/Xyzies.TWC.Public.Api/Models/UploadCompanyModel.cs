@@ -39,7 +39,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public string CallerId { get; set; }
         public bool IsAgreement { get; set; }
         public string ActivityStatus { get; set; }
-        public Guid CompanyKey { get; set; }
+        public Guid? CompanyKey { get; set; } = Guid.Empty;
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string CellNumber { get; set; }
@@ -47,14 +47,14 @@ namespace Xyzies.TWC.Public.Api.Models
         public string BankName { get; set; }
         public string BankAccountNumber { get; set; }
         public string XyziesId { get; set; }
-        public DateTime ApprovedDate { get; set; }
+        public DateTime? ApprovedDate { get; set; }
         public bool BankInfoGiven { get; set; }
         public int AccountManager { get; set; }
         public string CrmCompanyId { get; set; }
         public bool IsCallCenter { get; set; }
         public int ParentCompanyId { get; set; }
-        public Guid TeamKey { get; set; }
-        public Guid RetailerGroupKey { get; set; }
+        public Guid? TeamKey { get; set; } = Guid.Empty;
+        public Guid? RetailerGroupKey { get; set; } = Guid.Empty;
         public string SocialMediaAccount { get; set; }
         public string RetailerGoogleAccount { get; set; }
         public string RetailerGooglePassword { get; set; }
@@ -78,8 +78,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public bool NoSyncInfusion { get; set; }
         public string StorePhoneNumber { get; set; }
         public int ReferralUserId { get; set; }
-        public Guid CompanyStatusKey { get; set; }
-        public DateTime CompanyStatusChangedOn { get; set; }
+        public Guid? CompanyStatusKey { get; set; } = Guid.Empty;
+        public DateTime? CompanyStatusChangedOn { get; set; }
         public int CompanyStatusChangedBy { get; set; }
 
     }

@@ -39,7 +39,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("City")
                         .HasMaxLength(50);
 
-                    b.Property<int>("CompanyId");
+                    b.Property<int?>("CompanyId");
 
                     b.Property<int?>("CreatedBy");
 
@@ -77,8 +77,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int>("Status");
 
-                    b.Property<int?>("UserId");
-
                     b.Property<string>("ZipCode")
                         .HasMaxLength(50);
 
@@ -86,8 +84,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .HasName("BranchID");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TWC_Branches");
                 });
@@ -295,8 +291,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("TypeOfCompany");
 
-                    b.Property<int?>("UserId");
-
                     b.Property<string>("WebsiteList");
 
                     b.Property<string>("XyziesId");
@@ -305,8 +299,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.HasKey("Id")
                         .HasName("CompanyID");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TWC_Companies");
                 });
@@ -323,14 +315,16 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(50);
 
-                    b.Property<string>("AuthKey");
+                    b.Property<int?>("BranchId")
+                        .HasColumnName("BranchID");
 
                     b.Property<string>("City")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("CompanyID");
+                    b.Property<int?>("CompanyId")
+                        .HasColumnName("CompanyID");
 
-                    b.Property<string>("CreatedBy");
+                    b.Property<int?>("CreatedBy");
 
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
@@ -345,15 +339,11 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("Imagename");
 
-                    b.Property<string>("InfusionSoftId");
-
                     b.Property<bool?>("IsEmailVerified");
 
                     b.Property<bool?>("IsIdentityUploaded");
 
                     b.Property<bool?>("IsPhoneVerified");
-
-                    b.Property<string>("IsRegisteredUser");
 
                     b.Property<bool?>("IsUserPictureUploaded");
 
@@ -365,7 +355,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("ManagedBy");
 
-                    b.Property<string>("ModifiedBy");
+                    b.Property<int?>("ModifiedBy");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .ValueGeneratedOnUpdate()
@@ -400,12 +390,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("UserRefID");
 
-                    b.Property<int?>("UserStatusChangedBy");
-
-                    b.Property<DateTime?>("UserStatusChangedOn");
-
-                    b.Property<Guid?>("UserStatusKey");
-
                     b.Property<string>("XyziesId");
 
                     b.Property<string>("ZipCode")
@@ -414,6 +398,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.HasKey("Id")
                         .HasName("UserID");
 
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("CompanyId");
+
                     b.ToTable("TWC_Users");
                 });
 
@@ -421,12 +409,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
                         .WithMany("Branches")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.User")
-                        .WithMany("Branches")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
@@ -442,11 +425,15 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.User", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.User")
-                        .WithMany("Companies")
-                        .HasForeignKey("UserId");
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Branch", "Branch")
+                        .WithMany("BranchUsers")
+                        .HasForeignKey("BranchId");
+
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
+                        .WithMany("CompanyUsers")
+                        .HasForeignKey("CompanyId");
                 });
 #pragma warning restore 612, 618
         }

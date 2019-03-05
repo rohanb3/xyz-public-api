@@ -77,9 +77,10 @@ namespace Xyzies.TWC.Public.Data.Entities
         public Guid? CompanyStatusKey { get; set; }
         public DateTime? CompanyStatusChangedOn { get; set; }
         public int? CompanyStatusChangedBy { get; set; }
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
 
         public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
+        public virtual ICollection<User> CompanyUsers { get; set; } = new List<User>();
 
     }
 }

@@ -8,7 +8,6 @@ using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
-using Xyzies.TWC.Public.Api.Controllers;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -34,7 +33,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<PagingResult<CompanyModel>> GetCompanies(Filter filter, Sortable sortable, Paginable paginable)
+        public async Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter, Sortable sortable, Paginable paginable)
         {
             IQueryable<Company> query = await _companyRepository.GetAsync();
 
@@ -53,10 +52,25 @@ namespace Xyzies.TWC.Public.Api.Managers
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-                companyModel.CountSalesRep = _userRepository.GetAsync(x => x.CompanyID.Value == company.Id).Result.ToList().Count;
+                companyModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == company.Id).Result.ToList().Where(x => x.Role == null ? false : x.Role.Equals("2")).ToList().Count;
+
                 companyModel.CountBranch = company.Branches.Count;
 
-                companyModelList.Add(companyModel);
+                bool userCountfiltr = true;
+                bool branchCountfiltr = true;
+
+                if (filter.UserCountFilter != null && companyModel.CountSalesRep != filter.UserCountFilter)
+                {
+                    userCountfiltr = false;
+                }
+
+                if (filter.BranchCountFilter != null && companyModel.CountBranch != filter.BranchCountFilter)
+                {
+                    userCountfiltr = false;
+                }
+
+                if (userCountfiltr && branchCountfiltr)
+                    companyModelList.Add(companyModel);
             }
 
             return new PagingResult<CompanyModel>
@@ -68,52 +82,59 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Company> Filtering(Filter filter, IQueryable<Company> query)
+        public async Task<CompanyModel> GetCompanyById(int Id)
         {
-            if (!string.IsNullOrEmpty(filter.State))
+            var companyDetails = await _companyRepository.GetAsync(Id);
+            var companyDetailModel = companyDetails.Adapt<CompanyModel>();
+            companyDetailModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == companyDetailModel.Id).Result.ToList().Count;
+            companyDetailModel.CountBranch = companyDetails.Branches.Count;
+            return companyDetailModel;
+        }
+
+        /// <inheritdoc />
+        public IQueryable<Company> Filtering(CompanyFilter companyfilter, IQueryable<Company> query)
+        {
+            if (!string.IsNullOrEmpty(companyfilter.StateFilter))
             {
-                query = query.Where(x => x.State.ToLower().Equals(filter.State.ToLower()));
+                query = query.Where(x => x.State.ToLower().Equals(companyfilter.StateFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(filter.City))
+            if (!string.IsNullOrEmpty(companyfilter.CityFilter))
             {
-                query = query.Where(x => x.City.ToLower().Contains(filter.City.ToLower()));
+                query = query.Where(x => x.City.ToLower().Contains(companyfilter.CityFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(filter.Email))
+            if (!string.IsNullOrEmpty(companyfilter.EmailFilter))
             {
-                query = query.Where(x => x.Email.ToLower().Contains(filter.Email.ToLower()));
+                query = query.Where(x => x.Email.ToLower().Contains(companyfilter.EmailFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(filter.Name))
+            if (!string.IsNullOrEmpty(companyfilter.CompanyNameFilter))
             {
-                query = query.Where(x => x.CompanyName.ToLower().Contains(filter.Name.ToLower()));
+                query = query.Where(x => x.CompanyName.ToLower().Contains(companyfilter.CompanyNameFilter.ToLower()));
             }
 
-            query = query.Where(x => x.IsEnabled.Equals(filter.IsDisable));
+            query = query.Where(x => x.IsEnabled.Equals(companyfilter.IsEnabledFilter));
 
-            if (!string.IsNullOrEmpty(filter.Id))
+            if (!string.IsNullOrEmpty(companyfilter.CompanyIdFilter))
             {
-                int id = 0;
-                if (int.TryParse(filter.Id, out id))
+                if (int.TryParse(companyfilter.CompanyIdFilter, out int companyId))
                 {
-                    query = query.Where(x => x.Id.Equals(id));
+                    query = query.Where(x => x.Id.Equals(companyId));
                 }
             }
+
             return query;
         }
 
         /// <inheritdoc />
         public IQueryable<Company> Sorting(Sortable sortable, IQueryable<Company> query)
         {
-            if (sortable.SortBy.ToLower() == "createddate")
+            if (sortable.SortBy.ToLower() == "createddate" && sortable.SortOrder.ToLower().Equals("asc"))
             {
-                if (sortable.SortOrder.ToLower().Equals("desc"))
-                {
-                    query = query.OrderByDescending(x => x.CreatedDate);
-                }
-                else query = query.OrderBy(x => x.CreatedDate);
+                query = query.OrderBy(x => x.CreatedDate);
             }
+            else query = query.OrderByDescending(x => x.CreatedDate);
 
             if (sortable.SortBy.ToLower() == "status")
             {

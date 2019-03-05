@@ -28,8 +28,9 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
 
             branchContactBuilder
                 .HasOne(n => n.BranchPrimaryContact)
-                .WithMany(c => c.BranchContacts)
-                .HasForeignKey(sc => sc.BranchPrimaryContactId);
+                .WithMany(c => c.BranchContacts);
+                //.HasForeignKey(sc => sc.BranchPrimaryContactId);
+
         }
     }
 }

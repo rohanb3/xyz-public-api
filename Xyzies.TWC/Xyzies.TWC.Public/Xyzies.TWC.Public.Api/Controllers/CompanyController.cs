@@ -50,10 +50,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(
-            [FromQuery] Filter filterModel,
+            [FromQuery] CompanyFilter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
@@ -65,7 +65,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             var result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
             if (!result.Data.Any())
             {
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(result);
@@ -89,10 +89,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Company companyDetails = null;
+            CompanyModel companyDetails = null;
             try
             {
-                companyDetails = await _companyRepository.GetAsync(id);
+                companyDetails = await _companyManager.GetCompanyById(id);
             }
             catch (SqlException ex)
             {
@@ -103,7 +103,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return NotFound();
             }
-            var companyDetailModel = companyDetails.Adapt<CompanyModel>();
+
             return Ok(companyDetails);
         }
 
@@ -112,7 +112,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="companyModel"></param>
         [HttpPost(Name = "CreateNewCompany")]
-        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CreatedResult), (int)HttpStatusCode.Created /* 201 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
@@ -187,7 +187,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Patch([FromRoute]int id, [FromQuery] bool isEnabled)
         {

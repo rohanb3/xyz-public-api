@@ -5,7 +5,7 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
     /// <summary>
     /// Represents a pagination model
     /// </summary>
-    public class Paginable
+    public partial class Paginable
     {
         /// <summary>
         /// 15 items per page by default. You can change this value.

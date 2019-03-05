@@ -9,7 +9,6 @@ namespace Xyzies.TWC.Public.Data.Entities
     {
         [Column("UserID")]
         public new int Id { get; set; }
-        public int? CompanyID { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
@@ -21,8 +20,8 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string Role { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
+        public int? CreatedBy { get; set; }
+        public int? ModifiedBy { get; set; }
         public string Name { get; set; }
         public bool? Active { get; set; }
         public string Imagename { get; set; }
@@ -44,15 +43,13 @@ namespace Xyzies.TWC.Public.Data.Entities
         public bool? IsUserPictureUploaded { get; set; }
         public int? StatusId { get; set; }
 
-        public string IsRegisteredUser { get; set; }
-        public string AuthKey { get; set; }
-        public string InfusionSoftId { get; set; }
-        public Guid? UserStatusKey { get; set; }
-        public DateTime? UserStatusChangedOn { get; set; }
-        public int? UserStatusChangedBy { get; set; }
+        [Column("BranchID")]
+        public int? BranchId { get; set; }
+        public Branch Branch { get; set; }
 
-        public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
+        [Column("CompanyID")]
+        public int? CompanyId { get; set; }
+        public Company Company { get; set; }
 
-        public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
     }
 }

@@ -29,7 +29,8 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<IQueryable<Branch>> GetAsync() =>
             await Task.FromResult(base.Data
                 .Include(b => b.BranchContacts)
-                    .ThenInclude(x => x.BranchContactType));
+                    .ThenInclude(x => x.BranchContactType)
+                .Include(v=>v.BranchUsers));
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync(Expression<Func<Branch, bool>> predicate) =>

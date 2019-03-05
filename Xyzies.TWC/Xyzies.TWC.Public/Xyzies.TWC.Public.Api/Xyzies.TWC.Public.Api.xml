@@ -29,7 +29,7 @@
             <param name="branchRepository"></param>
             <param name="branchManager"></param>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Get(Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.Get(Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             GET api/branches
             </summary>
@@ -42,7 +42,7 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.GetBranchOfCompany(System.Int32,Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.BranchController.GetBranchOfCompany(System.Int32,Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             Get all branches related to specify company
             </summary>
@@ -96,7 +96,7 @@
             <param name="companyRepository"></param>
             <param name="companyManager"></param>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Controllers.CompanyController.Get(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             GET api/company
             </summary>
@@ -248,13 +248,16 @@
             <param name="branchRepository"></param>
             <param name="userRepository"></param>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranches(Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranches(Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <inheritdoc />
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranchById(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Filtering(Xyzies.TWC.Public.Api.Models.Filter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Filtering(Xyzies.TWC.Public.Api.Models.BranchFilter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
             <inheritdoc />
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.BranchManager.Sorting(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Branch})">
@@ -274,10 +277,13 @@
             <param name="companyRepository"></param>
             <param name="userRepository"></param>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <inheritdoc />
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.Filtering(Xyzies.TWC.Public.Api.Models.Filter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Company})">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.GetCompanyById(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.Filtering(Xyzies.TWC.Public.Api.Models.CompanyFilter,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Company})">
             <inheritdoc />
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.CompanyManager.Sorting(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,System.Linq.IQueryable{Xyzies.TWC.Public.Data.Entities.Company})">
@@ -291,7 +297,7 @@
             Facade of manage a branch requests
             </summary>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranches(Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranches(Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             Getting all branches or first 15 by defolt
             </summary>
@@ -300,7 +306,7 @@
             <param name="paginable"></param>
             <returns></returns>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranchesByCompany(System.Int32,Xyzies.TWC.Public.Api.Models.BranchFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             Getting branches by company all or first 15 by defolt
             </summary>
@@ -310,12 +316,19 @@
             <param name="paginable"></param>
             <returns></returns>
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IBranchManager.GetBranchById(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager">
             <summary>
             Facade of manage a company requests
             </summary>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.Filter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager.GetCompanies(Xyzies.TWC.Public.Api.Models.CompanyFilter,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Paginable)">
             <summary>
             Getting all companies or first 15 by defolt
             </summary>
@@ -324,18 +337,17 @@
             <param name="paginable"></param>
             <returns></returns>
         </member>
+        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.ICompanyManager.GetCompanyById(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager`1">
             <summary>
             Forcing to implement Pagination, Filtering and Sorting
             </summary>
-        </member>
-        <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager`1.Filtering(Xyzies.TWC.Public.Api.Models.Filter,System.Linq.IQueryable{`0})">
-            <summary>
-            Filtering settings
-            </summary>
-            <param name="filter"></param>
-            <param name="query"></param>
-            <returns></returns>
         </member>
         <member name="M:Xyzies.TWC.Public.Api.Managers.Interfaces.IManager`1.Sorting(Xyzies.TWC.Public.Api.Controllers.Http.Extentions.Sortable,System.Linq.IQueryable{`0})">
             <summary>
@@ -353,47 +365,108 @@
             <param name="query"></param>
             <returns></returns>
         </member>
-        <member name="T:Xyzies.TWC.Public.Api.Models.Filter">
+        <member name="T:Xyzies.TWC.Public.Api.Models.BranchFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.State">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.StateFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.City">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.CityFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.Email">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.EmailFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.Name">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.BranchNameFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.Id">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.BranchIdFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.IsDisable">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.IsEnabledFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Xyzies.TWC.Public.Api.Models.Filter.CountValue">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.UserCountFilter">
             <summary>
             
             </summary>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.Models.Filter.GetName">
+        <member name="P:Xyzies.TWC.Public.Api.Models.BranchFilter.UserIds">
+            <summary>
+            filter for requests from, cancels all other filters
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Models.BranchFilter.GetName">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Xyzies.TWC.Public.Api.Models.CompanyFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.StateFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.CityFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.EmailFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.CompanyNameFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.CompanyIdFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.IsEnabledFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.BranchCountFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.UserCountFilter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Xyzies.TWC.Public.Api.Models.CompanyFilter.UserIds">
+            <summary>
+            filter for requests from, cancels all other filters
+            </summary>
+        </member>
+        <member name="M:Xyzies.TWC.Public.Api.Models.CompanyFilter.GetName">
             <summary>
             
             </summary>

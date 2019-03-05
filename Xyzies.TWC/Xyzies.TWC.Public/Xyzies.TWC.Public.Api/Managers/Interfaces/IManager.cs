@@ -9,13 +9,6 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
     /// </summary>
     public interface IManager<T>
     {
-        /// <summary>
-        /// Filtering settings
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        IQueryable<T> Filtering(Filter filter, IQueryable<T> query);
 
         /// <summary>
         /// Sorting settings

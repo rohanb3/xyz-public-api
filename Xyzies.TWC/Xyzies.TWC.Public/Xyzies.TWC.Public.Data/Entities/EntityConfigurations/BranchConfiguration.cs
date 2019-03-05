@@ -10,7 +10,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
         {
             branchBuilder.ToTable("TWC_Branches").HasKey(p => p.Id).HasName("BranchID");
 
-            branchBuilder.Property<string>(p => p.BranchName).HasMaxLength(250).IsRequired();
+            branchBuilder.Property(p => p.BranchName).HasMaxLength(250).IsRequired();
             branchBuilder.Property(p => p.Email).HasMaxLength(50);
             branchBuilder.Property(p => p.Phone).HasMaxLength(50);
             branchBuilder.Property(p => p.Fax).HasMaxLength(50);
@@ -25,8 +25,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .HasComputedColumnSql("GETUTCDATE()")
                 .ValueGeneratedOnAdd()
                 .Metadata
-                .AfterSaveBehavior = PropertySaveBehavior.Ignore;
-
+                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
             branchBuilder.Property(p => p.ModifiedDate)
                 .HasComputedColumnSql("GETUTCDATE()")
                 .ValueGeneratedOnUpdate()
@@ -36,6 +35,9 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
 
             branchBuilder.HasOne(n => n.Company);
+                //.WithMany().HasForeignKey(x => x.CompanyId);
+            //branchBuilder.HasMany(p => p.BranchContacts);
+            //branchBuilder.HasMany(v => v.BranchUsers);
         }
     }
 }

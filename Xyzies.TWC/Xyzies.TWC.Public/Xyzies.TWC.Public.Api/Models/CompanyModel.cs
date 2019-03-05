@@ -86,8 +86,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public DateTime CompanyStatusChangedOn { get; set; }
         public int CompanyStatusChangedBy { get; set; }
 
-        public int CountSalesRep { get; set; } = 0;
-        public int CountBranch { get; set; } = 0;
+        public int? CountSalesRep { get; set; }
+        public int? CountBranch { get; set; }
 
         public virtual IList<BranchModel> Branches { get; set; } = new List<BranchModel>();
 

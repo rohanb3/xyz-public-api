@@ -32,6 +32,10 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .Metadata
                 .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
 
+            //salesBuilder.HasOne(n => n.Branch).WithMany();
+            //.HasForeignKey(x=>x.BranchId);
+            //salesBuilder.HasOne(n => n.Company).WithMany();
+            //.HasForeignKey(x => x.CompanyId);
         }
     }
 }

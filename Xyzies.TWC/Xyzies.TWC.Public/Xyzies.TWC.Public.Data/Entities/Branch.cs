@@ -27,7 +27,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string GeoLat { get; set; }
         public string GeoLng { get; set; }
 
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
 
         // TODO: Need to discuss branch statuses
         public BranchStatus Status { get; set; }
@@ -38,12 +38,12 @@ namespace Xyzies.TWC.Public.Data.Entities
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }
 
-        public int CompanyId { get; set; }
 
+        public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
 
         public virtual ICollection<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
-
+        public virtual ICollection<User> BranchUsers { get; set; } = new List<User>();
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

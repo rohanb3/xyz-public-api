@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 
 namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
 {
@@ -23,6 +24,8 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
                 .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
 
             companyBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
-        }
+
+            //companyBuilder.HasMany(x => x.CompanyUsers);
+    }
     }
 }
