@@ -101,14 +101,21 @@ namespace Xyzies.TWC.Public.Api.Managers
             List<CompanyModel> companies = new List<CompanyModel>();
             foreach (var grouph in userGroups)
             {
-                var companyModel = new CompanyModel();
+                CompanyModel companyModel = null;
                 foreach (var user in grouph)
                 {
                     var company = await _companyRepository.GetByAsync(x => x.Id == user.CompanyId);
+                    if (company == null)
+                    {
+                        continue;
+                    }
                     companyModel = company.Adapt<CompanyModel>();
-                    companyModel?.UserIds.Add(user.Id);
+                    companyModel.UserIds.Add(user.Id);
                 }
-                companies.Add(companyModel);
+                if (companyModel != null)
+                {
+                    companies.Add(companyModel);
+                }
             }
             return companies;
         }

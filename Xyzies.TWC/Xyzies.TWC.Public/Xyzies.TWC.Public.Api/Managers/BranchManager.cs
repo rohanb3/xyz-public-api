@@ -124,16 +124,23 @@ namespace Xyzies.TWC.Public.Api.Managers
             var userGroups = users.ToList().GroupBy(x => x.BranchId);
 
             List<BranchModel> branches = new List<BranchModel>();
-            foreach (var grouph in userGroups)
+            foreach (var group in userGroups)
             {
-                var branchModel = new BranchModel();
-                foreach (var user in grouph)
+                BranchModel branchModel = null;
+                foreach (var user in group)
                 {
                     var branch = await _branchRepository.GetByAsync(x => x.Id == user.BranchId);
+                    if (branch == null)
+                    {
+                        continue;
+                    }
                     branchModel = branch.Adapt<BranchModel>();
                     branchModel?.UserIds.Add(user.Id);
                 }
-                branches.Add(branchModel);
+                if (branchModel != null)
+                {
+                    branches.Add(branchModel);
+                }
             }
             return branches;
         }

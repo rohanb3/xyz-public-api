@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
-using Xyzies.TWC.Public.Api.Models;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
