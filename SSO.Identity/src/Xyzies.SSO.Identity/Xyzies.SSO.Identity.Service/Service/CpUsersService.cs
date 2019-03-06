@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xyzies.SSO.Identity.Data.Core;
 using Xyzies.SSO.Identity.Data.Helpers;
 using Xyzies.SSO.Identity.Data.Repository;
 using Xyzies.SSO.Identity.Services.Models.User;
@@ -18,18 +19,18 @@ namespace Xyzies.SSO.Identity.Services.Service
             _cpUserRepo = cpUserRepo;
         }
 
-        public async Task<List<CpUser>> GetAllCpUsers(string authorRole, string companyId)
+        public async Task<LazyLoadedResult<CpUser>> GetAllCpUsers(string authorRole, string companyId, LazyLoadParameters lazyLoad = null)
         {
-            if (authorRole == Consts.Roles.SuperAdmin)
+            //if (authorRole == Consts.Roles.SuperAdmin)
             {
-                var users = await _cpUserRepo.GetAsync();
-                return users.Adapt<List<CpUser>>();
+                var users = (await _cpUserRepo.GetAsync()).GetPart(lazyLoad);
+                return users.Adapt<LazyLoadedResult<CpUser>>();
             }
 
             if (authorRole == Consts.Roles.RetailerAdmin && !string.IsNullOrEmpty(companyId))
             {
-                var companyUsers = await _cpUserRepo.GetByAsync(x => x.CompanyId == int.Parse(companyId));
-                return companyUsers.Adapt<List<CpUser>>();
+                var companyUsers = (await _cpUserRepo.GetAsync(x => x.CompanyId == int.Parse(companyId))).GetPart(lazyLoad);
+                return companyUsers.Adapt<LazyLoadedResult<CpUser>>();
             }
             return null;
         }

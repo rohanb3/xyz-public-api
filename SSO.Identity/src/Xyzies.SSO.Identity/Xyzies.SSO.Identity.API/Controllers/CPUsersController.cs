@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Xyzies.SSO.Identity.Data.Core;
 using Xyzies.SSO.Identity.Data.Helpers;
 using Xyzies.SSO.Identity.Services.Service;
 
@@ -10,7 +11,7 @@ namespace Xyzies.SSO.Identity.API.Controllers
 {
     [Route("api/cpusers")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class CpUsersController : ControllerBase
     {
         private readonly ICpUsersService _users;
@@ -21,12 +22,12 @@ namespace Xyzies.SSO.Identity.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery]LazyLoadParameters lazyLoad)
         {
             var role = HttpContext.User.Claims.FirstOrDefault(x => x.Type == Consts.RoleClaimType)?.Value;
             var companyId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == Consts.CompanyIdPropertyName)?.Value;
 
-            var users = await _users.GetAllCpUsers(role, companyId);
+            var users = await _users.GetAllCpUsers(role, companyId, lazyLoad);
             if (users == null)
             {
                 return new ContentResult { StatusCode = 403 };
