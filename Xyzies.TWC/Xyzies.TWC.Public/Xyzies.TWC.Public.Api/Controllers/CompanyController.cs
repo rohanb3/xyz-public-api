@@ -125,7 +125,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Post([FromBody] UploadCompanyModel companyModel)
+        public async Task<IActionResult> Post([FromBody] UploadCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {
@@ -136,7 +136,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             int companyId;
             try
             {
-                companyId = _companyRepository.Add(companyEntity);
+                companyId = await _companyRepository.AddAsync(companyEntity);
             }
             catch (SqlException ex)
             {

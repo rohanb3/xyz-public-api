@@ -69,7 +69,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<int> AddAsync(Branch branch)
         {
             branch.CreatedDate = DateTime.Now;
-            //var ttt = base.Add(branch);
             return await Task.FromResult(base.Add(branch));
         }
     }
