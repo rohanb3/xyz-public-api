@@ -17,15 +17,15 @@ CREATE TABLE [TWC_Branches] (
     [AddressLine2] nvarchar(50) NULL,
     [GeoLat] nvarchar(50) NULL,
     [GeoLng] nvarchar(50) NULL,
-    [IsEnabled] bit NOT NULL DEFAULT 1,
-    [Status] int NOT NULL,
-    [CreatedDate] AS GETUTCDATE(),
-    [ModifiedDate] AS GETUTCDATE(),
+    [IsEnabled] bit NULL DEFAULT 1,
+    [Status] int NULL,
+    [CreatedDate] datetime2 NULL,
+    [ModifiedDate] datetime2 NULL,
     [CreatedBy] int NULL,
     [ModifiedBy] int NULL,
-    [CompanyId] int NULL,
+    [CompanyId] int NOT NULL,
     CONSTRAINT [BranchID] PRIMARY KEY ([BranchID]),
-    CONSTRAINT [FK_TWC_Branches_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE NO ACTION
+    CONSTRAINT [FK_TWC_Branches_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE
 );
 
 CREATE TABLE [TWC_BranchContacts] (
@@ -34,8 +34,8 @@ CREATE TABLE [TWC_BranchContacts] (
     [PersonLastName] nvarchar(50) NULL,
     [PersonTitle] nvarchar(100) NULL,
     [Value] nvarchar(100) NOT NULL,
-    [CreatedDate] AS GETUTCDATE(),
-    [ModifiedDate] AS GETUTCDATE(),
+    [CreatedDate] datetime2 NULL,
+    [ModifiedDate] datetime2 NULL,
     [BranchContactTypeId] int NOT NULL,
     [BranchPrimaryContactId] int NOT NULL,
     CONSTRAINT [BranchContactID] PRIMARY KEY ([BranchContactID]),

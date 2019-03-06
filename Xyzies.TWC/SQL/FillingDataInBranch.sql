@@ -1,4 +1,4 @@
-USE [TWC02122019]
+USE [timewarner_20181026]
 GO
 INSERT INTO [dbo].[TWC_Branches]([BranchName],[Email],[Phone],[ZipCode],[AddressLine1],[AddressLine2],[City],[State],[CreatedBy],[ModifiedBy],[Status],[Fax],[GeoLat],[GeoLng],CompanyId)
 VALUES('Branch_3E8DB250-2DE3-4909-86F6-5EF559F92F0B','efmin@4tpp.com','9870540705','9311 ','Research Dr','Research Dr','Irvine','CA',NULL,1,1,NULL,NULL,NULL,1039)

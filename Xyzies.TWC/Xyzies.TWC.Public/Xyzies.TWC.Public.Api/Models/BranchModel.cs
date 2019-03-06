@@ -28,11 +28,11 @@ namespace Xyzies.TWC.Public.Api.Models
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "ZipCode must be numbers only.")]
         public string ZipCode { get; set; }
         public string GeoLat { get; set; }
-        public string GeoLon { get; set; }
+        public string GeoLng { get; set; }
         public BranchStatus Status { get; set; }
         public string State { set; get; }
 
-        public bool IsEnabled { set; get; }
+        public bool? IsEnabled { set; get; }
 
         [DataType(DataType.DateTime)]
         public DateTime? CreatedDate { get; set; }

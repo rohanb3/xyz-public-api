@@ -21,23 +21,11 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchBuilder.Property(p => p.GeoLat).HasMaxLength(50);
             branchBuilder.Property(p => p.GeoLng).HasMaxLength(50);
             branchBuilder.Property(p => p.State).HasMaxLength(50);
-            branchBuilder.Property(p => p.CreatedDate)
-                .HasComputedColumnSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd()
-                .Metadata
-                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
-            branchBuilder.Property(p => p.ModifiedDate)
-                .HasComputedColumnSql("GETUTCDATE()")
-                .ValueGeneratedOnUpdate()
-                .Metadata
-                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
 
             branchBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
 
             branchBuilder.HasOne(n => n.Company);
-                //.WithMany().HasForeignKey(x => x.CompanyId);
-            //branchBuilder.HasMany(p => p.BranchContacts);
-            //branchBuilder.HasMany(v => v.BranchUsers);
+
         }
     }
 }

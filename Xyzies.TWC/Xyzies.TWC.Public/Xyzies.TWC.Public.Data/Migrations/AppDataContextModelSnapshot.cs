@@ -39,13 +39,11 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("City")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("CompanyId");
+                    b.Property<int>("CompanyId");
 
                     b.Property<int?>("CreatedBy");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("Email")
                         .HasMaxLength(50);
@@ -59,15 +57,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("GeoLng")
                         .HasMaxLength(50);
 
-                    b.Property<bool>("IsEnabled")
+                    b.Property<bool?>("IsEnabled")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
                     b.Property<int?>("ModifiedBy");
 
-                    b.Property<DateTime?>("ModifiedDate")
-                        .ValueGeneratedOnUpdate()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("ModifiedDate");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50);
@@ -75,7 +71,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("State")
                         .HasMaxLength(50);
 
-                    b.Property<int>("Status");
+                    b.Property<int?>("Status");
 
                     b.Property<string>("ZipCode")
                         .HasMaxLength(50);
@@ -99,13 +95,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int>("BranchPrimaryContactId");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("CreatedDate");
 
-                    b.Property<DateTime?>("ModifiedDate")
-                        .ValueGeneratedOnUpdate()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("ModifiedDate");
 
                     b.Property<string>("PersonLastName")
                         .HasMaxLength(50);
@@ -185,19 +177,11 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("CompanyName");
 
-                    b.Property<int?>("CompanyStatusChangedBy");
-
-                    b.Property<DateTime?>("CompanyStatusChangedOn");
-
-                    b.Property<Guid?>("CompanyStatusKey");
-
                     b.Property<byte?>("CompanyType");
 
                     b.Property<int?>("CreatedBy");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("CrmCompanyId");
 
@@ -219,7 +203,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<bool?>("IsCallCenter");
 
-                    b.Property<bool>("IsEnabled")
+                    b.Property<bool?>("IsEnabled")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
@@ -245,11 +229,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("ModifiedBy");
 
-                    b.Property<DateTime?>("ModifiedDate")
-                        .ValueGeneratedOnUpdate()
-                        .HasComputedColumnSql("GETUTCDATE()");
-
-                    b.Property<bool?>("NoSyncInfusion");
+                    b.Property<DateTime?>("ModifiedDate");
 
                     b.Property<int?>("NumberofStores");
 
@@ -264,8 +244,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("PrimaryContactName");
 
                     b.Property<string>("PrimaryContactTitle");
-
-                    b.Property<int?>("ReferralUserId");
 
                     b.Property<string>("RetailerGoogleAccount");
 
@@ -284,8 +262,6 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<int?>("StoreID");
 
                     b.Property<int?>("StoreLocationCount");
-
-                    b.Property<string>("StorePhoneNumber");
 
                     b.Property<Guid?>("TeamKey");
 
@@ -326,9 +302,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("CreatedBy");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<bool?>("Deleted");
 
@@ -357,9 +331,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<int?>("ModifiedBy");
 
-                    b.Property<DateTime?>("ModifiedDate")
-                        .ValueGeneratedOnUpdate()
-                        .HasComputedColumnSql("GETUTCDATE()");
+                    b.Property<DateTime?>("ModifiedDate");
 
                     b.Property<string>("Name")
                         .HasMaxLength(250);
@@ -409,7 +381,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
                         .WithMany("Branches")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>

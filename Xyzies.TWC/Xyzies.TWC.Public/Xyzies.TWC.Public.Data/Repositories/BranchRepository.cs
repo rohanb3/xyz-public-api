@@ -39,10 +39,22 @@ namespace Xyzies.TWC.Public.Data.Repositories
                     .ThenInclude(x => x.BranchContactType)
                 .Where(predicate));
 
+        public override Task<bool> UpdateAsync(Branch entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            entity.ModifiedDate = DateTime.Now;
+
+            return base.UpdateAsync(entity);
+        }
+
         /// <inheritdoc />
         public async Task<bool> SetActivationState(int id, bool isEnabled)
         {
-            var branch = await base.Data.FirstOrDefaultAsync(x => x.Id == id);
+            var branch = await this.GetAsync(id);
             if (branch == null)
             {
                 return false;
@@ -50,10 +62,15 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
             branch.IsEnabled = isEnabled;
 
-            base.Data.Update(branch);
-            await DbContext.SaveChangesAsync();
+            return await this.UpdateAsync(branch);
+        }
 
-            return true;
+        /// <inheritdoc />
+        public override async Task<int> AddAsync(Branch branch)
+        {
+            branch.CreatedDate = DateTime.Now;
+            //var ttt = base.Add(branch);
+            return await Task.FromResult(base.Add(branch));
         }
     }
 }

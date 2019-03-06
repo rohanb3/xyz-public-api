@@ -64,10 +64,11 @@ namespace Xyzies.TWC.Public.Api
             //services.AddDbContextPool<AppDataContext>(ctxOptions =>
             //        ctxOptions.UseSqlServer(dbConnectionString));
 
-            services.AddEntityFrameworkSqlServer()
+            services
+                //.AddEntityFrameworkSqlServer()
                 .AddDbContext<AppDataContext>(ctxOptions =>
-                    ctxOptions.UseSqlServer(dbConnectionString));
-            
+            ctxOptions.UseSqlServer(dbConnectionString));
+            //ExecutionStrateg
 
             // Response compression
             // https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.2#brotli-compression-provider

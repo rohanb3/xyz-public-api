@@ -106,7 +106,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 {
                     var company = await _companyRepository.GetByAsync(x => x.Id == user.CompanyId);
                     companyModel = company.Adapt<CompanyModel>();
-                    companyModel.UserIds.Add(user.Id);
+                    companyModel?.UserIds.Add(user.Id);
                 }
                 companies.Add(companyModel);
             }
@@ -114,36 +114,36 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Company> Filtering(CompanyFilter companyfilter, IQueryable<Company> query)
+        public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
-            if (!string.IsNullOrEmpty(companyfilter.StateFilter))
+            if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
-                query = query.Where(x => x.State.ToLower().Equals(companyfilter.StateFilter.ToLower()));
+                query = query.Where(x => x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(companyfilter.CityFilter))
+            if (!string.IsNullOrEmpty(companyFilter.CityFilter))
             {
-                query = query.Where(x => x.City.ToLower().Contains(companyfilter.CityFilter.ToLower()));
+                query = query.Where(x => x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(companyfilter.EmailFilter))
+            if (!string.IsNullOrEmpty(companyFilter.EmailFilter))
             {
-                query = query.Where(x => x.Email.ToLower().Contains(companyfilter.EmailFilter.ToLower()));
+                query = query.Where(x => x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(companyfilter.CompanyNameFilter))
+            if (!string.IsNullOrEmpty(companyFilter.CompanyNameFilter))
             {
-                query = query.Where(x => x.CompanyName.ToLower().Contains(companyfilter.CompanyNameFilter.ToLower()));
+                query = query.Where(x => x.CompanyName.ToLower().Contains(companyFilter.CompanyNameFilter.ToLower()));
             }
 
-            query = query.Where(x => x.IsEnabled.Equals(companyfilter.IsEnabledFilter));
-
-            if (!string.IsNullOrEmpty(companyfilter.CompanyIdFilter))
+            if (companyFilter.IsEnabledFilter.HasValue)
             {
-                if (int.TryParse(companyfilter.CompanyIdFilter, out int companyId))
-                {
-                    query = query.Where(x => x.Id.Equals(companyId));
-                }
+                query = query.Where(x => x.IsEnabled.Equals(companyFilter.IsEnabledFilter));
+            }
+
+            if (companyFilter.CompanyIdFilter.HasValue)
+            {
+                query = query.Where(x => x.Id == companyFilter.CompanyIdFilter);
             }
 
             return query;

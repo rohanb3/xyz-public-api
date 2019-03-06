@@ -36,8 +36,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     State = table.Column<string>(nullable: true),
                     ZipCode = table.Column<string>(nullable: true),
                     StoreID = table.Column<int>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
-                    ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<int>(nullable: true),
                     ModifiedBy = table.Column<int>(nullable: true),
                     Agentid = table.Column<int>(nullable: true),
@@ -89,13 +89,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     MarketPlaceName = table.Column<string>(nullable: true),
                     PhysicalName = table.Column<string>(nullable: true),
                     MarketStrategy = table.Column<string>(nullable: true),
-                    NoSyncInfusion = table.Column<bool>(nullable: true),
-                    StorePhoneNumber = table.Column<string>(nullable: true),
-                    ReferralUserId = table.Column<int>(nullable: true),
-                    CompanyStatusKey = table.Column<Guid>(nullable: true),
-                    CompanyStatusChangedOn = table.Column<DateTime>(nullable: true),
-                    CompanyStatusChangedBy = table.Column<int>(nullable: true),
-                    IsEnabled = table.Column<bool>(nullable: false, defaultValue: true)
+                    IsEnabled = table.Column<bool>(nullable: true, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -119,13 +113,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     AddressLine2 = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLat = table.Column<string>(maxLength: 50, nullable: true),
                     GeoLng = table.Column<string>(maxLength: 50, nullable: true),
-                    IsEnabled = table.Column<bool>(nullable: false, defaultValue: true),
-                    Status = table.Column<int>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
-                    ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    IsEnabled = table.Column<bool>(nullable: true, defaultValue: true),
+                    Status = table.Column<int>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<int>(nullable: true),
                     ModifiedBy = table.Column<int>(nullable: true),
-                    CompanyId = table.Column<int>(nullable: true)
+                    CompanyId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -135,7 +129,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         column: x => x.CompanyId,
                         principalTable: "TWC_Companies",
                         principalColumn: "CompanyID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,8 +142,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     PersonLastName = table.Column<string>(maxLength: 50, nullable: true),
                     PersonTitle = table.Column<string>(maxLength: 100, nullable: true),
                     Value = table.Column<string>(maxLength: 100, nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
-                    ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
                     BranchContactTypeId = table.Column<int>(nullable: false),
                     BranchPrimaryContactId = table.Column<int>(nullable: false)
                 },
@@ -185,8 +179,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     ZipCode = table.Column<string>(maxLength: 50, nullable: true),
                     SalesPersonID = table.Column<int>(nullable: true),
                     Role = table.Column<string>(maxLength: 50, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
-                    ModifiedDate = table.Column<DateTime>(nullable: true, computedColumnSql: "GETUTCDATE()"),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<int>(nullable: true),
                     ModifiedBy = table.Column<int>(nullable: true),
                     Name = table.Column<string>(maxLength: 250, nullable: true),

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
@@ -33,12 +32,12 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string BranchIdFilter { get; set; }
+        public int? BranchIdFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsEnabledFilter { get; set; } = true;
+        public bool? IsEnabledFilter { get; set; }
 
         /// <summary>
         /// 

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
@@ -70,7 +66,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public bool IsSpectrum { get; set; }
         public int BusinessSource { get; set; }
         public string GeoLat { get; set; }
-        public string GeoLon { get; set; }
+        public string GeoLog { get; set; }
         public bool IsMarketPlace { get; set; }
         public string MarketPlaceName { get; set; }
         public string PhysicalName { get; set; }

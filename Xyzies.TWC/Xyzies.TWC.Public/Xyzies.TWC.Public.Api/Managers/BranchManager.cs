@@ -37,7 +37,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         {
             IQueryable<Branch> query = await _branchRepository.GetAsync();
 
-                query = Filtering(filter, query);
+            query = Filtering(filter, query);
 
             // Calculate total count
             var queryableCount = query;
@@ -53,7 +53,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
-                branchModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == branch.CompanyId).Result.ToList().Where(x => x.Role == null ? false : x.Role.Equals("2")).ToList().Count;
+                branchModel.CountSalesRep = _userRepository.GetAsync(x => x.BranchId == branch.Id).Result.ToList().Where(x => x.Role == null ? false : x.Role.Equals("2")).ToList().Count;
 
                 bool userCountfiltr = true;
 
@@ -121,7 +121,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         {
             var users = await _userRepository.GetAsync(x => listUserIds.Contains(x.Id));
 
-            var userGroups = users.ToList().GroupBy(x=>x.BranchId);
+            var userGroups = users.ToList().GroupBy(x => x.BranchId);
 
             List<BranchModel> branches = new List<BranchModel>();
             foreach (var grouph in userGroups)
@@ -131,7 +131,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 {
                     var branch = await _branchRepository.GetByAsync(x => x.Id == user.BranchId);
                     branchModel = branch.Adapt<BranchModel>();
-                    branchModel.UserIds.Add(user.Id);
+                    branchModel?.UserIds.Add(user.Id);
                 }
                 branches.Add(branchModel);
             }
@@ -139,39 +139,39 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Branch> Filtering(BranchFilter filter, IQueryable<Branch> query)
+        public IQueryable<Branch> Filtering(BranchFilter branchFilter, IQueryable<Branch> query)
         {
-            if (filter.UserIds.Count <= 0)
+            if (branchFilter.UserIds.Count <= 0)
             {
 
-                if (!string.IsNullOrEmpty(filter.StateFilter))
+                if (!string.IsNullOrEmpty(branchFilter.StateFilter))
                 {
-                    query = query.Where(x => x.State.ToLower().Equals(filter.StateFilter.ToLower()));
+                    query = query.Where(x => x.State.ToLower().Equals(branchFilter.StateFilter.ToLower()));
                 }
 
-                if (!string.IsNullOrEmpty(filter.CityFilter))
+                if (!string.IsNullOrEmpty(branchFilter.CityFilter))
                 {
-                    query = query.Where(x => x.City.ToLower().Contains(filter.CityFilter.ToLower()));
+                    query = query.Where(x => x.City.ToLower().Contains(branchFilter.CityFilter.ToLower()));
                 }
 
-                if (!string.IsNullOrEmpty(filter.EmailFilter))
+                if (!string.IsNullOrEmpty(branchFilter.EmailFilter))
                 {
-                    query = query.Where(x => x.Email.ToLower().Contains(filter.EmailFilter.ToLower()));
+                    query = query.Where(x => x.Email.ToLower().Contains(branchFilter.EmailFilter.ToLower()));
                 }
 
-                if (!string.IsNullOrEmpty(filter.BranchNameFilter))
+                if (!string.IsNullOrEmpty(branchFilter.BranchNameFilter))
                 {
-                    query = query.Where(x => x.BranchName.ToLower().Contains(filter.BranchNameFilter.ToLower()));
+                    query = query.Where(x => x.BranchName.ToLower().Contains(branchFilter.BranchNameFilter.ToLower()));
                 }
 
-                query = query.Where(x => x.IsEnabled.Equals(filter.IsEnabledFilter));
-
-                if (!string.IsNullOrEmpty(filter.BranchIdFilter))
+                if (branchFilter.IsEnabledFilter.HasValue)
                 {
-                    if (int.TryParse(filter.BranchIdFilter, out int id))
-                    {
-                        query = query.Where(x => x.Id.Equals(id));
-                    }
+                    query = query.Where(x => x.IsEnabled.Equals(branchFilter.IsEnabledFilter));
+                }
+
+                if (branchFilter.BranchIdFilter.HasValue)
+                {
+                    query = query.Where(x => x.Id == branchFilter.BranchIdFilter);
                 }
             }
 

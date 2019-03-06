@@ -14,12 +14,6 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchContactBuilder.Property(p => p.PersonLastName).HasMaxLength(50);
             branchContactBuilder.Property(p => p.PersonTitle).HasMaxLength(100);
             branchContactBuilder.Property(p => p.Value).HasMaxLength(100).IsRequired();
-            branchContactBuilder.Property(p => p.CreatedDate).HasComputedColumnSql("GETUTCDATE()").ValueGeneratedOnAdd();
-            branchContactBuilder.Property(p => p.ModifiedDate)
-                .HasComputedColumnSql("GETUTCDATE()")
-                .ValueGeneratedOnUpdate()
-                .Metadata
-                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
 
             branchContactBuilder
                 .HasOne(n => n.BranchContactType)
@@ -29,7 +23,6 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchContactBuilder
                 .HasOne(n => n.BranchPrimaryContact)
                 .WithMany(c => c.BranchContacts);
-                //.HasForeignKey(sc => sc.BranchPrimaryContactId);
 
         }
     }

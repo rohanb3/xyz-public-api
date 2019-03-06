@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Xyzies.TWC.Public.Data.Entities;
@@ -29,10 +30,22 @@ namespace Xyzies.TWC.Public.Data.Repositories
             return companies;
         }
 
+        public override Task<bool> UpdateAsync(Company entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            entity.ModifiedDate = DateTime.Now;
+
+            return base.UpdateAsync(entity);
+        }
+
         /// <inheritdoc />
         public async Task<bool> SetActivationState(int id, bool isEnabled)
         {
-            var company = await base.Data.FirstOrDefaultAsync(x => x.Id == id);
+            var company = await this.GetAsync(id);
             if (company == null)
             {
                 return false;
@@ -40,10 +53,8 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
             company.IsEnabled = isEnabled;
 
-            base.Data.Update(company);
-            await DbContext.SaveChangesAsync();
+            return await this.UpdateAsync(company);
 
-            return true;
         }
     }
 }

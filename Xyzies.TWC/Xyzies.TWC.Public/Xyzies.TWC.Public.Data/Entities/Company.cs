@@ -71,13 +71,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string MarketPlaceName { get; set; }
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
-        public bool? NoSyncInfusion { get; set; }
-        public string StorePhoneNumber { get; set; }
-        public int? ReferralUserId { get; set; }
-        public Guid? CompanyStatusKey { get; set; }
-        public DateTime? CompanyStatusChangedOn { get; set; }
-        public int? CompanyStatusChangedBy { get; set; }
-        public bool IsEnabled { get; set; } = true;
+        public bool? IsEnabled { get; set; } = true;
 
         public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
         public virtual ICollection<User> CompanyUsers { get; set; } = new List<User>();

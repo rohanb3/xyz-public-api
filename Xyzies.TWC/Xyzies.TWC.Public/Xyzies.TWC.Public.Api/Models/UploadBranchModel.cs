@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
@@ -31,8 +27,8 @@ namespace Xyzies.TWC.Public.Api.Models
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "ZipCode must be numbers only.")]
         public string ZipCode { get; set; }
         public string GeoLat { get; set; }
-        public string GeoLon { get; set; }
-        public string Status { get; set; }
+        public string GeoLng { get; set; }
+        public BranchStatus Status { get; set; }
 
         public int CompanyId { get; set; }
     }

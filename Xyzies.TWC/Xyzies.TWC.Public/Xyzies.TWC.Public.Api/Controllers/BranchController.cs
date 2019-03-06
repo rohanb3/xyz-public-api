@@ -158,7 +158,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Post([FromBody] UploadBranchModel branchModel)
+        public async Task<IActionResult> Post([FromBody] UploadBranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
@@ -169,7 +169,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             int branchId;
             try
             {
-                branchId = _branchRepository.Add(branchEntity);
+                branchId = await _branchRepository.AddAsync(branchEntity);
             }
             catch (SqlException ex)
             {
@@ -229,7 +229,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Patch([FromRoute]int id, [FromQuery] bool isEnabled)
+        public async Task<IActionResult> Patch([FromRoute]int id, [FromQuery] bool isEnabled)
         {
             if (!ModelState.IsValid)
             {
@@ -237,9 +237,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             // TODO: Refactoring
-            var entityState = _branchRepository.SetActivationState(id, isEnabled);
+            var entityState = await _branchRepository.SetActivationState(id, isEnabled);
 
-            return Ok(entityState);
+            return Ok();
         }
 
         /// <summary>
@@ -252,15 +252,14 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             throw new NotImplementedException();
         }
-
-        //TODO: Dispose
+        
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                // TODO: Disposing
                 _branchRepository.Dispose();
+                _branchManager.Dispose();
             }
 
             base.Dispose(disposing);

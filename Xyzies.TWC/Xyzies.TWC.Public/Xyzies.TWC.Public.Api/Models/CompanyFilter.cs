@@ -32,12 +32,12 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string CompanyIdFilter { get; set; }
+        public int? CompanyIdFilter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsEnabledFilter { get; set; } = true;
+        public bool? IsEnabledFilter { get; set; }
 
         /// <summary>
         /// 

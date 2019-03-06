@@ -27,13 +27,13 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string GeoLat { get; set; }
         public string GeoLng { get; set; }
 
-        public bool IsEnabled { get; set; } = true;
+        public bool? IsEnabled { get; set; }
 
         // TODO: Need to discuss branch statuses
-        public BranchStatus Status { get; set; }
+        public BranchStatus? Status { get; set; }
 
-        public DateTime? CreatedDate { get; private set; }
-        public DateTime? ModifiedDate { get; private set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }

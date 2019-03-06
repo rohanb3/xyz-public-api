@@ -80,11 +80,6 @@ namespace Xyzies.TWC.Public.Api.Models
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
         public bool NoSyncInfusion { get; set; }
-        public string StorePhoneNumber { get; set; }
-        public int ReferralUserId { get; set; }
-        public Guid CompanyStatusKey { get; set; }
-        public DateTime CompanyStatusChangedOn { get; set; }
-        public int CompanyStatusChangedBy { get; set; }
 
         public int? CountSalesRep { get; set; }
         public int? CountBranch { get; set; }
