@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Xyzies.SSO.Identity.Data.Entity;
 using Xyzies.SSO.Identity.Services.Service;
 using Xyzies.SSO.Identity.Services.Models.User;
+using Xyzies.SSO.Identity.API.Filters;
+using Xyzies.SSO.Identity.Data.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -27,7 +31,7 @@ namespace Xyzies.SSO.Identity.API.Controllers
         /// <response code="200">If users fetched successfully</response>
         /// <response code="401">If authorization token is invalid</response>
         [HttpGet]
-        //[AccessFilter("web", "super-manager")]
+        [AccessFilter(Consts.Scopes.Full)]
         public async Task<IActionResult> Get([FromQuery] UserFilteringParams filter)
         {
             var users = await _userService.GetAllUsersAsync(filter);
@@ -43,7 +47,6 @@ namespace Xyzies.SSO.Identity.API.Controllers
         /// <response code="401">If authorization token is invalid</response>
         /// <response code="404">If user was not found</response>
         [HttpGet("{id}", Name = "User")]
-        //[AccessFilter("2", "2")]
         public async Task<IActionResult> Get(string id)
         {
             try

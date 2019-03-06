@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using IdentityServiceClient.Service;
+using IdentityServiceClient.Filters;
 using Microsoft.AspNetCore.Mvc;
+using IdentityServiceClient.Constants;
 
 namespace TestClient.Controllers
 {
@@ -15,6 +17,7 @@ namespace TestClient.Controllers
         }
         // GET api/values
         [HttpGet]
+        [AccessFilter(Scopes.Full)]
         public async Task<ActionResult> Get()
         {
             var result = await _identityManager.GetAllUsersAsync();

@@ -19,8 +19,9 @@ namespace Xyzies.TWC.DisputeService.API
                 {
                     serverOptions.ListenAnyIP(port, listenOptions =>
                     {
-                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                        listenOptions.UseHttps("localhost.pfx", "Secret001");
+                        // TODO: Setup certificate for HTTPS and HTTP2.0
+                        //listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                        //listenOptions.UseHttps("localhost.pfx", "Secret001");
                     });
                 })
                 .ConfigureLogging(logging =>

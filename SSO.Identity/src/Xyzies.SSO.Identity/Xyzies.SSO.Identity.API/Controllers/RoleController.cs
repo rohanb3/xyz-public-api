@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Xyzies.SSO.Identity.Data.Repository;
 using Xyzies.SSO.Identity.Services.Models.Permissions;
+using Xyzies.SSO.Identity.Services.Service.Permission;
+using Xyzies.SSO.Identity.Services.Service.Roles;
 
 namespace Xyzies.SSO.Identity.API.Controllers
 {
@@ -15,10 +16,12 @@ namespace Xyzies.SSO.Identity.API.Controllers
     /// </summary>
     [Route("api/role")]
     [ApiController]
+    [Authorize]
     public class RoleController : ControllerBase
     {
-        private readonly IRoleRepository _roleRepository = null;
+        private readonly IRoleService _roleService = null;
         private readonly ILogger<RoleController> _logger = null;
+        private readonly IPermissionService _permissionService = null;
 
         /// <summary>
         /// 
@@ -26,58 +29,36 @@ namespace Xyzies.SSO.Identity.API.Controllers
         /// <param name="logger"></param>
         /// <param name="roleRepository"></param>
         public RoleController(ILogger<RoleController> logger,
-            IRoleRepository roleRepository)
+            IRoleService roleRepository,
+            IPermissionService permissionService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
+            _roleService = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
+            _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        }
+
+        [HttpHead]
+        public async Task<IActionResult> HasPermission([FromQuery] string[] scope, [FromQuery] string role)
+        {
+            await _permissionService.CheckPermissionExpiration();
+            var hasPermission = _permissionService.CheckPermission(role, scope);
+            if (!hasPermission)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+            return Ok();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet, HttpHead]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<RoleModel>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get()
         {
-            var roles = (await _roleRepository.GetAsync()).ToList();
-            var results = new List<RoleModel>();
-
-            // TODO: Add mapper
-            foreach (var role in roles)
-            {
-                var roleModel = new RoleModel
-                {
-                    RoleKey = role.Id,
-                    RoleId = role.RoleId.Value,
-                    RoleName = role.RoleName,
-                    IsCustomRole = role.IsCustom
-                };
-
-                foreach (var policy in role.Policies)
-                {
-                    var policyModel = new PolicyModel
-                    {
-                        PolicyId = policy.Id,
-                        PolicyName = policy.Name
-                    };
-
-                    foreach (var permission in policy.Permissions)
-                    {
-                        policyModel.Scopes.Add(new ScopeModel
-                        {
-                            ScopeId = permission.Id,
-                            ScopeName = permission.Scope
-                        });
-                    }
-
-                    roleModel.Policies.Add(policyModel);
-                }
-
-                results.Add(roleModel);
-            }
-
-            return Ok(results);
+            var roles = await _roleService.GetAllAsync();
+            return Ok(roles);
         }
     }
 }

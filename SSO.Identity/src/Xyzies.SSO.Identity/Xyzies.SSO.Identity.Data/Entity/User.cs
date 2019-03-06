@@ -59,7 +59,7 @@ namespace Xyzies.SSO.Identity.Data.Entity
 
         public string XyziesId { get; set; }
 
-        public int ManagedBy { get; set; }
+        public int? ManagedBy { get; set; }
 
         [Column("deleted")]
         public bool? IsDeleted { get; set; }
@@ -68,7 +68,7 @@ namespace Xyzies.SSO.Identity.Data.Entity
 
         public string IPAddressRestriction { get; set; }
 
-        public DateTime PasswordExpiryOn { get; set; }
+        public DateTime? PasswordExpiryOn { get; set; }
 
         public bool? IsPhoneVerified { get; set; }
 

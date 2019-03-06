@@ -11,6 +11,9 @@ namespace Xyzies.TWC.DisputeService.Data.Entity
     {
         #region Properties
 
+        /// <summary>
+        /// Dispute ID on Optymyze
+        /// </summary>
         public string ExternalDisputeId { get; set; }
 
         [Required]
@@ -57,8 +60,14 @@ namespace Xyzies.TWC.DisputeService.Data.Entity
 
         public DateTimeOffset CreatedAt { get; set; }
 
+        /// <summary>
+        /// Interal status of dispute
+        /// </summary>
         public string DisputeStatus { get; set; }
 
+        /// <summary>
+        /// Status on Optymyze
+        /// </summary>
         public string ClosedStatus { get; set; }
 
         #endregion

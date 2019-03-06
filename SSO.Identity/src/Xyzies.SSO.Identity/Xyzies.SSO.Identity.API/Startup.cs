@@ -6,15 +6,18 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Mapster;
 using Xyzies.SSO.Identity.Data;
 using Xyzies.SSO.Identity.Data.Repository;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Xyzies.SSO.Identity.Services.Mapping;
@@ -56,8 +59,13 @@ namespace Xyzies.SSO.Identity.API
 
             //    });
 
-            string dbConnectionString = "Data Source=DESKTOP-R3SGAF5;Initial Catalog=timewarner_20181026;Integrated Security=True";//User ID=sa;Password=secret123"; //Configuration["connectionStrings:db"];
-            services//.AddEntityFrameworkSqlServer()
+            // TODO: DB connection string
+            string dbConnectionString = Configuration.GetConnectionString("db");
+            if (string.IsNullOrEmpty(dbConnectionString))
+            {
+                StartupException.Throw("Missing the connection string to database");
+            }
+            services //.AddEntityFrameworkSqlServer()
                 .AddDbContextPool<IdentityDataContext>(ctxOptions =>
                     ctxOptions.UseSqlServer(dbConnectionString));
 
@@ -74,14 +82,11 @@ namespace Xyzies.SSO.Identity.API
             services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
-
             services.AddHealthChecks();
             // TODO: Add check for database connection
             //.AddCheck(new SqlConnectionHealthCheck("MyDatabase", Configuration["ConnectionStrings:DefaultConnection"]));
@@ -93,12 +98,18 @@ namespace Xyzies.SSO.Identity.API
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             #region DI configuration
 
             services.AddScoped<DbContext, IdentityDataContext>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IAzureAdClient, AzureAdClient>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICpUsersService, CpUsersService>();
+            services.AddScoped<ICpUsersRepository, CpUsersRepository>();
             #endregion
 
             services.Configure<AzureAdB2COptions>(Configuration.GetSection("AzureAdB2C"));
@@ -118,33 +129,30 @@ namespace Xyzies.SSO.Identity.API
                     string.Concat(Assembly.GetExecutingAssembly().GetName().Name, ".xml")));
             });
 
-
+            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
             UserMappingConfigurations.ConfigureUserMappers();
+            RolesMappingConfigurations.ConfigureRoleMappers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-
-            }
-            else
+            if (!env.IsDevelopment())
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts()
+                    .UseHttpsRedirection();
             }
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<IdentityDataContext>();
-                context.Database.Migrate();
+                //context.Database.Migrate();
             }
 
             app.UseAuthentication()
                 .UseProcessClaims()
                 .UseHealthChecks("/healthz")
-                .UseHttpsRedirection()
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
@@ -154,7 +162,6 @@ namespace Xyzies.SSO.Identity.API
                     uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", $"v1.0.0");
                     uiOptions.DisplayRequestDuration();
                 });
-
         }
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
