@@ -1,1 +1,1 @@
-# Temporary repo for XYZies projects
+# XYZ Public API
