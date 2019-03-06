@@ -72,11 +72,6 @@ namespace Xyzies.TWC.Public.Api.Models
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
         public bool NoSyncInfusion { get; set; }
-        public string StorePhoneNumber { get; set; }
-        public int ReferralUserId { get; set; }
-        public Guid? CompanyStatusKey { get; set; } = Guid.Empty;
-        public DateTime? CompanyStatusChangedOn { get; set; }
-        public int CompanyStatusChangedBy { get; set; }
 
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
