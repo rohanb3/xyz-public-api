@@ -19,11 +19,12 @@ using Xyzies.SSO.Identity.Data;
 using Xyzies.SSO.Identity.Data.Repository;
 using Xyzies.SSO.Identity.Data.Repository.Azure;
 using Xyzies.SSO.Identity.Data.Entity.Azure.AzureAdGraphApi;
+using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Xyzies.SSO.Identity.Services.Mapping;
 using Xyzies.SSO.Identity.Services.Service;
+using Microsoft.AspNetCore.Authentication;
 using Xyzies.SSO.Identity.Services.Middleware;
-using Xyzies.SSO.Identity.Services.Service.Roles;
-using Xyzies.SSO.Identity.Services.Service.Permission;
+
 namespace Xyzies.SSO.Identity.API
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -86,7 +87,6 @@ namespace Xyzies.SSO.Identity.API
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
-
             services.AddHealthChecks();
             // TODO: Add check for database connection
             //.AddCheck(new SqlConnectionHealthCheck("MyDatabase", Configuration["ConnectionStrings:DefaultConnection"]));
@@ -162,7 +162,6 @@ namespace Xyzies.SSO.Identity.API
                     uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", $"v1.0.0");
                     uiOptions.DisplayRequestDuration();
                 });
-
         }
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
