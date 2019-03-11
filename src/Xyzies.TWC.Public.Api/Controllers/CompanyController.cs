@@ -157,7 +157,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Put([FromRoute]int id, [FromBody] CompanyModel companyModel)
+        public IActionResult Put([FromRoute]int id, [FromBody] UploadCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {

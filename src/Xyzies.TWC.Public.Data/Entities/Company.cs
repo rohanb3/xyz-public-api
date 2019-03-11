@@ -28,6 +28,9 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string PrimaryContactName { get; set; }
         public string PrimaryContactTitle { get; set; }
         public string Fax { get; set; }
+        public string GeoLat { get; set; }
+        public string GeoLon { get; set; }
+
         public string FedId { get; set; }
         public int? TypeOfCompany { get; set; }
         public string StateEstablished { get; set; }
@@ -65,12 +68,11 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string WebsiteList { get; set; }
         public bool? IsSpectrum { get; set; }
         public int? BusinessSource { get; set; }
-        public string GeoLat { get; set; }
-        public string GeoLon { get; set; }
         public bool? IsMarketPlace { get; set; }
         public string MarketPlaceName { get; set; }
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
+
         public bool? IsEnabled { get; set; } = true;
 
         public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
