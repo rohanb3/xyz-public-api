@@ -121,11 +121,17 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<Dictionary<int, string>> GetCompanyNameById(List<int> companyIds)
+        public async Task<List<CompanyMin>> GetCompanyNameById(List<int> companyIds)
         {
-            var branches = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
+            var companies = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
 
-            var res = branches.Select(x => KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
+            var res = companies.Select(x => new CompanyMin
+            {
+                Id = x.Id,
+                CompanyName = x.CompanyName
+            }).ToList();
+
+            //KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
 
             return res;
         }

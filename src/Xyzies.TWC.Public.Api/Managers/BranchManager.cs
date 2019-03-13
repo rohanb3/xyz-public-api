@@ -146,33 +146,17 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<Dictionary<int, string>> GetBranchesById(List<int> branchIds)
+        public async Task<List<BranchMin>> GetBranchesById(List<int> branchIds)
         {
             var branches = await _branchRepository.GetAsync(x => branchIds.Contains(x.Id));
 
-            var res = branches.Select(x => KeyValuePair.Create(x.Id, x.BranchName)).ToDictionary(x=>x.Key, x=>x.Value);
-            //KeyValuePair ttt = new KeyValuePair("", 12);
-            //var userGroups = users.ToList().GroupBy(x => x.BranchId);
+            var res = branches.Select(x => new BranchMin
+            {
+                Id = x.Id,
+                BranchName = x.BranchName
 
-            //List<BranchModel> branches = new List<BranchModel>();
-            //foreach (var group in userGroups)
-            //{
-            //    BranchModel branchModel = null;
-            //    foreach (var user in group)
-            //    {
-            //        var branch = await _branchRepository.GetByAsync(x => x.Id == user.BranchId);
-            //        if (branch == null)
-            //        {
-            //            continue;
-            //        }
-            //        branchModel = branch.Adapt<BranchModel>();
-            //        branchModel?.UserIds.Add(user.Id);
-            //    }
-            //    if (branchModel != null)
-            //    {
-            //        branches.Add(branchModel);
-            //    }
-            //}
+            }).ToList();
+
             return res;
         }
 

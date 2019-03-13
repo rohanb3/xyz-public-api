@@ -39,6 +39,6 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// </summary>
         /// <param name="companyIds"></param>
         /// <returns></returns>
-        Task<Dictionary<int, string>> GetCompanyNameById(List<int> companyIds);
+        Task<List<CompanyMin>> GetCompanyNameById(List<int> companyIds);
     }
 }
