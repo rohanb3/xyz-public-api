@@ -62,8 +62,12 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            PagingResult<BranchModel> result = new PagingResult<BranchModel>();
-            if (filterModel.UserIds.Count > 0)
+            var result = new PagingResult<BranchModel>();
+            if (filterModel.BranchIds.Count > 0)
+            {
+                return Ok(await _branchManager.GetBranchesById(filterModel.BranchIds));
+            }
+            else if (filterModel.UserIds.Count > 0)
             {
                 return Ok(await _branchManager.GetBranchesByUser(filterModel.UserIds));
             }

@@ -146,6 +146,37 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
+        public async Task<Dictionary<int, string>> GetBranchesById(List<int> branchIds)
+        {
+            var branches = await _branchRepository.GetAsync(x => branchIds.Contains(x.Id));
+
+            var res = branches.Select(x => KeyValuePair.Create(x.Id, x.BranchName)).ToDictionary(x=>x.Key, x=>x.Value);
+            //KeyValuePair ttt = new KeyValuePair("", 12);
+            //var userGroups = users.ToList().GroupBy(x => x.BranchId);
+
+            //List<BranchModel> branches = new List<BranchModel>();
+            //foreach (var group in userGroups)
+            //{
+            //    BranchModel branchModel = null;
+            //    foreach (var user in group)
+            //    {
+            //        var branch = await _branchRepository.GetByAsync(x => x.Id == user.BranchId);
+            //        if (branch == null)
+            //        {
+            //            continue;
+            //        }
+            //        branchModel = branch.Adapt<BranchModel>();
+            //        branchModel?.UserIds.Add(user.Id);
+            //    }
+            //    if (branchModel != null)
+            //    {
+            //        branches.Add(branchModel);
+            //    }
+            //}
+            return res;
+        }
+
+        /// <inheritdoc />
         public IQueryable<Branch> Filtering(BranchFilter branchFilter, IQueryable<Branch> query)
         {
             if (branchFilter.UserIds.Count <= 0)
@@ -259,5 +290,6 @@ namespace Xyzies.TWC.Public.Api.Managers
             _userRepository.Dispose();
             _branchRepository.Dispose();
         }
+        
     }
 }

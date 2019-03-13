@@ -54,6 +54,11 @@ namespace Xyzies.TWC.Public.Api.Models
         /// </summary>
         public List<int> UserIds { get; set; } = new List<int>();
 
+        // <summary>
+        /// filter for requests from, cancels all other filters
+        /// </summary>
+        public List<int> CompanyIds { get; set; } = new List<int>();
+
         /// <summary>
         /// 
         /// </summary>

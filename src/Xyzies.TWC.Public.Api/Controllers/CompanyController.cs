@@ -63,7 +63,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             PagingResult<CompanyModel> result = new PagingResult<CompanyModel>();
-            if (filterModel.UserIds.Count > 0)
+            if (filterModel.CompanyIds.Count > 0)
+            {
+                return Ok(await _companyManager.GetCompanyNameById(filterModel.CompanyIds));
+            }
+            else if (filterModel.UserIds.Count > 0)
             {
                 return Ok(await _companyManager.GetCompanyByUser(filterModel.UserIds));
             }
@@ -157,7 +161,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Put([FromRoute]int id, [FromBody] CompanyModel companyModel)
+        public IActionResult Put([FromRoute]int id, [FromBody] UploadCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {
