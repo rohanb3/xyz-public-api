@@ -33,5 +33,12 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="listUsersId"></param>
         /// <returns></returns>
         Task<List<CompanyModel>> GetCompanyByUser(List<int> listUsersId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="companyIds"></param>
+        /// <returns></returns>
+        Task<Dictionary<int, string>> GetCompanyNameById(List<int> companyIds);
     }
 }

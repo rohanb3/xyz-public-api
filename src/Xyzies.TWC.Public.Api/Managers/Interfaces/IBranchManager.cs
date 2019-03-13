@@ -43,5 +43,12 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// <param name="listUsersId"></param>
         /// <returns></returns>
         Task<List<BranchModel>> GetBranchesByUser(List<int> listUsersId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="branchIds"></param>
+        /// <returns></returns>
+        Task<Dictionary<int,string>> GetBranchesById(List<int> branchIds);
     }
 }

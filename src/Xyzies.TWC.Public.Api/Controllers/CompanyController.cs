@@ -63,7 +63,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             PagingResult<CompanyModel> result = new PagingResult<CompanyModel>();
-            if (filterModel.UserIds.Count > 0)
+            if (filterModel.CompanyIds.Count > 0)
+            {
+                return Ok(await _companyManager.GetCompanyNameById(filterModel.CompanyIds));
+            }
+            else if (filterModel.UserIds.Count > 0)
             {
                 return Ok(await _companyManager.GetCompanyByUser(filterModel.UserIds));
             }

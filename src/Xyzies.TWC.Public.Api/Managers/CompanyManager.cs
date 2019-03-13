@@ -121,6 +121,16 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
+        public async Task<Dictionary<int, string>> GetCompanyNameById(List<int> companyIds)
+        {
+            var branches = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
+
+            var res = branches.Select(x => KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
+
+            return res;
+        }
+
+        /// <inheritdoc />
         public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
