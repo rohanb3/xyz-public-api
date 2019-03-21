@@ -12,7 +12,7 @@ namespace Xyzies.TWC.Public.Data.Entities
     public class Branch : BaseEntity<int>
     {
         [Column ("BranchID")]
-        public new int Id { get; set; }
+        public override int Id { get; set; }
         public string BranchName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
