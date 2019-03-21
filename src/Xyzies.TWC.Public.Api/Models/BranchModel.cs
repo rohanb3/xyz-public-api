@@ -8,7 +8,7 @@ namespace Xyzies.TWC.Public.Api.Models
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class BranchModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string BranchName { get; set; }
 
         [MaxLength(250)]

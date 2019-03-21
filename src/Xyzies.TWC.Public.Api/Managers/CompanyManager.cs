@@ -75,7 +75,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             return new PagingResult<CompanyModel>
             {
-                Total = 7,
+                Total = totalCount,
                 ItemsPerPage = paginable.Take.Value,
                 Data = companyModelList
             };
