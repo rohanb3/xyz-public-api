@@ -73,7 +73,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
             else
             {
-               result = await _branchManager.GetBranches(filterModel, sortable, paginable);
+               result = await _branchManager.GetBranches(filterModel, sortable, paginable) ;
             }
             if (!result.Data.Any())
             {
