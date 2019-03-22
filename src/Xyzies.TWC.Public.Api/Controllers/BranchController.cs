@@ -57,7 +57,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
