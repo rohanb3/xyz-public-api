@@ -49,10 +49,16 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
 
+            var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
+            var allUsers = allUsersQuery.ToList();
+            var usersCount = 0;
+
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-                companyModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == company.Id).Result.ToList().Where(x => x.Role == null ? false : x.Role.Equals("2")).ToList().Count;
+                usersCount = allUsers.Where(x => x.CompanyId == company.Id).Count(); 
+                
+                companyModel.CountSalesRep = usersCount;
 
                 companyModel.CountBranch = company.Branches.Count;
 
@@ -76,7 +82,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<CompanyModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.Value,
+                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
                 Data = companyModelList
             };
         }
@@ -175,11 +181,14 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Sorting(Sortable sortable, IQueryable<Company> query)
         {
-            if (sortable.SortBy.ToLower() == "createddate" && sortable.SortOrder.ToLower().Equals("asc"))
+            if (sortable.SortBy.ToLower() == "createddate")
             {
-                query = query.OrderBy(x => x.CreatedDate);
+                if (sortable.SortOrder.ToLower().Equals("desc"))
+                {
+                    query = query.OrderByDescending(x => x.CreatedDate);
+                }
+                else query = query.OrderBy(x => x.CreatedDate);
             }
-            else query = query.OrderByDescending(x => x.CreatedDate);
 
             if (sortable.SortBy.ToLower() == "status")
             {
@@ -217,7 +226,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 else query = query.OrderBy(x => x.CompanyName);
             }
 
-            if (sortable.SortBy.ToLower() == "companyid")
+            if (sortable.SortBy.ToLower() == "id")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
@@ -232,7 +241,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Pagination(Paginable paginable, IQueryable<Company> query)
         {
-            return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
+            if (paginable.Take.HasValue && paginable.Skip.HasValue)
+            {
+                return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
+            }
+            return query;
         }
 
         /// <summary>

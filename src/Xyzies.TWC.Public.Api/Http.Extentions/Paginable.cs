@@ -10,7 +10,7 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
         /// <summary>
         /// 15 items per page by default. You can change this value.
         /// </summary>
-        public static int DEFAULT_PER_PAGE = 50;
+        //public static int DEFAULT_PER_PAGE = 50;
 
         /// <summary>
         /// From
@@ -20,6 +20,6 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
         /// <summary>
         /// Take next
         /// </summary>
-        public virtual Nullable<int> Take { get; set; } = DEFAULT_PER_PAGE;
+        public virtual Nullable<int> Take { get; set; }
     }
 }

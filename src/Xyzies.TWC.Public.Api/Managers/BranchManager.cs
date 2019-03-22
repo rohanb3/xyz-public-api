@@ -50,10 +50,16 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
+            var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
+            var allUsers = allUsersQuery.ToList();
+            var usersCount = 0;
+
+
             foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
-                branchModel.CountSalesRep = _userRepository.GetAsync(x => x.BranchId == branch.Id).Result.ToList().Where(x => x.Role == null ? false : x.Role.Equals("2")).ToList().Count;
+
+                branchModel.CountSalesRep = allUsers.Where(x => x.BranchId == branch.Id).Count();
 
                 bool userCountfiltr = true;
 
@@ -69,7 +75,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<BranchModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.Value,
+                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
                 Data = branchModelList
             };
         }
@@ -100,10 +106,16 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
+            var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
+            var allUsers = allUsersQuery.ToList();
+            var usersCount = 0;
+
             foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
-                branchModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == branch.CompanyId && x.Role.Equals("2")).Result.ToList().Count;
+
+                usersCount = allUsers.Where(x => x.CompanyId == branch.CompanyId).Count();
+                branchModel.CountSalesRep = usersCount;
 
                 branchModelList.Add(branchModel);
             }
@@ -111,7 +123,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<BranchModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.Value,
+                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
                 Data = branchModelList
             };
         }
@@ -218,25 +230,25 @@ namespace Xyzies.TWC.Public.Api.Managers
                 {
                     query = query.OrderByDescending(x => x.Status);
                 }
-                else query = query.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.Status);
             }
 
             if (sortable.SortBy.ToLower() == "state")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    query = query.OrderByDescending(x => x.BranchName);
+                    query = query.OrderByDescending(x => x.State);
                 }
-                else query = query.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.State);
             }
 
             if (sortable.SortBy.ToLower() == "city")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    query = query.OrderByDescending(x => x.BranchName);
+                    query = query.OrderByDescending(x => x.City);
                 }
-                else query = query.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.City);
             }
 
             if (sortable.SortBy.ToLower() == "branchname")
@@ -245,16 +257,16 @@ namespace Xyzies.TWC.Public.Api.Managers
                 {
                     query = query.OrderByDescending(x => x.BranchName);
                 }
-                else query = query.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.BranchName);
             }
 
-            if (sortable.SortBy.ToLower() == "branchid")
+            if (sortable.SortBy.ToLower() == "id")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    query = query.OrderByDescending(x => x.BranchName);
+                    query = query.OrderByDescending(x => x.Id);
                 }
-                else query = query.OrderBy(x => x.CreatedDate);
+                else query = query.OrderBy(x => x.Id);
             }
 
             return query;
@@ -263,7 +275,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Branch> Pagination(Paginable paginable, IQueryable<Branch> query)
         {
-            return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
+            if (paginable.Take.HasValue && paginable.Skip.HasValue)
+            {
+                return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
+            }
+            return query;
         }
 
         /// <summary>
