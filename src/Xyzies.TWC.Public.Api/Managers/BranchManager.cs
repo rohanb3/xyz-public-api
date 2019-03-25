@@ -52,8 +52,6 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
             var allUsers = allUsersQuery.ToList();
-            var usersCount = 0;
-
 
             foreach (var branch in branches)
             {

@@ -51,14 +51,11 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
             var allUsers = allUsersQuery.ToList();
-            var usersCount = 0;
 
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-                usersCount = allUsers.Where(x => x.CompanyId == company.Id).Count(); 
-                
-                companyModel.CountSalesRep = usersCount;
+                companyModel.CountSalesRep = allUsers.Where(x => x.CompanyId == company.Id).Count(); 
 
                 companyModel.CountBranch = company.Branches.Count;
 

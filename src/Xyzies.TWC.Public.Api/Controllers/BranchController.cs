@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("api")]
+    [Route("api/public-api")]
     [ApiController]
     public class BranchController : Controller
     {
@@ -57,7 +57,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)
         {
-            if (!ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -94,7 +94,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
             if (!ModelState.IsValid)
             {
@@ -187,7 +187,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="branchModel"></param>
-        [HttpPut("branch/{id}", Name = "UpdateBranch")]
+        [HttpPut("branches/{id}", Name = "UpdateBranch")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -227,7 +227,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        [HttpPatch("branch/{id}")]
+        [HttpPatch("branches/{id}")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -250,7 +250,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// 
         /// </summary>
         /// <param name="id"></param>
-        [HttpDelete("{id}")]
+        [HttpDelete("branches/{id}")]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public void Delete(int id)
         {
