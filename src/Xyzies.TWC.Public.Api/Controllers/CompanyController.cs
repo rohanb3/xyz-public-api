@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("api/public-api")]
+    [Route("api/company")]
     [ApiController]
     public class CompanyController : Controller
     {
@@ -46,7 +46,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// GET api/company
         /// </summary>
         /// <returns></returns>
-        [HttpGet("companies", Name = "GetListCompanies")]
+        [HttpGet(Name = "GetListCompanies")]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -89,7 +89,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("company/{id}", Name = "GetCompanyDetails")]
+        [HttpGet("{id}", Name = "GetCompanyDetails")]
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -155,7 +155,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <param name="companyModel"></param>
         /// <returns></returns>
-        [HttpPut("company/{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -195,7 +195,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        [HttpPatch("company/{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -221,7 +221,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// 
         /// </summary>
         /// <param name="id"></param>
-        [HttpDelete("company/{id}")]
+        [HttpDelete("{id}")]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public void Delete(int id)
         {
