@@ -132,7 +132,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 400 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> GetBranchOfCompany(
-            int companyId,
+            [FromRoute] int companyId,
             [FromQuery] BranchFilter filterModel,
             [FromQuery] Sortable sortable,
             [FromQuery] Paginable paginable)

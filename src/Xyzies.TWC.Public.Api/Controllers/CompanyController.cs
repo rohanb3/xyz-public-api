@@ -63,18 +63,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             PagingResult<CompanyModel> result = new PagingResult<CompanyModel>();
-            if (filterModel.CompanyIds.Count > 0)
-            {
+            //if (filterModel.CompanyIds != null)
+            //{
                 return Ok(await _companyManager.GetCompanyNameById(filterModel.CompanyIds));
-            }
-            else if (filterModel.UserIds.Count > 0)
-            {
-                return Ok(await _companyManager.GetCompanyByUser(filterModel.UserIds));
-            }
-            else
-            {
-                result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
-            }
+            //}
+            //TODO: Check this case.
+            // else
+            //{
+               // result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
+           // }
+
             if (!result.Data.Any())
             {
                 return NotFound();
