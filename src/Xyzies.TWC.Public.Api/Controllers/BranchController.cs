@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("branch")]
+    [Route("api/public-api/branch")]
     [ApiController]
     public class BranchController : Controller
     {

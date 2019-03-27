@@ -4,8 +4,8 @@
     "Xyzies.TWC.Public.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://0.0.0.0:8083",
+      "launchUrl": "api/public-api/swagger",
+      "applicationUrl": "http://localhost:8083",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
