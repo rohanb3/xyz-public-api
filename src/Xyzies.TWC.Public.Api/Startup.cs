@@ -145,19 +145,21 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<UploadBranchModel, Branch>.NewConfig();
             TypeAdapterConfig<Company, UploadCompanyModel>.NewConfig();
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
-
-            app.UseHealthChecks("/api/public-api/healthz")
+            ///api/public-api
+            app.UseHealthChecks("/healthz")
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
-                .UseSwagger( c=>
-                {
-                    c.RouteTemplate = "api/public-api/swagger/v1/swagger.json";
-                })
+                .UseSwagger( 
+                //c=>
+                //{
+                //    c.RouteTemplate = "api/public-api/swagger/v1/swagger.json";
+                //}
+                )
                 .UseSwaggerUI(uiOptions =>
                 {
-                    uiOptions.RoutePrefix= "/api/public-api/swagger";
-                    uiOptions.SwaggerEndpoint("api/public-api/swagger/v1/swagger.json", $"v1.0.0");
+                    //uiOptions.RoutePrefix= "/api/public-api/swagger";
+                    uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", $"v1.0.0");
                     uiOptions.DisplayRequestDuration();
                 });
         }
