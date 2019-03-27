@@ -8,6 +8,7 @@ using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
+using System;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -49,31 +50,18 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
 
-            var allUsersQuery = _userRepository.GetAsync(x => x.RoleId1 == null ? false : x.RoleId1.Equals("2")).Result;
-            var allUsers = allUsersQuery.ToList();
+            Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
+            var allUsersQuery = _userRepository.GetAsync(x => x.RoleId1.Value.Equals(salesRoleId)).Result;
+            var allUsers = allUsersQuery.GroupBy(x => x.CompanyId).ToList();
 
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-                companyModel.CountSalesRep = allUsers.Where(x => x.CompanyId == company.Id).Count(); 
 
+                companyModel.CountSalesRep = allUsers.Where(x => x.Key == company.Id).FirstOrDefault()?.Count();
                 companyModel.CountBranch = company.Branches.Count;
 
-                bool userCountfiltr = true;
-                bool branchCountfiltr = true;
-
-                if (filter.UserCountFilter.HasValue && companyModel.CountSalesRep != filter.UserCountFilter)
-                {
-                    userCountfiltr = false;
-                }
-
-                if (filter.BranchCountFilter.HasValue && companyModel.CountBranch != filter.BranchCountFilter)
-                {
-                    userCountfiltr = false;
-                }
-
-                if (userCountfiltr && branchCountfiltr)
-                    companyModelList.Add(companyModel);
+                companyModelList.Add(companyModel);
             }
 
             return new PagingResult<CompanyModel>
@@ -131,7 +119,8 @@ namespace Xyzies.TWC.Public.Api.Managers
             var res = companies.Select(x => new CompanyMin
             {
                 Id = x.Id,
-                CompanyName = x.CompanyName
+                CompanyName = x.CompanyName,
+                CreatedDate = x.CreatedDate
             }).ToList();
 
             //KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
