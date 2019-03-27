@@ -8,7 +8,7 @@ using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories
 {
-    public class BranchRepository : EfCoreBaseRepository<int, Branch>, IBranchRepository
+    public class BranchRepository : EfCoreBaseRepository<Guid, Branch>, IBranchRepository
     {
         public BranchRepository(AppDataContext dbContext)
             : base(dbContext)
@@ -16,7 +16,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         }
 
-        public override async Task<Branch> GetAsync(int id)
+        public override async Task<Branch> GetAsync(Guid id)
         {
             var branches = await Data
                 .Include(x => x.BranchContacts)
@@ -52,7 +52,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<bool> SetActivationState(int id, bool isEnabled)
+        public async Task<bool> SetActivationState(Guid id, bool isEnabled)
         {
             var branch = await this.GetAsync(id);
             if (branch == null)
@@ -66,7 +66,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         /// <inheritdoc />
-        public override async Task<int> AddAsync(Branch branch)
+        public override async Task<Guid> AddAsync(Branch branch)
         {
             branch.CreatedDate = DateTime.Now;
             return await Task.FromResult(base.Add(branch));

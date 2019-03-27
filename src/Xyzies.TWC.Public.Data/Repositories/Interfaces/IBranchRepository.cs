@@ -6,8 +6,8 @@ using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Data.Repositories.Interfaces
 {
-    public interface IBranchRepository : IRepository<int, Branch>, IDisposable
+    public interface IBranchRepository : IRepository<Guid, Branch>, IDisposable
     {
-        Task<bool> SetActivationState(int id, bool isEnabled);
+        Task<bool> SetActivationState(Guid id, bool isEnabled);
     }
 }

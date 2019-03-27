@@ -16,13 +16,14 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             branchContactBuilder.Property(p => p.Value).HasMaxLength(100).IsRequired();
 
             branchContactBuilder
-                .HasOne(n => n.BranchContactType)
-                .WithMany(c => c.BranchContacts)
-                .HasForeignKey(sc => sc.BranchContactTypeId);
+                .HasOne(n => n.BranchContactType);
+                //.WithMany(c => c.BranchContacts)
+                //.HasForeignKey(sc => sc.BranchContactTypeId);
 
             branchContactBuilder
                 .HasOne(n => n.BranchPrimaryContact)
-                .WithMany(c => c.BranchContacts);
+                .WithMany(c => c.BranchContacts)
+                .HasForeignKey(x=>x.BranchPrimaryContactId);
 
         }
     }

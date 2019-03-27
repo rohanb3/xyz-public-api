@@ -7,10 +7,10 @@ namespace Xyzies.TWC.Public.Data.Entities
     /// <summary>
     /// See BranchContactConfiguration for property details
     /// </summary>
-    public class BranchContact : BaseEntity<int>
+    public class BranchContact : BaseEntity<Guid>
     {
         [Column("BranchContactID")]
-        public new int Id { get; set; }
+        public override Guid Id { get; set; }
 
         public string PersonName { get; set; }
 
@@ -24,11 +24,11 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         public DateTime? ModifiedDate { get; private set; }
 
-        public int BranchContactTypeId { get; set; }
+        public Guid? BranchContactTypeId { get; set; }
 
         public virtual BranchContactType BranchContactType { get; set; }
 
-        public int BranchPrimaryContactId { get; set; }
+        public Guid? BranchPrimaryContactId { get; set; }
 
         public virtual Branch BranchPrimaryContact { get; set; }
     }

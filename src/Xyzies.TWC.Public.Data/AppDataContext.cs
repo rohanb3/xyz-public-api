@@ -22,6 +22,8 @@ namespace Xyzies.TWC.Public.Data
 
         public DbSet<BranchContactType> BranchContactType { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,9 +1,11 @@
-﻿namespace Xyzies.TWC.Public.Api.Models
+﻿using System;
+
+namespace Xyzies.TWC.Public.Api.Models
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class BranchContactModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string PersonName { get; set; }
 

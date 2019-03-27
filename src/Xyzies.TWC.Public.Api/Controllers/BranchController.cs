@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("api/branch")]
+    [Route("branch")]
     [ApiController]
     public class BranchController : Controller
     {
@@ -67,10 +67,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return Ok(await _branchManager.GetBranchesById(filterModel.BranchIds));
             }
-            else if (filterModel.UserIds.Count > 0)
-            {
-                return Ok(await _branchManager.GetBranchesByUser(filterModel.UserIds));
-            }
+            //else if (filterModel.UserIds.Count > 0)
+            //{
+            //    return Ok(await _branchManager.GetBranchesByUser(filterModel.UserIds));
+            //}
             else
             {
                result = await _branchManager.GetBranches(filterModel, sortable, paginable);
@@ -94,7 +94,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public async Task<IActionResult> Get([FromRoute]int id)
+        public async Task<IActionResult> Get([FromRoute]Guid id)
         {
             if (!ModelState.IsValid)
             {
@@ -170,7 +170,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
             var branchEntity = branchModel.Adapt<Branch>();
 
-            int branchId;
+            Guid branchId;
             try
             {
                 branchId = await _branchRepository.AddAsync(branchEntity);
@@ -193,7 +193,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Put([FromRoute]int id, [FromBody] UploadBranchModel branchModel)
+        public IActionResult Put([FromRoute]Guid id, [FromBody] UploadBranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
@@ -233,7 +233,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public async Task<IActionResult> Patch([FromRoute]int id, [FromQuery] bool isEnabled)
+        public async Task<IActionResult> Patch([FromRoute] Guid id, [FromQuery] bool isEnabled)
         {
             if (!ModelState.IsValid)
             {

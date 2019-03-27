@@ -9,10 +9,10 @@ namespace Xyzies.TWC.Public.Data.Entities
     /// <summary>
     /// See BranchConfiguration for property details
     /// </summary>
-    public class Branch : BaseEntity<int>
+    public class Branch : BaseEntity<Guid>
     {
         [Column ("BranchID")]
-        public override int Id { get; set; }
+        public override Guid Id { get; set; }
         public string BranchName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }

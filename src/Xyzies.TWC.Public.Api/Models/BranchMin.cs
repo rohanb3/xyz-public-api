@@ -13,7 +13,7 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string BranchName { get; set; }
     }
 }

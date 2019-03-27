@@ -8,6 +8,7 @@ using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
+using System;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -50,24 +51,17 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
-            var allUsers = allUsersQuery.ToList();
+            Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3"); 
+            var allUsersQuery = _userRepository.GetAsync(x=>x.RoleId1.Value.Equals(salesRoleId)).Result;
+            var allUsers = allUsersQuery.GroupBy(x=>x.BranchId).ToList();
 
-            foreach (var branch in branches)
+           foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
 
-                branchModel.CountSalesRep = allUsers.Where(x => x.BranchId == branch.Id).Count();
+                branchModel.CountSalesRep = allUsers.Where(x => x.Key == branch.Id).FirstOrDefault()?.Count();
 
-                bool userCountfiltr = true;
-
-                if (filter.UserCountFilter.HasValue && branchModel.CountSalesRep != filter.UserCountFilter)
-                {
-                    userCountfiltr = false;
-                }
-
-                if (userCountfiltr)
-                    branchModelList.Add(branchModel);
+                branchModelList.Add(branchModel);
             }
 
             return new PagingResult<BranchModel>
@@ -79,7 +73,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<BranchModel> GetBranchById(int Id)
+        public async Task<BranchModel> GetBranchById(Guid Id)
         {
             var branchDetails = await _branchRepository.GetAsync(Id);
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
@@ -104,7 +98,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
+            var allUsersQuery = _userRepository.GetAsync(x => x.RoleId1 == null ? false : x.RoleId1.Equals("2")).Result;
             var allUsers = allUsersQuery.ToList();
             var usersCount = 0;
 
@@ -156,7 +150,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<List<BranchMin>> GetBranchesById(List<int> branchIds)
+        public async Task<List<BranchMin>> GetBranchesById(List<Guid> branchIds)
         {
             var branches = await _branchRepository.GetAsync(x => branchIds.Contains(x.Id));
 
@@ -236,6 +230,15 @@ namespace Xyzies.TWC.Public.Api.Managers
                 if (sortable.SortOrder.Equals("desc"))
                 {
                     query = query.OrderByDescending(x => x.State);
+                }
+                else query = query.OrderBy(x => x.State);
+            }
+
+            if (sortable.SortBy.ToLower() == "isenabled")
+            {
+                if (sortable.SortOrder.Equals("desc"))
+                {
+                    query = query.OrderByDescending(x => x.IsEnabled);
                 }
                 else query = query.OrderBy(x => x.State);
             }

@@ -49,7 +49,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
 
-            var allUsersQuery = _userRepository.GetAsync(x => x.Role == null ? false : x.Role.Equals("2")).Result;
+            var allUsersQuery = _userRepository.GetAsync(x => x.RoleId1 == null ? false : x.RoleId1.Equals("2")).Result;
             var allUsers = allUsersQuery.ToList();
 
             foreach (var company in companies)
