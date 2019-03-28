@@ -135,7 +135,6 @@ namespace Xyzies.TWC.Public.Api
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
-                .UseStaticFiles()
                 .UseSwagger(options => options.RouteTemplate = "api/public-api/swagger/{documentName}/swagger.json")
                 .UseSwaggerUI(uiOptions =>
                 {
