@@ -150,15 +150,15 @@ namespace Xyzies.TWC.Public.Api
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
-                .UseSwagger( 
-                //c=>
-                //{
-                //    c.RouteTemplate = "api/public-api/swagger/v1/swagger.json";
-                //}
+                .UseSwagger(
+                c =>
+                {
+                    c.RouteTemplate = "api/public-api/swagger/v1/swagger.json";
+                }
                 )
                 .UseSwaggerUI(uiOptions =>
                 {
-                    //uiOptions.RoutePrefix= "/api/public-api/swagger";
+                    uiOptions.RoutePrefix= "/api/public-api/swagger";
                     uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", $"v1.0.0");
                     uiOptions.DisplayRequestDuration();
                 });
