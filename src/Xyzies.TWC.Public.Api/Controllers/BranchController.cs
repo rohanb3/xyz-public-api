@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("branch")]
+    [Route("api/public-api")] // TODO: Find a better solution
     [ApiController]
     public class BranchController : Controller
     {
@@ -46,7 +46,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// GET api/branches
         /// </summary>
         /// <returns></returns>
-        [HttpGet(Name = "GetListBranches")]
+        [HttpGet("branch", Name = "GetListBranches")]
         [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -88,7 +88,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}", Name = "GetBranchDetails")]
+        [HttpGet("branch/{id}", Name = "GetBranchDetails")]
         [ProducesResponseType(typeof(BranchModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -126,7 +126,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="sortable"></param>
         /// <param name="paginable"></param>
         /// <returns></returns>
-        [HttpGet("companies/{companyId}/branches")]
+        [HttpGet("company/{companyId}/branch")]
         [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 404 */)]
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 400 */)]
@@ -157,7 +157,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="branchModel"></param>
         /// <returns></returns>
-        [HttpPost(Name = "CreateBranch")]
+        [HttpPost("branch", Name = "CreateBranch")]
         [ProducesResponseType(typeof(CreatedResult), (int)HttpStatusCode.Created /* 201 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -187,7 +187,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="branchModel"></param>
-        [HttpPut("{id}", Name = "UpdateBranch")]
+        [HttpPut("branch/{id}", Name = "UpdateBranch")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -227,7 +227,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
+        [HttpPatch("branch/{id}")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
@@ -250,7 +250,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// 
         /// </summary>
         /// <param name="id"></param>
-        [HttpDelete("{id}")]
+        [HttpDelete("branch/{id}")]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public void Delete(int id)
         {

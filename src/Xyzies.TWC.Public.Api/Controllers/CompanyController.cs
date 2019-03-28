@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("company")]
+    [Route("api/public-api/company")] // TODO: Find a better solution
     [ApiController]
     public class CompanyController : Controller
     {
@@ -47,10 +47,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetListCompanies")]
-        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 404 */)]
+        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK) /* 200 */]
+        [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 400 */)]
+        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(
             [FromQuery] CompanyFilter filterModel,
