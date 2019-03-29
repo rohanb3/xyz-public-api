@@ -131,14 +131,14 @@ namespace Xyzies.TWC.Public.Api
             #endregion
 
             // /api/public-api
-            app.UseHealthChecks("/api/public-api/healthz")
+            app.UseHealthChecks("/healthz")
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
-                .UseSwagger(options => options.RouteTemplate = "api/public-api/swagger/{documentName}/swagger.json")
+                .UseSwagger(options => options.RouteTemplate = "swagger/{documentName}/swagger.json")
                 .UseSwaggerUI(uiOptions =>
                 {
-                    uiOptions.SwaggerEndpoint("/api/public-api/swagger/v1/swagger.json", $"v1.0.0");
+                    uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", $"v1.0.0");
                     //uiOptions.RoutePrefix = "/api/public-api";
                     uiOptions.DisplayRequestDuration();
                 });
