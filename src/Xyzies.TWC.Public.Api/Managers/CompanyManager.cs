@@ -52,13 +52,12 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companyModelList = new List<CompanyModel>();
             
             var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
-            var allUsers = allUsersQuery.GroupBy(x => x.CompanyId);
-
+            var allUsers = allUsersQuery.ToList().GroupBy(x => x.CompanyId).AsQueryable();
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
 
-                companyModel.CountSalesRep = allUsers.Where(x => x.Key == company.Id).FirstOrDefault()?.Count();
+                companyModel.CountSalesRep = allUsers.Where(x => x.Key == company.Id)?.Count();
                 companyModel.CountBranch = company.Branches.Count;
 
                 companyModelList.Add(companyModel);
@@ -152,7 +151,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 query = query.Where(x => x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
             }
 
-            if (companyFilter.CompanyNameFilter.Count>0)
+            if (companyFilter.CompanyNameFilter != null && companyFilter.CompanyNameFilter.Count > 0)
             {
                 query = query.Where(x => companyFilter.CompanyNameFilter.Contains(x.CompanyName));
             }

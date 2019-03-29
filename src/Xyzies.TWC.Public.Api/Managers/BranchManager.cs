@@ -52,7 +52,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branchModelList = new List<BranchModel>();
             
             var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
-            var allUsers = allUsersQuery.GroupBy(x=>x.BranchId);
+            var allUsers = allUsersQuery.ToList().GroupBy(x=>x.BranchId);
 
            foreach (var branch in branches)
             {
