@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ILogger<BranchManager> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
         private readonly IUserRepository _userRepository = null;
-
+        private readonly Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
         /// <summary>
         /// 
         /// </summary>
@@ -50,10 +50,9 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
-
-            Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3"); 
-            var allUsersQuery = _userRepository.GetAsync(x=>x.RoleId1.Value.Equals(salesRoleId)).Result;
-            var allUsers = allUsersQuery.GroupBy(x=>x.BranchId).ToList();
+            
+            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsers = allUsersQuery.GroupBy(x=>x.BranchId);
 
            foreach (var branch in branches)
             {
@@ -77,7 +76,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         {
             var branchDetails = await _branchRepository.GetAsync(Id);
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
-            branchDetailModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == branchDetailModel.CompanyId).Result.ToList().Count;
+
+            var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
+            var salesBranchUser = branchUsers.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+
+            branchDetailModel.CountSalesRep = branchUsers.Count();
+
             return branchDetailModel;
         }
 
@@ -98,16 +102,13 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = _userRepository.GetAsync(x => x.RoleId1 == null ? false : x.RoleId1.Equals("2")).Result;
-            var allUsers = allUsersQuery.ToList();
-            var usersCount = 0;
+            var allUsersQuery = await _userRepository.GetAsync(x =>  x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
 
             foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
-
-                usersCount = allUsers.Where(x => x.CompanyId == branch.CompanyId).Count();
-                branchModel.CountSalesRep = usersCount;
+                
+                branchModel.CountSalesRep = allUsersQuery.Where(x => x.BranchId == branch.Id)?.Count();
 
                 branchModelList.Add(branchModel);
             }

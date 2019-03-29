@@ -19,6 +19,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ILogger<CompanyManager> _logger = null;
         private readonly ICompanyRepository _companyRepository = null;
         private readonly IUserRepository _userRepository = null;
+        private readonly Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
 
         /// <summary>
         /// 
@@ -49,10 +50,9 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
-
-            Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
-            var allUsersQuery = _userRepository.GetAsync(x => x.RoleId1.Value.Equals(salesRoleId)).Result;
-            var allUsers = allUsersQuery.GroupBy(x => x.CompanyId).ToList();
+            
+            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsers = allUsersQuery.GroupBy(x => x.CompanyId);
 
             foreach (var company in companies)
             {
@@ -77,9 +77,15 @@ namespace Xyzies.TWC.Public.Api.Managers
         {
             var companyDetails = await _companyRepository.GetAsync(Id);
             var companyDetailModel = companyDetails.Adapt<CompanyModel>();
-            companyDetailModel.CountSalesRep = _userRepository.GetAsync(x => x.Company.Id == companyDetailModel.Id).Result.ToList().Count;
+
+            var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
+            var userByRoleCompany = usersByCompany.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+
+            companyDetailModel.CountSalesRep = userByRoleCompany.Count();
             companyDetailModel.CountBranch = companyDetails.Branches.Count;
+
             return companyDetailModel;
+
         }
 
         /// <inheritdoc />
@@ -146,9 +152,9 @@ namespace Xyzies.TWC.Public.Api.Managers
                 query = query.Where(x => x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(companyFilter.CompanyNameFilter))
+            if (companyFilter.CompanyNameFilter.Count>0)
             {
-                query = query.Where(x => x.CompanyName.ToLower().Contains(companyFilter.CompanyNameFilter.ToLower()));
+                query = query.Where(x => companyFilter.CompanyNameFilter.Contains(x.CompanyName));
             }
 
             if (companyFilter.IsEnabledFilter.HasValue)

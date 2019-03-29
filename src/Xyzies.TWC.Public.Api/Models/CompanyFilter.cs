@@ -27,7 +27,7 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public string CompanyNameFilter { get; set; }
+        public IList<string> CompanyNameFilter { get; set; }
 
         /// <summary>
         /// 
@@ -63,14 +63,14 @@ namespace Xyzies.TWC.Public.Api.Models
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetName()
-        {
-            if (string.IsNullOrEmpty(CompanyNameFilter))
-            {
-                return Enumerable.Empty<string>();
-            }
+        //public IEnumerable<string> GetName()
+        //{
+        //    //if (string.IsNullOrEmpty(CompanyNameFilter))
+        //    //{
+        //    //    return Enumerable.Empty<string>();
+        //    //}
 
-            return CompanyNameFilter.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
-        }
+        //    //return CompanyNameFilter.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
+        //}
     }
 }
