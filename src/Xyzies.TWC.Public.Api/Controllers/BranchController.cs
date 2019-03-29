@@ -19,7 +19,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("api/public-api")] // TODO: Find a better solution
     [ApiController]
     public class BranchController : Controller
     {

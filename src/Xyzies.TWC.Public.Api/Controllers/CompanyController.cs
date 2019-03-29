@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("api/public-api/company")] // TODO: Find a better solution
+    [Route("company")]
     [ApiController]
     public class CompanyController : Controller
     {
