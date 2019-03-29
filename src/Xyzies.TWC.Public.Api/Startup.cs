@@ -139,7 +139,7 @@ namespace Xyzies.TWC.Public.Api
                 .UseSwaggerUI(uiOptions =>
                 {
                     uiOptions.SwaggerEndpoint("/api/public-api/swagger/v1/swagger.json", $"v1.0.0");
-                    uiOptions.RoutePrefix = "/api/public-api";
+                    //uiOptions.RoutePrefix = "/api/public-api";
                     uiOptions.DisplayRequestDuration();
                 });
         }
