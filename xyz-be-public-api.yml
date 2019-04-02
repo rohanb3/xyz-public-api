@@ -12,6 +12,8 @@ spec:
       labels:
         app: dev-public-api
     spec:
+      nodeSelector:
+        env: applications
       containers:
       - name: dev-public-api
         image: xyzies.azurecr.io/xyz-be-public-api-dev:0.0.0.0
