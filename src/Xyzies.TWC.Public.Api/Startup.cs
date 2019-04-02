@@ -130,17 +130,19 @@ namespace Xyzies.TWC.Public.Api
 
             #endregion
 
-            // /api/public-api
             app.UseHealthChecks("/healthz")
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
-                .UseSwagger(options => options.RouteTemplate = "/swagger/{documentName}/swagger.json")
+                .UseSwagger(options =>
+                {
+                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = "/api/public-api/");
+                    options.RouteTemplate = "/swagger/{documentName}/swagger.json";
+                })
                 .UseSwaggerUI(uiOptions =>
                 {
-                    
-                    uiOptions.SwaggerEndpoint("https://dev-demo.xyzies.ardas.biz/api/public-api/swagger/v1/swagger.json", $"v1.0.0");
-                    uiOptions.RoutePrefix = "/api/public-api";
+                    uiOptions.SwaggerEndpoint("v1/swagger.json", $"v1.0.0");
+                    //uiOptions.RoutePrefix = "/api/public-api";
                     uiOptions.DisplayRequestDuration();
                 });
         }
