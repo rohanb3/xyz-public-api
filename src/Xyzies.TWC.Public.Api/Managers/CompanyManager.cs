@@ -50,7 +50,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
-            
+
             var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.ToList().GroupBy(x => x.CompanyId).AsQueryable();
             foreach (var company in companies)
@@ -164,6 +164,11 @@ namespace Xyzies.TWC.Public.Api.Managers
             if (companyFilter.CompanyIdFilter.HasValue)
             {
                 query = query.Where(x => x.Id == companyFilter.CompanyIdFilter);
+            }
+
+            if (!string.IsNullOrEmpty(companyFilter.SearchFilter))
+            {
+                query = query.Where(x => x.CompanyName.ToLower().Contains(companyFilter.SearchFilter.ToLower()));
             }
 
             return query;

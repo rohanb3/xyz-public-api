@@ -15,6 +15,11 @@ namespace Xyzies.TWC.Public.Api.Models
         public string StateFilter { get; set; }
 
         /// <summary>
+        /// Quick search by company name
+        /// </summary>
+        public string SearchFilter { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         public string CityFilter { get; set; }
