@@ -168,7 +168,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             if (!string.IsNullOrEmpty(companyFilter.SearchFilter))
             {
-                query = query.Where(x => x.CompanyName.Contains(companyFilter.SearchFilter));
+                query = query.Where(x => x.CompanyName.ToLower().Contains(companyFilter.SearchFilter.ToLower()));
             }
 
             return query;
