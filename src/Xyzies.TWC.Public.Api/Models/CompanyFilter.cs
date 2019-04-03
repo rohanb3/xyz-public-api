@@ -20,6 +20,16 @@ namespace Xyzies.TWC.Public.Api.Models
         public string SearchFilter { get; set; }
 
         /// <summary>
+        /// Start date serching
+        /// </summary>
+        public DateTime? DateFrom { get; set; }
+
+        /// <summary>
+        /// Terminated date serching
+        /// </summary>
+        public DateTime? DateTo { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         public string CityFilter { get; set; }

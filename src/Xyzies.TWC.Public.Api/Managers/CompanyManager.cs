@@ -156,6 +156,16 @@ namespace Xyzies.TWC.Public.Api.Managers
                 query = query.Where(x => companyFilter.CompanyNameFilter.Contains(x.CompanyName));
             }
 
+            if (companyFilter.DateFrom.HasValue)
+            {
+                query = query.Where(x => companyFilter.DateFrom < x.CreatedDate);
+            }
+
+            if (companyFilter.DateTo.HasValue)
+            {
+                query = query.Where(x => companyFilter.DateTo > x.CreatedDate);
+            }
+
             if (companyFilter.IsEnabledFilter.HasValue)
             {
                 query = query.Where(x => x.IsEnabled.Equals(companyFilter.IsEnabledFilter));
