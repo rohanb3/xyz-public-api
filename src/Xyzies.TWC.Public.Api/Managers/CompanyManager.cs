@@ -88,7 +88,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<List<CompanyModel>> GetCompanyByUser(List<int> listUserIds)
+        public async Task<PagingResult<CompanyModel>> GetCompanyByUser(List<int> listUserIds)
         {
             var users = await _userRepository.GetAsync(x => listUserIds.Contains(x.Id));
 
@@ -113,24 +113,35 @@ namespace Xyzies.TWC.Public.Api.Managers
                     companies.Add(companyModel);
                 }
             }
-            return companies;
+            return new PagingResult<CompanyModel>
+            {
+                Total = 0,
+                ItemsPerPage = 0,
+                Data = companies
+            };
         }
 
         /// <inheritdoc />
-        public async Task<List<CompanyMin>> GetCompanyNameById(List<int> companyIds)
+        public async Task<PagingResult<CompanyMin>> GetCompanyNameById(List<int> companyIds)
         {
-            var companies = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
+            var companiesQuery = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
+            var totalCount = companiesQuery.Count();
 
-            var res = companies.Select(x => new CompanyMin
+            var companies = companiesQuery.Select(x => new CompanyMin
             {
                 Id = x.Id,
                 CompanyName = x.CompanyName,
                 CreatedDate = x.CreatedDate
-            }).ToList();
-
+            });
             //KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
+            var listCompany = companies.ToList();
 
-            return res;
+            return new PagingResult<CompanyMin>
+            {
+                Total = totalCount,
+                ItemsPerPage = 0,
+                Data = listCompany
+            };
         }
 
         /// <inheritdoc />
@@ -262,5 +273,6 @@ namespace Xyzies.TWC.Public.Api.Managers
             _userRepository.Dispose();
             _companyRepository.Dispose();
         }
+
     }
 }

@@ -47,10 +47,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetListCompanies")]
-        [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK) /* 200 */]
+        [ProducesResponseType(typeof(PagingResult<CompanyModel>), (int)HttpStatusCode.OK) /* 200 */]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(NoContentResult), (int)HttpStatusCode.NoContent /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(
             [FromQuery] CompanyFilter filterModel,
@@ -62,20 +62,19 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest();
             }
 
-            PagingResult<CompanyModel> result = new PagingResult<CompanyModel>();
+            var result = new PagingResult<CompanyModel>();
             if (filterModel.CompanyIds != null)
             {
                 return Ok(await _companyManager.GetCompanyNameById(filterModel.CompanyIds));
             }
-            //TODO: Check this case.
-             else
+            else
             {
                 result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
             }
 
             if (!result.Data.Any())
             {
-                return NotFound();
+                return NoContent();
             }
 
             return Ok(result);
@@ -91,7 +90,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<CompanyModel>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 204 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -111,7 +110,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             if (companyDetails == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             return Ok(companyDetails);
@@ -154,10 +153,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="companyModel"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IActionResult), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent /* 204 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public IActionResult Put([FromRoute]int id, [FromBody] UploadCompanyModel companyModel)
         {
@@ -181,10 +180,10 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             if (result.Equals(false))
             {
-                return NotFound($"Update failed. Company with id={id} not found");
+                return NoContent();
             }
 
-            return Ok(result);
+            return Ok();
         }
 
         /// <summary>
@@ -207,12 +206,13 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             bool result = await _companyRepository.SetActivationState(id, isEnabled);
-            if (result)
+
+            if (!result)
             {
-                return Ok();
+                return NoContent();
             }
 
-            return NotFound();
+            return Ok();
         }
 
         /// <summary>
