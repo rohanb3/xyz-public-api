@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Xyzies.TWC.Public
+namespace Xyzies.TWC.Public.Api
 {
     /// <summary>
     /// Extension methods for Microsoft.AspNetCore.Hosting.IHostingEnvironment.
