@@ -18,7 +18,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             salesBuilder.Property(p => p.City).HasMaxLength(50);
             salesBuilder.Property(p => p.State).HasMaxLength(50);
             salesBuilder.Property(p => p.ZipCode).HasMaxLength(50);
-            salesBuilder.Property(p => p.Role).HasMaxLength(50);
+            salesBuilder.Property(p => p.RoleId1).HasMaxLength(50);
 
         }
     }

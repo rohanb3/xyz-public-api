@@ -21,10 +21,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("BranchID")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("BranchID");
 
                     b.Property<string>("AddressLine1")
                         .HasMaxLength(50);
@@ -86,14 +85,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("BranchContactID")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("BranchContactID");
 
-                    b.Property<int>("BranchContactTypeId");
+                    b.Property<Guid?>("BranchContactTypeId");
 
-                    b.Property<int>("BranchPrimaryContactId");
+                    b.Property<Guid?>("BranchPrimaryContactId");
 
                     b.Property<DateTime?>("CreatedDate");
 
@@ -124,10 +122,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContactType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("BranchContactTypeID")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("BranchContactTypeID");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50);
@@ -291,7 +288,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("BranchId")
+                    b.Property<Guid?>("BranchId")
                         .HasColumnName("BranchID");
 
                     b.Property<string>("City")
@@ -346,7 +343,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("PhotoID");
 
-                    b.Property<string>("Role")
+                    b.Property<Guid?>("RoleId1")
                         .HasMaxLength(50);
 
                     b.Property<int?>("SalesPersonID");
@@ -389,13 +386,11 @@ namespace Xyzies.TWC.Public.Data.Migrations
                 {
                     b.HasOne("Xyzies.TWC.Public.Data.Entities.BranchContactType", "BranchContactType")
                         .WithMany("BranchContacts")
-                        .HasForeignKey("BranchContactTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("BranchContactTypeId");
 
                     b.HasOne("Xyzies.TWC.Public.Data.Entities.Branch", "BranchPrimaryContact")
                         .WithMany("BranchContacts")
-                        .HasForeignKey("BranchPrimaryContactId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("BranchPrimaryContactId");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.User", b =>

@@ -32,7 +32,7 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        public int? BranchIdFilter { get; set; }
+        public Guid? BranchIdFilter { get; set; }
 
         /// <summary>
         /// 
@@ -52,7 +52,7 @@ namespace Xyzies.TWC.Public.Api.Models
         /// <summary>
         /// filter for requests from, cancels all other filters
         /// </summary>
-        public List<int> BranchIds { get; set; } = new List<int>();
+        public List<Guid> BranchIds { get; set; } = new List<Guid>();
 
         /// <summary>
         /// 

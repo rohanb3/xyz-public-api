@@ -38,37 +38,17 @@ namespace Xyzies.TWC.Public.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.
-            //AddIdentity<ApplicationUser, IdentityRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
-
-            //services.AddIdentityServer(c =>
-            //{
-
-            //});
-
-            // For Azure Custom Identity Provider
-            services.AddAuthentication()
-                .AddOpenIdConnect("aad_b2c", "SSO", options =>
-                {
-
-                });
-
-            string dbConnectionString = $"Data Source=173.82.28.90;Initial Catalog=timewarner_20181026;User ID=sa;Password=4@ndr3w.";
+            string dbConnectionString = $"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
             //LOCAL: $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
             //REMOTE: $"Data Source=173.82.28.90;Initial Catalog=timewarner_20181026;User ID=sa;Password=4@ndr3w.";
             //RELEASE: Configuration["connectionStrings:db"];
-
-
-            //services.AddDbContextPool<AppDataContext>(ctxOptions =>
-            //        ctxOptions.UseSqlServer(dbConnectionString));
+            //$"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
 
             services
                 //.AddEntityFrameworkSqlServer()
                 .AddDbContext<AppDataContext>(ctxOptions =>
             ctxOptions.UseSqlServer(dbConnectionString));
-            //ExecutionStrateg
+            // ExecutionStrategy
 
             // Response compression
             // https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.2#brotli-compression-provider
@@ -83,7 +63,7 @@ namespace Xyzies.TWC.Public.Api
             services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(o => o.EnableEndpointRouting = true).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddHealthChecks();
             // TODO: Add check for database connection
@@ -96,8 +76,6 @@ namespace Xyzies.TWC.Public.Api
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
-           // services.AddEntityFrameworkSqlServer();
-
             #region DI configuration
             
             services.AddScoped<DbContext, AppDataContext>();
@@ -108,11 +86,14 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyManager, CompanyManager>();
 
             #endregion
+
             services.AddSwaggerGen(options =>
             {
+                options.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
+
                 options.SwaggerDoc("v1", new Info
                 {
-                    Title = "App",
+                    Title = "Public API of XYZies",
                     Version = $"v1.0.0",
                     Description = ""
                 });
@@ -138,6 +119,8 @@ namespace Xyzies.TWC.Public.Api
                     .UseHttpsRedirection();
             }
 
+            #region Mapper configuration
+
             TypeAdapterConfig<Branch, BranchModel>.NewConfig();
             TypeAdapterConfig<Company, CompanyModel>.NewConfig();
             TypeAdapterConfig<Branch, UploadBranchModel>.NewConfig();
@@ -145,14 +128,20 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<Company, UploadCompanyModel>.NewConfig();
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 
+            #endregion
+
             app.UseHealthChecks("/healthz")
                 .UseCors("dev")
                 .UseResponseCompression()
                 .UseMvc()
-                .UseSwagger()
+                .UseSwagger(options =>
+                {
+                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = "/api/public-api/");
+                    options.RouteTemplate = "/swagger/{documentName}/swagger.json";
+                })
                 .UseSwaggerUI(uiOptions =>
                 {
-                    uiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", $"v1.0.0");
+                    uiOptions.SwaggerEndpoint("v1/swagger.json", $"v1.0.0");
                     uiOptions.DisplayRequestDuration();
                 });
         }

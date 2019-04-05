@@ -8,7 +8,7 @@ RUN ["dotnet", "restore"]
 
 RUN ["dotnet", "build"]
 
-EXPOSE 8081
+EXPOSE 8083
 
 ENTRYPOINT ["dotnet", "run", "-p", "/app/Xyzies.TWC.Public.Api/" ]
 
