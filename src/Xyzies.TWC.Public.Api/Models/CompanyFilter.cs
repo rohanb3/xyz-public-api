@@ -15,6 +15,21 @@ namespace Xyzies.TWC.Public.Api.Models
         public string StateFilter { get; set; }
 
         /// <summary>
+        /// Quick search by company name
+        /// </summary>
+        public string SearchFilter { get; set; }
+
+        /// <summary>
+        /// Start date serching
+        /// </summary>
+        public DateTime? DateFrom { get; set; }
+
+        /// <summary>
+        /// Terminated date serching
+        /// </summary>
+        public DateTime? DateTo { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         public string CityFilter { get; set; }
@@ -57,7 +72,7 @@ namespace Xyzies.TWC.Public.Api.Models
         // <summary>
         /// filter for requests from, cancels all other filters
         /// </summary>
-        public List<int> CompanyIds { get; set; }
+        public List<int> CompanyIds { get; set; } = new List<int>();
 
         /// <summary>
         /// 

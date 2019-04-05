@@ -50,7 +50,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
-            
+
             var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.ToList().GroupBy(x => x.CompanyId).AsQueryable();
             foreach (var company in companies)
@@ -77,18 +77,21 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companyDetails = await _companyRepository.GetAsync(Id);
             var companyDetailModel = companyDetails.Adapt<CompanyModel>();
 
-            var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
-            var userByRoleCompany = usersByCompany.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            if (companyDetailModel != null)
+            {
+                var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
+                var userByRoleCompany = usersByCompany.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
 
-            companyDetailModel.CountSalesRep = userByRoleCompany.Count();
-            companyDetailModel.CountBranch = companyDetails.Branches.Count;
+                companyDetailModel.CountSalesRep = userByRoleCompany.Count();
+                companyDetailModel.CountBranch = companyDetails.Branches.Count;
+            }
 
             return companyDetailModel;
 
         }
 
         /// <inheritdoc />
-        public async Task<List<CompanyModel>> GetCompanyByUser(List<int> listUserIds)
+        public async Task<PagingResult<CompanyModel>> GetCompanyByUser(List<int> listUserIds)
         {
             var users = await _userRepository.GetAsync(x => listUserIds.Contains(x.Id));
 
@@ -113,24 +116,35 @@ namespace Xyzies.TWC.Public.Api.Managers
                     companies.Add(companyModel);
                 }
             }
-            return companies;
+            return new PagingResult<CompanyModel>
+            {
+                Total = 0,
+                ItemsPerPage = 0,
+                Data = companies
+            };
         }
 
         /// <inheritdoc />
-        public async Task<List<CompanyMin>> GetCompanyNameById(List<int> companyIds)
+        public async Task<PagingResult<CompanyMin>> GetCompanyNameById(List<int> companyIds)
         {
-            var companies = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
+            var companiesQuery = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
+            var totalCount = companiesQuery != null ? companiesQuery.Count() : default(int);
 
-            var res = companies.Select(x => new CompanyMin
+            var companies = companiesQuery.Select(x => new CompanyMin
             {
                 Id = x.Id,
                 CompanyName = x.CompanyName,
                 CreatedDate = x.CreatedDate
-            }).ToList();
+            });
 
-            //KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
+            var listCompany = companies.ToList();
 
-            return res;
+            return new PagingResult<CompanyMin>
+            {
+                Total = totalCount,
+                ItemsPerPage = 0,
+                Data = listCompany
+            };
         }
 
         /// <inheritdoc />
@@ -156,6 +170,16 @@ namespace Xyzies.TWC.Public.Api.Managers
                 query = query.Where(x => companyFilter.CompanyNameFilter.Contains(x.CompanyName));
             }
 
+            if (companyFilter.DateFrom.HasValue)
+            {
+                query = query.Where(x => companyFilter.DateFrom < x.CreatedDate);
+            }
+
+            if (companyFilter.DateTo.HasValue)
+            {
+                query = query.Where(x => companyFilter.DateTo > x.CreatedDate);
+            }
+
             if (companyFilter.IsEnabledFilter.HasValue)
             {
                 query = query.Where(x => x.IsEnabled.Equals(companyFilter.IsEnabledFilter));
@@ -164,6 +188,11 @@ namespace Xyzies.TWC.Public.Api.Managers
             if (companyFilter.CompanyIdFilter.HasValue)
             {
                 query = query.Where(x => x.Id == companyFilter.CompanyIdFilter);
+            }
+
+            if (!string.IsNullOrEmpty(companyFilter.SearchFilter))
+            {
+                query = query.Where(x => x.CompanyName.ToLower().Contains(companyFilter.SearchFilter.ToLower()));
             }
 
             return query;
@@ -247,5 +276,6 @@ namespace Xyzies.TWC.Public.Api.Managers
             _userRepository.Dispose();
             _companyRepository.Dispose();
         }
+
     }
 }

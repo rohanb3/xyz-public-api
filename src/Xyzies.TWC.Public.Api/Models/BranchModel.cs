@@ -32,7 +32,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public BranchStatus Status { get; set; }
         public string State { set; get; }
 
-        public bool? IsEnabled { set; get; }
+        public bool IsEnabled { set; get; } = true;
 
         [DataType(DataType.DateTime)]
         public DateTime? CreatedDate { get; set; }

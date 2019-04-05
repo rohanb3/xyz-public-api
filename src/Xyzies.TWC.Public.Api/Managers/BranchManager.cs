@@ -51,11 +51,11 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
-            
-            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
-            var allUsers = allUsersQuery.ToList().GroupBy(x=>x.BranchId);
 
-           foreach (var branch in branches)
+            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsers = allUsersQuery.ToList().GroupBy(x => x.BranchId);
+
+            foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
 
@@ -82,11 +82,11 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
 
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
+            
+                var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
+                var salesBranchUser = branchUsers.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
 
-            var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
-            var salesBranchUser = branchUsers.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
-
-            branchDetailModel.CountSalesRep = branchUsers.Count();
+                branchDetailModel.CountSalesRep = branchUsers.Count();
 
             return branchDetailModel;
         }
@@ -94,6 +94,8 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<PagingResult<BranchModel>> GetBranchesByCompany(int companyId, BranchFilter filter, Sortable sortable, Paginable paginable)
         {
+            // TODO: Add check: Is company exist?
+
             IQueryable<Branch> query = await _branchRepository.GetAsync(x => x.Company.Id == companyId);
 
             query = Filtering(filter, query);
@@ -108,12 +110,12 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x =>  x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
 
             foreach (var branch in branches)
             {
                 var branchModel = branch.Adapt<BranchModel>();
-                
+
                 branchModel.CountSalesRep = allUsersQuery.Where(x => x.BranchId == branch.Id)?.Count();
 
                 branchModelList.Add(branchModel);
@@ -157,18 +159,25 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<List<BranchMin>> GetBranchesById(List<Guid> branchIds)
+        public async Task<PagingResult<BranchMin>> GetBranchesById(List<Guid> branchIds)
         {
-            var branches = await _branchRepository.GetAsync(x => branchIds.Contains(x.Id));
+            var branchesQuery = await _branchRepository.GetAsync(x => branchIds.Contains(x.Id));
+            int totalCount = branchesQuery != null ? branchesQuery.Count() : default(int);
 
-            var res = branches.Select(x => new BranchMin
+            var branchModelList = branchesQuery.Select(x => new BranchMin
             {
                 Id = x.Id,
-                BranchName = x.BranchName
+                BranchName = x.BranchName,
+                CreatedDate = x.CreatedDate
 
             }).ToList();
 
-            return res;
+            return new PagingResult<BranchMin>
+            {
+                Total = totalCount,
+                ItemsPerPage = 0,
+                Data = branchModelList
+            };
         }
 
         /// <inheritdoc />
@@ -298,6 +307,5 @@ namespace Xyzies.TWC.Public.Api.Managers
             _userRepository.Dispose();
             _branchRepository.Dispose();
         }
-        
     }
 }
