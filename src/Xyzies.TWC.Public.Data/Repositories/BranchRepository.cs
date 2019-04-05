@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<Branch> GetAsync(Guid id)
         {
             var branches = await Data
-                .Include(x => x.BranchContacts)
+                .Include(x => x.BranchContacts).Where(entity => entity.Id.Equals(id))
                 .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
 
             return branches;

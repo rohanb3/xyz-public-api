@@ -50,6 +50,6 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// </summary>
         /// <param name="branchIds"></param>
         /// <returns></returns>
-        Task<List<BranchMin>> GetBranchesById(List<Guid> branchIds);
+        Task<PagingResult<BranchMin>> GetBranchesById(List<Guid> branchIds);
     }
 }

@@ -77,11 +77,14 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companyDetails = await _companyRepository.GetAsync(Id);
             var companyDetailModel = companyDetails.Adapt<CompanyModel>();
 
-            var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
-            var userByRoleCompany = usersByCompany.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            if (companyDetailModel != null)
+            {
+                var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
+                var userByRoleCompany = usersByCompany.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
 
-            companyDetailModel.CountSalesRep = userByRoleCompany.Count();
-            companyDetailModel.CountBranch = companyDetails.Branches.Count;
+                companyDetailModel.CountSalesRep = userByRoleCompany.Count();
+                companyDetailModel.CountBranch = companyDetails.Branches.Count;
+            }
 
             return companyDetailModel;
 
@@ -125,7 +128,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         public async Task<PagingResult<CompanyMin>> GetCompanyNameById(List<int> companyIds)
         {
             var companiesQuery = await _companyRepository.GetAsync(x => companyIds.Contains(x.Id));
-            var totalCount = companiesQuery.Count();
+            var totalCount = companiesQuery != null ? companiesQuery.Count() : default(int);
 
             var companies = companiesQuery.Select(x => new CompanyMin
             {
@@ -133,7 +136,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 CompanyName = x.CompanyName,
                 CreatedDate = x.CreatedDate
             });
-            //KeyValuePair.Create(x.Id, x.CompanyName)).ToDictionary(x=>x.Key, x=>x.Value);
+
             var listCompany = companies.ToList();
 
             return new PagingResult<CompanyMin>

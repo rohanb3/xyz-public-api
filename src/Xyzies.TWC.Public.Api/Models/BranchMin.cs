@@ -14,6 +14,15 @@ namespace Xyzies.TWC.Public.Api.Models
         /// 
         /// </summary>
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string BranchName { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? CreatedDate { get; set; }
     }
 }
