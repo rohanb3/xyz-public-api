@@ -27,8 +27,8 @@ namespace Xyzies.TWC.Public.Api
 
                 .ConfigureLogging(logging =>
                 {
-                    logging.SetMinimumLevel(LogLevel.Debug);
                     logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Debug);
                     logging.AddConsole();
                 })
                 .Build()

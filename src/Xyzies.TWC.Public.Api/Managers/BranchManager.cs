@@ -20,6 +20,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly IBranchRepository _branchRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
+
         /// <summary>
         /// 
         /// </summary>
@@ -75,6 +76,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         public async Task<BranchModel> GetBranchById(Guid Id)
         {
             var branchDetails = await _branchRepository.GetAsync(Id);
+            if (branchDetails == null)
+            {
+                return null;
+            }
+
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
 
             var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);

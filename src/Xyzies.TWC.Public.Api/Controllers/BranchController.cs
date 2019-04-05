@@ -17,9 +17,8 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Xyzies.TWC.Public.Api.Controllers
 {
     /// <summary>
-    /// 
+    /// Resource of branch
     /// </summary>
-    //[Route("api/public-api")]
     [ApiController]
     public class BranchController : Controller
     {
@@ -28,7 +27,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         private readonly IBranchManager _branchManager = null;
 
         /// <summary>
-        /// 
+        /// Ctor with dependencies
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
@@ -43,14 +42,13 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// GET api/branches
+        /// Returns a list of branches of companies
         /// </summary>
         /// <returns></returns>
         [HttpGet("branch", Name = "GetListBranches")]
-        [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
-        [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public async Task<IActionResult> Get(
             [FromQuery] BranchFilter filterModel,
@@ -63,33 +61,30 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             var result = new PagingResult<BranchModel>();
-            if (filterModel.BranchIds.Count > 0)
+            if (filterModel.BranchIds.Any())
             {
+                // TODO: Return object of PagingResult
                 return Ok(await _branchManager.GetBranchesById(filterModel.BranchIds));
             }
+
+            // TODO: Commented code
             //else if (filterModel.UserIds.Count > 0)
             //{
             //    return Ok(await _branchManager.GetBranchesByUser(filterModel.UserIds));
             //}
-            else
-            {
-               result = await _branchManager.GetBranches(filterModel, sortable, paginable);
-            }
-            if (!result.Data.Any())
-            {
-                return NotFound();
-            }
+
+            result = await _branchManager.GetBranches(filterModel, sortable, paginable);
 
             return Ok(result);
         }
 
         /// <summary>
-        /// GET api/branch/5
+        /// Returns a branch selected by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("branch/{id}", Name = "GetBranchDetails")]
-        [ProducesResponseType(typeof(BranchModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BranchModel), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
@@ -100,26 +95,26 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             BranchModel branchDetail = null;
             try
             {
                 branchDetail = await _branchManager.GetBranchById(id);
+                if (branchDetail == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(branchDetail);
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            if (branchDetail == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(branchDetail);
         }
 
         /// <summary>
-        /// Get all branches related to specify company
+        /// Returns all found branches related to the specific company
         /// </summary>
         /// <param name="companyId"></param>
         /// <param name="filterModel"></param>
@@ -127,11 +122,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="paginable"></param>
         /// <returns></returns>
         [HttpGet("company/{companyId}/branch")]
-        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 404 */)]
         [ProducesResponseType(typeof(NotFoundResult), (int)HttpStatusCode.NotFound /* 400 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public async Task<IActionResult> GetBranchOfCompany(
+        public async Task<IActionResult> GetBranchesOfCompany(
             [FromRoute] int companyId,
             [FromQuery] BranchFilter filterModel,
             [FromQuery] Sortable sortable,
@@ -141,15 +136,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable);
 
-            if (result.Total.Equals(0))
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-
+            return Ok(await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable));
         }
 
         /// <summary>
