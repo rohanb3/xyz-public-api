@@ -137,7 +137,7 @@ namespace Xyzies.TWC.Public.Api
                 .UseMvc()
                 .UseSwagger(options =>
                 {
-                    //options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = "/api/public-api/");
+                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = "/api/public-api/");
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>
