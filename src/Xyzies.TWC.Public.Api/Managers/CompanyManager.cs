@@ -51,8 +51,9 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x => string.IsNullOrWhiteSpace(x.Role) ? x.Role.Trim().Equals(salesRoleId.ToString().ToLower()) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.ToList().GroupBy(x => x.CompanyId).AsQueryable();
+
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
