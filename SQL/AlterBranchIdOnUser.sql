@@ -1,0 +1,1 @@
+ALTER TABLE TWC_Users ADD BranchId uniqueidentifier NULL

@@ -1,4 +1,3 @@
-USE [TWC02122019]
 GO
 
 INSERT INTO [dbo].[TWC_BranchContacts]([BranchContactID],[PersonName],[PersonLastName],[PersonTitle],[Value],[BranchContactTypeId],[BranchPrimaryContactId])

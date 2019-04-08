@@ -1,0 +1,1 @@
+ALTER TABLE TWC_Companies ADD IsEnabled bit NOT NULL DEFAULT 1

@@ -73,7 +73,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
 
-        public bool? IsEnabled { get; set; } = true;
+        public bool IsEnabled { get; set; } = true;
 
         public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
         public virtual ICollection<User> CompanyUsers { get; set; } = new List<User>();

@@ -16,7 +16,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string State { get; set; }
         public string ZipCode { get; set; }
         public int? SalesPersonID { get; set; }
-        public Guid? RoleId1 { get; set; }
+        public string Role { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public int? CreatedBy { get; set; }
@@ -44,7 +44,6 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         [Column("BranchID")]
         public Guid? BranchId { get; set; }
-        //public virtual Branch Branch { get; set; }
 
         [Column("CompanyID")]
         public int? CompanyId { get; set; }
