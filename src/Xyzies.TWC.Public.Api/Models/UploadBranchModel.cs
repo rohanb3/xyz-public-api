@@ -30,6 +30,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public string GeoLng { get; set; }
         public BranchStatus Status { get; set; }
 
+        public bool IsEnabled { set; get; }
+
         public int CompanyId { get; set; }
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ILogger<CompanyManager> _logger = null;
         private readonly ICompanyRepository _companyRepository = null;
         private readonly IUserRepository _userRepository = null;
-        private readonly Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
+        private readonly string salesRoleId = "2";
 
         /// <summary>
         /// 
@@ -51,7 +51,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => string.IsNullOrWhiteSpace(x.Role) ? x.Role.Trim().Equals(salesRoleId.ToString().ToLower()) : false);
             var allUsers = allUsersQuery.ToList().GroupBy(x => x.CompanyId).AsQueryable();
             foreach (var company in companies)
             {
@@ -80,9 +80,9 @@ namespace Xyzies.TWC.Public.Api.Managers
             if (companyDetailModel != null)
             {
                 var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
-                var userByRoleCompany = usersByCompany.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+                var userByRoleCompany = usersByCompany.ToList().GroupBy(x => x.Role).AsQueryable();
 
-                companyDetailModel.CountSalesRep = userByRoleCompany.Count();
+                companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault().Count();
                 companyDetailModel.CountBranch = companyDetails.Branches.Count;
             }
 

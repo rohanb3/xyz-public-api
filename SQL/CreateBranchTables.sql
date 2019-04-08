@@ -1,11 +1,11 @@
 CREATE TABLE [TWC_BranchContactTypes] (
-    [BranchContactTypeID] int NOT NULL IDENTITY,
+    [BranchContactTypeID] uniqueidentifier NOT NULL,
     [Name] nvarchar(50) NULL,
     CONSTRAINT [BranchContactTypeID] PRIMARY KEY ([BranchContactTypeID])
 );
 
 CREATE TABLE [TWC_Branches] (
-    [BranchID] int NOT NULL IDENTITY,
+    [BranchID] uniqueidentifier NOT NULL,
     [BranchName] nvarchar(250) NOT NULL,
     [Email] nvarchar(50) NULL,
     [Phone] nvarchar(50) NULL,
@@ -17,7 +17,7 @@ CREATE TABLE [TWC_Branches] (
     [AddressLine2] nvarchar(50) NULL,
     [GeoLat] nvarchar(50) NULL,
     [GeoLng] nvarchar(50) NULL,
-    [IsEnabled] bit NULL DEFAULT 1,
+    [IsEnabled] bit NOT NULL DEFAULT 1,
     [Status] int NULL,
     [CreatedDate] datetime2 NULL,
     [ModifiedDate] datetime2 NULL,

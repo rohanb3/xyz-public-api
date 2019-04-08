@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ILogger<BranchManager> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
         private readonly IUserRepository _userRepository = null;
-        private readonly Guid salesRoleId = new Guid("7AE67793-425E-4798-A4A4-AE3565008DE3");
+        private readonly string salesRoleId = "2";
         /// <summary>
         /// 
         /// </summary>
@@ -51,7 +51,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrWhiteSpace(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.ToList().GroupBy(x => x.BranchId);
 
             foreach (var branch in branches)
@@ -83,9 +83,9 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
             
                 var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
-                var salesBranchUser = branchUsers.Where(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+                var salesBranchUser = branchUsers.ToList().GroupBy(x => x.Role).AsQueryable();
 
-                branchDetailModel.CountSalesRep = branchUsers.Count();
+            branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault().Count();
 
             return branchDetailModel;
         }
@@ -107,7 +107,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x => x.RoleId1.HasValue ? x.RoleId1.Value.Equals(salesRoleId) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => string.IsNullOrWhiteSpace(x.Role) ? x.Role.ToLower().Equals(salesRoleId.ToString().ToLower()) : false);
 
             foreach (var branch in branches)
             {
