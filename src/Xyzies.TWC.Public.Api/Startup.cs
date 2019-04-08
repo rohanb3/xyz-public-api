@@ -34,7 +34,7 @@ namespace Xyzies.TWC.Public.Api
 
         public IConfiguration Configuration { get; }
 
-        public static string ServiceBaseUrlPrefix { get; set; } = "/api/public-api"; // Default
+        public static string ServiceBaseUrlPrefix { get; set; } = "/api/public-api/"; // Default
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
@@ -154,7 +154,7 @@ namespace Xyzies.TWC.Public.Api
                 .UseMvc()
                 .UseSwagger(options =>
                 {
-                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}/");
+                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>
