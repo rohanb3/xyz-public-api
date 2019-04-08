@@ -42,7 +42,7 @@ namespace Xyzies.TWC.Public.Api
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            string dbConnectionString = $"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";            //LOCAL: $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
+            string dbConnectionString = $"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.";            //LOCAL: $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
             //REMOTE: $"Data Source=173.82.28.90;Initial Catalog=timewarner_20181026;User ID=sa;Password=4@ndr3w.";
             //RELEASE: Configuration["connectionStrings:db"];
             //$"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
@@ -154,7 +154,7 @@ namespace Xyzies.TWC.Public.Api
                 .UseMvc()
                 .UseSwagger(options =>
                 {
-                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}/");
+                    //options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}/");
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>
