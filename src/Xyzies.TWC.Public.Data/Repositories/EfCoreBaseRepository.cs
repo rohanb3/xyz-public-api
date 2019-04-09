@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Xyzies.TWC.Public.Data.Core;
+using Xyzies.TWC.Public.Data.Providers;
 
 namespace Xyzies.TWC.Public.Data.Repositories
 {
@@ -16,7 +17,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TEntity"></typeparam>
     public abstract class EfCoreBaseRepository<TKey, TEntity>
-        : BaseRepository<TKey, TEntity>, IUnitOfWork
+        : BaseRepository<TKey, TEntity, DbContext>, IUnitOfWork
         where TEntity : class, IEntity<TKey>
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
     {
@@ -30,7 +31,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         /// </summary>
         /// <param name="dbContext"></param>
         public EfCoreBaseRepository(DbContext dbContext)
-            : base(dbContext)
+            : base(new DbContextProvider(dbContext))
         {
             // TODO: Check and remove
             // For unit testing in memory db
@@ -164,15 +165,15 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         /// <inheritdoc />
         public IDbContextTransaction CurrentTransaction =>
-            base.DbContext.Database.BeginTransaction();
+            base.Context.Database.BeginTransaction();
 
         /// <inheritdoc />
         public void Commit() =>
-            base.DbContext.Database.CommitTransaction();
+            base.Context.Database.CommitTransaction();
 
         /// <inheritdoc />
         public void Rollback() =>
-            base.DbContext.Database.RollbackTransaction();
+            base.Context.Database.RollbackTransaction();
 
         #endregion
 
@@ -181,7 +182,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         internal bool Commit(Action action)
         {
             action.Invoke();
-            DbContext.SaveChanges();
+            this.Context.SaveChanges();
 
             return true;
         }
@@ -190,7 +191,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         {
             T result = action.Invoke();
 
-            DbContext.SaveChanges();
+            this.Context.SaveChanges();
 
             return result;
         }
@@ -198,7 +199,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         private async Task<bool> CommitAsync(Action action)
         {
             action.Invoke();
-            await DbContext.SaveChangesAsync();
+            await this.Context.SaveChangesAsync();
 
             return await Task.FromResult(true);
         }
@@ -206,7 +207,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         private async Task<T> CommitAsync<T>(Func<T> func)
         {
             var result = Task.FromResult(func.Invoke());
-            await DbContext.SaveChangesAsync();
+            await this.Context.SaveChangesAsync();
 
             return await result;
         }

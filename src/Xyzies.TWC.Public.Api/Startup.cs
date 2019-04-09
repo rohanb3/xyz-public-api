@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.WindowsAzure.Storage;
 using Swashbuckle.AspNetCore.Swagger;
 using Xyzies.TWC.Public.Api.Managers;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
@@ -20,6 +21,7 @@ using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories;
+using Xyzies.TWC.Public.Data.Repositories.Azure;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api
@@ -76,14 +78,25 @@ namespace Xyzies.TWC.Public.Api
                         .AllowAnyMethod()
                         .AllowCredentials()));
 
+            string azureStorageConnectionString = Configuration["connectionStrings:storageAccount"];
+
+            if (!CloudStorageAccount.TryParse(azureStorageConnectionString, out CloudStorageAccount storageAccount))
+            {
+                throw new ApplicationException("Missing Azure Blob Storage settings");
+            }
+
+            services.AddSingleton(storageAccount);
+
             #region DI configuration
 
             services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IAzureCompanyAvatarRepository, AzureCompanyAvatarRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBranchManager, BranchManager>();
             services.AddScoped<ICompanyManager, CompanyManager>();
+            services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
 
             #endregion
 
