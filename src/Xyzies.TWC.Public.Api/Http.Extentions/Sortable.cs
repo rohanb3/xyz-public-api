@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
+namespace Xyzies.TWC.Public.Api
 {
     /// <summary>
     /// Represents a data sorting model

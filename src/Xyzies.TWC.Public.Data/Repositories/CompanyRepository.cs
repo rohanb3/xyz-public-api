@@ -54,7 +54,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
             company.IsEnabled = isEnabled;
 
             return await this.UpdateAsync(company);
-
         }
 
         /// <inheritdoc />

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 
 namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
 {
@@ -12,7 +10,6 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             companyBuilder.ToTable("TWC_Companies").HasKey(p => p.Id).HasName("CompanyID");
 
             companyBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
-
-    }
+        }
     }
 }

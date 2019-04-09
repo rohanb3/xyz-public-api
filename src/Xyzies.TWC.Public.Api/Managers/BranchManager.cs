@@ -1,14 +1,12 @@
 ﻿using Mapster;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
-using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
-using System;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -237,13 +235,14 @@ namespace Xyzies.TWC.Public.Api.Managers
                 else query = query.OrderBy(x => x.CreatedDate);
             }
 
+            // NOTE: Sorting by active status
             if (sortable.SortBy.ToLower() == "status")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    query = query.OrderByDescending(x => x.Status);
+                    query = query.OrderByDescending(x => x.IsEnabled);
                 }
-                else query = query.OrderBy(x => x.Status);
+                else query = query.OrderBy(x => x.IsEnabled);
             }
 
             if (sortable.SortBy.ToLower() == "state")
@@ -255,6 +254,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 else query = query.OrderBy(x => x.State);
             }
 
+            // NOTE: The same as above
             if (sortable.SortBy.ToLower() == "isenabled")
             {
                 if (sortable.SortOrder.Equals("desc"))

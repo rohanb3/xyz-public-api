@@ -5,11 +5,9 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
-using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Api.Managers;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 using System.Collections.Generic;
@@ -90,10 +88,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            BranchModel branchDetail = null;
             try
             {
-                branchDetail = await _branchManager.GetBranchById(id);
+                var branchDetail = await _branchManager.GetBranchById(id);
                 if (branchDetail == null)
                 {
                     return NotFound();
@@ -147,7 +144,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public async Task<IActionResult> Post([FromBody] UploadBranchModel branchModel)
+        public async Task<IActionResult> Post([FromBody] CreateBranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
@@ -161,7 +158,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
                 return Ok(branchId);
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -178,7 +175,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Put([FromRoute]Guid id, [FromBody] UploadBranchModel branchModel)
+        public IActionResult Put([FromRoute]Guid id, [FromBody] CreateBranchModel branchModel)
         {
             if (!ModelState.IsValid)
             {
@@ -198,7 +195,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
                 return Ok();
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -230,17 +227,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             return Ok();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("branch/{id}")]
-        [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc />

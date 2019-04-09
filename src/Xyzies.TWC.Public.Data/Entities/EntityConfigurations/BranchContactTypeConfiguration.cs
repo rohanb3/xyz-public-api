@@ -9,7 +9,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
         {
             branchContactTypeBuilder.ToTable("TWC_BranchContactTypes").HasKey(p => p.Id).HasName("BranchContactTypeID");
 
-            branchContactTypeBuilder.Property(p => p.Name).HasMaxLength(50);
+            branchContactTypeBuilder.Property(p => p.Name).HasMaxLength(128);
         }
     }
 }

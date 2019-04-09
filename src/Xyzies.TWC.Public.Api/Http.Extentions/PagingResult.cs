@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
+namespace Xyzies.TWC.Public.Api
 {
     /// <summary>
     /// Represents a pagination result
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class PagingResult<T> : IModelHttpResult
+    public partial class PagingResult<T>
         where T : class
     {
         /// <summary>

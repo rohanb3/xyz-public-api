@@ -14,7 +14,6 @@ namespace Xyzies.TWC.Public.Api.Models
         public string PersonTitle { get; set; }
 
         public string Value { get; set; }
-
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
