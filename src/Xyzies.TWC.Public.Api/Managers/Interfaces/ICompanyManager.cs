@@ -25,7 +25,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<CompanyModel> GetCompanyById(int id);
+        Task<CompanyModelExtended> GetCompanyById(int id);
 
         /// <summary>
         /// 

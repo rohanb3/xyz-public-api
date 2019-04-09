@@ -29,7 +29,7 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
         {
             try
             {
-                _cloudBlobContainer = base.AccessPoint.Provider.BlobClient.GetContainerReference("company-avatars");
+                _cloudBlobContainer = base.AccessPoint.Provider.BlobClient.GetContainerReference(entity.Id);
                 await _cloudBlobContainer.CreateIfNotExistsAsync();
 
                 BlobContainerPermissions permissions = new BlobContainerPermissions
@@ -49,7 +49,7 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
                     throw new ArgumentNullException("File name cannot be null or empty");
                 }
 
-                var fileName = $"{entity.Id}.{entity.File.FileName.Split('.').LastOrDefault() ?? throw new ArgumentException("Invalid file name format", nameof(entity.File.FileName))}";
+                var fileName = $"avatar.{entity.File.FileName.Split('.').LastOrDefault() ?? throw new ArgumentException("Invalid file name format", nameof(entity.File.FileName))}";
 
                 CloudBlockBlob cloudBlockBlob = _cloudBlobContainer.GetBlockBlobReference(fileName);
                 await cloudBlockBlob.UploadFromStreamAsync(entity.File.OpenReadStream());
@@ -89,6 +89,48 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
         public override IQueryable<CompanyAvatar> Get(Expression<Func<CompanyAvatar, bool>> predicate)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> GetAvatarPath(string companyId)
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(companyId))
+                {
+                    throw new ArgumentNullException("Company Id cannot be null or empty");
+                }
+
+                _cloudBlobContainer = base.AccessPoint.Provider.BlobClient.GetContainerReference(companyId);
+
+                var isExist = await _cloudBlobContainer.ExistsAsync();
+
+                if (!isExist)
+                {
+                    return null;
+                }
+
+                BlobContinuationToken continuationToken = null;
+                List<IListBlobItem> blobItems = new List<IListBlobItem>();
+
+                do
+                {
+                    var response = await _cloudBlobContainer.ListBlobsSegmentedAsync(continuationToken);
+                    continuationToken = response.ContinuationToken;
+                    blobItems.AddRange(response.Results);
+                } while (continuationToken != null);
+
+                return blobItems.FirstOrDefault(item => item.Uri.AbsoluteUri.Contains("avatar")).Uri.AbsoluteUri;
+            }
+            catch (StorageException)
+            {
+                if (_cloudBlobContainer != null)
+                {
+                    await _cloudBlobContainer.DeleteIfExistsAsync();
+                }
+
+                throw;
+            }
         }
 
         /// <inheritedoc />
@@ -132,7 +174,7 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
             throw new NotImplementedException();
         }
 
-        public override Task<bool> HasAsync(string id)
+        public async override Task<bool> HasAsync(string id)
         {
             throw new NotImplementedException();
         }
