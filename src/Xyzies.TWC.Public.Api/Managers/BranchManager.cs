@@ -86,7 +86,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
                 var salesBranchUser = branchUsers.ToList().GroupBy(x => x.Role).AsQueryable();
 
-            branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault().Count();
+            branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count();
 
             return branchDetailModel;
         }
