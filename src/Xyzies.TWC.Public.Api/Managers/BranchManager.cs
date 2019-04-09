@@ -20,6 +20,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly IBranchRepository _branchRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly string salesRoleId = "2";
+
         /// <summary>
         /// 
         /// </summary>
@@ -75,17 +76,17 @@ namespace Xyzies.TWC.Public.Api.Managers
         public async Task<BranchModel> GetBranchById(Guid Id)
         {
             var branchDetails = await _branchRepository.GetAsync(Id);
-
             if (branchDetails == null)
             {
                 return null;
             }
+
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
             
                 var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
                 var salesBranchUser = branchUsers.ToList().GroupBy(x => x.Role).AsQueryable();
 
-            branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault().Count();
+            branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count();
 
             return branchDetailModel;
         }
@@ -93,6 +94,8 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<PagingResult<BranchModel>> GetBranchesByCompany(int companyId, BranchFilter filter, Sortable sortable, Paginable paginable)
         {
+            // TODO: Add check: Is company exist?
+
             IQueryable<Branch> query = await _branchRepository.GetAsync(x => x.Company.Id == companyId);
 
             query = Filtering(filter, query);

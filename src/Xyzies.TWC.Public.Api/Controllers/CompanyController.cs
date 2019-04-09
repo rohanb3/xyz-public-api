@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
@@ -48,7 +48,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <returns></returns>
         [HttpGet(Name = "GetListCompanies")]
         [ProducesResponseType(typeof(PagingResult<CompanyModel>), (int)HttpStatusCode.OK) /* 200 */]
-        [ProducesResponseType(typeof(BadRequestResult), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> Get(
@@ -62,7 +62,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             var result = new PagingResult<CompanyModel>();
-            if (filterModel.CompanyIds != null)
+            if (filterModel.CompanyIds.Any())
             {
                 return Ok(await _companyManager.GetCompanyNameById(filterModel.CompanyIds));
             }
@@ -70,7 +70,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
             result = await _companyManager.GetCompanies(filterModel, sortable, paginable);
 
             return Ok(result);
-
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}", Name = "GetCompanyDetails")]
-        [ProducesResponseType(typeof(CompanyModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CompanyModel), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
@@ -90,22 +89,21 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            CompanyModel companyDetails = null;
+
             try
             {
-                companyDetails = await _companyManager.GetCompanyById(id);
+                CompanyModel companyDetails = await _companyManager.GetCompanyById(id);
+                if (companyDetails == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(companyDetails);
             }
             catch (SqlException ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            if (companyDetails == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(companyDetails);
         }
 
         /// <summary>
@@ -124,18 +122,18 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var companyEntity = companyModel.Adapt<Company>();
 
-            int companyId;
             try
             {
-                companyId = await _companyRepository.AddAsync(companyEntity);
+                var companyEntity = companyModel.Adapt<Company>();
+                int companyId = await _companyRepository.AddAsync(companyEntity);
+
+                return Ok(companyId);
             }
             catch (SqlException ex)
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(companyId);
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="companyModel"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(IActionResult), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IActionResult), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
@@ -157,25 +155,23 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool result = false;
-            var companyEntity = companyModel.Adapt<Company>();
-            companyEntity.Id = id;
-
             try
             {
-                result = _companyRepository.Update(companyEntity);
+                var companyEntity = companyModel.Adapt<Company>();
+                companyEntity.Id = id;
+
+                bool result = _companyRepository.Update(companyEntity);
+                if (!result)
+                {
+                    return NotFound();
+                }
+
+                return Ok();
             }
             catch (SqlException ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            if (result.Equals(false))
-            {
-                return NotFound();
-            }
-
-            return Ok();
         }
 
         /// <summary>
@@ -185,7 +181,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="isEnabled"></param>
         /// <returns></returns>
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
@@ -198,7 +194,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
 
             bool result = await _companyRepository.SetActivationState(id, isEnabled);
-
             if (!result)
             {
                 return NotFound();
@@ -223,7 +218,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             if (disposing)
             {
-                // TODO: Disposing
+                _companyManager.Dispose();
                 _companyRepository.Dispose();
             }
 
