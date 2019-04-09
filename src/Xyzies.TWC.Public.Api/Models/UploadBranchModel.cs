@@ -22,7 +22,9 @@ namespace Xyzies.TWC.Public.Api.Models
 
         public string State { set; get; }
         public string City { get; set; }
-        public string Address { get; set; }
+
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
 
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "ZipCode must be numbers only.")]
         public string ZipCode { get; set; }
