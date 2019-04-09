@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
@@ -10,20 +8,5 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
     public interface IManager<T> : IDisposable
     {
 
-        /// <summary>
-        /// Sorting settings
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        IQueryable<T> Sorting(Sortable filter, IQueryable<T> query);
-
-        /// <summary>
-        /// Pagination settings
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        IQueryable<T> Pagination(Paginable filter, IQueryable<T> query);
     }
 }

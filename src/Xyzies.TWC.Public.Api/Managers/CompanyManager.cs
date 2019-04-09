@@ -12,6 +12,7 @@ using System;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
+#pragma warning disable CA1063 // Implement IDisposable Correctly
     /// <inheritdoc />
     public class CompanyManager : ICompanyManager
     {
@@ -67,7 +68,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<CompanyModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
+                ItemsPerPage = paginable.Take ?? 0,
                 Data = companyModelList
             };
         }
@@ -149,7 +150,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
+        private IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
@@ -200,7 +201,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Company> Sorting(Sortable sortable, IQueryable<Company> query)
+        private IQueryable<Company> Sorting(Sortable sortable, IQueryable<Company> query)
         {
             if (sortable.SortBy.ToLower() == "createddate")
             {
@@ -260,7 +261,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Company> Pagination(Paginable paginable, IQueryable<Company> query)
+        private IQueryable<Company> Pagination(Paginable paginable, IQueryable<Company> query)
         {
             if (paginable.Take.HasValue && paginable.Skip.HasValue)
             {
@@ -269,14 +270,12 @@ namespace Xyzies.TWC.Public.Api.Managers
             return query;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             _userRepository.Dispose();
             _companyRepository.Dispose();
         }
-
+#pragma warning restore CA1063 // Implement IDisposable Correctly
     }
 }

@@ -38,7 +38,6 @@ namespace Xyzies.TWC.Public.Data.Entities
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }
 
-
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
 
