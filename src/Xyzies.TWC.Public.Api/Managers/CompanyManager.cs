@@ -86,7 +86,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
                 var userByRoleCompany = usersByCompany.ToList().GroupBy(x => x.Role).AsQueryable();
 
-                companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count();
+                companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count() ?? 0;
                 companyDetailModel.CountBranch = companyDetails.Branches.Count;
                 companyDetailModel.LogoUrl = await _companyAvatarsRepository.GetAvatarPath(Id.ToString());
             }
@@ -108,8 +108,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 CompanyModel companyModel = null;
                 foreach (var user in grouph)
                 {
-                    var companyId = user.CompanyId;
-                    var company = await _companyRepository.GetByAsync(x => x.Id == companyId);
+                    var company = await _companyRepository.GetByAsync(x => x.Id == user.CompanyId);
                     if (company == null)
                     {
                         continue;
