@@ -22,7 +22,9 @@ namespace Xyzies.TWC.Public.Api.Models
         [Phone(ErrorMessage = "Please enter valid fax no.")]
         public string Fax { get; set; }
 
-        public string Address { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+
         public string City { get; set; }
 
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "ZipCode must be numbers only.")]
