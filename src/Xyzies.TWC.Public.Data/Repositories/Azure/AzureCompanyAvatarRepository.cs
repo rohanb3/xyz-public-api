@@ -29,16 +29,6 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
         {
             try
             {
-                _cloudBlobContainer = base.AccessPoint.Provider.BlobClient.GetContainerReference(entity.Id);
-                await _cloudBlobContainer.CreateIfNotExistsAsync();
-
-                BlobContainerPermissions permissions = new BlobContainerPermissions
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Blob
-                };
-
-                await _cloudBlobContainer.SetPermissionsAsync(permissions);
-
                 if (string.IsNullOrEmpty(entity.Id))
                 {
                     throw new ArgumentNullException("Company Id cannot be null or empty");
@@ -48,6 +38,16 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
                 {
                     throw new ArgumentNullException("File name cannot be null or empty");
                 }
+
+                _cloudBlobContainer = base.AccessPoint.Provider.BlobClient.GetContainerReference(entity.Id);
+                await _cloudBlobContainer.CreateIfNotExistsAsync();
+
+                BlobContainerPermissions permissions = new BlobContainerPermissions
+                {
+                    PublicAccess = BlobContainerPublicAccessType.Blob
+                };
+
+                await _cloudBlobContainer.SetPermissionsAsync(permissions);
 
                 var fileName = $"avatar.{entity.File.FileName.Split('.').LastOrDefault() ?? throw new ArgumentException("Invalid file name format", nameof(entity.File.FileName))}";
 
