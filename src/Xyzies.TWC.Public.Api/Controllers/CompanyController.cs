@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
+using Xyzies.TWC.Public.Api.Managers;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
@@ -122,7 +123,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public async Task<IActionResult> Post([FromBody] UploadCompanyModel companyModel)
+        public async Task<IActionResult> Post([FromBody] CreateCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {
@@ -154,7 +155,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Put([FromRoute]int id, [FromBody] UploadCompanyModel companyModel)
+        public IActionResult Put([FromRoute]int id, [FromBody] CreateCompanyModel companyModel)
         {
             if (!ModelState.IsValid)
             {

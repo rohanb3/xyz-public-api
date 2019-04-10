@@ -40,39 +40,49 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter, Sortable sortable, Paginable paginable)
         {
-            IQueryable<Branch> query = await _branchRepository.GetAsync();
-
-            query = Filtering(filter, query);
-
-            // Calculate total count
-            var queryableCount = query;
-            int totalCount = queryableCount.Count();
-
-            query = Sorting(sortable, query);
-
-            query = Pagination(paginable, query);
-
-            var branches = query.ToList();
-            var branchModelList = new List<BranchModel>();
-
-            var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
-            var allUsers = allUsersQuery.ToList().GroupBy(x => x.BranchId);
-
-            foreach (var branch in branches)
+            try
             {
-                var branchModel = branch.Adapt<BranchModel>();
+                IQueryable<Branch> query = null;
 
-                branchModel.CountSalesRep = allUsers.Where(x => x.Key == branch.Id).FirstOrDefault()?.Count();
+                query = await _branchRepository.GetAsync();
 
-                branchModelList.Add(branchModel);
+                query = Filtering(filter, query);
+
+                // Calculate total count
+                var queryableCount = query;
+                int totalCount = queryableCount.Count();
+
+                query = Sorting(sortable, query);
+
+                query = Pagination(paginable, query);
+
+                var branches = query.ToList();
+                var branchModelList = new List<BranchModel>();
+
+                var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
+                var allUsers = allUsersQuery.ToList().GroupBy(x => x.BranchId);
+
+                foreach (var branch in branches)
+                {
+                    var branchModel = branch.Adapt<BranchModel>();
+
+                    branchModel.CountSalesRep = allUsers.Where(x => x.Key == branch.Id).FirstOrDefault()?.Count();
+
+                    branchModelList.Add(branchModel);
+                }
+
+                return new PagingResult<BranchModel>
+                {
+                    Total = totalCount,
+                    ItemsPerPage = paginable.Take ?? default(int),
+                    Data = branchModelList
+                };
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
-            return new PagingResult<BranchModel>
-            {
-                Total = totalCount,
-                ItemsPerPage = paginable.Take ?? default(int),
-                Data = branchModelList
-            };
         }
 
         /// <inheritdoc />
@@ -85,9 +95,9 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
 
             var branchDetailModel = branchDetails.Adapt<BranchModel>();
-            
-                var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
-                var salesBranchUser = branchUsers.ToList().GroupBy(x => x.Role).AsQueryable();
+
+            var branchUsers = await _userRepository.GetAsync(x => x.BranchId == Id);
+            var salesBranchUser = branchUsers.ToList().GroupBy(x => x.Role).AsQueryable();
 
             branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count();
 

@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
 using Swashbuckle.AspNetCore.Swagger;
 using Xyzies.TWC.Public.Api.Managers;
+using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data;
 using Xyzies.TWC.Public.Data.Entities;
