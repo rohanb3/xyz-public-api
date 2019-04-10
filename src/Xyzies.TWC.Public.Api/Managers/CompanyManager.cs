@@ -3,19 +3,22 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
+using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
+using Xyzies.TWC.Public.Data.Repositories.Azure;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
-#pragma warning disable CA1063 // Implement IDisposable Correctly
     /// <inheritdoc />
     public class CompanyManager : ICompanyManager
     {
 
         private readonly ILogger<CompanyManager> _logger = null;
         private readonly ICompanyRepository _companyRepository = null;
+        private readonly IAzureCompanyAvatarRepository _companyAvatarsRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly string salesRoleId = "2";
 
@@ -25,10 +28,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="logger"></param>
         /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
-        public CompanyManager(ILogger<CompanyManager> logger, ICompanyRepository companyRepository, IUserRepository userRepository)
+        /// <param name="companyAvatarsRepository"></param>
+        public CompanyManager(ILogger<CompanyManager> logger, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
         {
             _logger = logger;
             _companyRepository = companyRepository;
+            _companyAvatarsRepository = companyAvatarsRepository;
             _userRepository = userRepository;
         }
 
@@ -65,16 +70,16 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<CompanyModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take ?? 0,
+                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
                 Data = companyModelList
             };
         }
 
         /// <inheritdoc />
-        public async Task<CompanyModel> GetCompanyById(int Id)
+        public async Task<CompanyModelExtended> GetCompanyById(int Id)
         {
             var companyDetails = await _companyRepository.GetAsync(Id);
-            var companyDetailModel = companyDetails.Adapt<CompanyModel>();
+            var companyDetailModel = companyDetails.Adapt<CompanyModelExtended>();
 
             if (companyDetailModel != null)
             {
@@ -83,6 +88,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
                 companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count() ?? 0;
                 companyDetailModel.CountBranch = companyDetails.Branches.Count;
+                companyDetailModel.LogoUrl = await _companyAvatarsRepository.GetAvatarPath(Id.ToString());
             }
 
             return companyDetailModel;
@@ -147,7 +153,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        private IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
+        public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
@@ -198,7 +204,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        private IQueryable<Company> Sorting(Sortable sortable, IQueryable<Company> query)
+        public IQueryable<Company> Sorting(Sortable sortable, IQueryable<Company> query)
         {
             if (sortable.SortBy.ToLower() == "createddate")
             {
@@ -258,7 +264,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        private IQueryable<Company> Pagination(Paginable paginable, IQueryable<Company> query)
+        public IQueryable<Company> Pagination(Paginable paginable, IQueryable<Company> query)
         {
             if (paginable.Take.HasValue && paginable.Skip.HasValue)
             {
@@ -267,12 +273,14 @@ namespace Xyzies.TWC.Public.Api.Managers
             return query;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             _userRepository.Dispose();
             _companyRepository.Dispose();
         }
-#pragma warning restore CA1063 // Implement IDisposable Correctly
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Xyzies.TWC.Public.Data.Core;
 
@@ -9,8 +8,8 @@ namespace Xyzies.TWC.Public.Data.Entities
     {
         [Column("BranchContactTypeID")]
         public override Guid Id { get; set; }
-
-        [Required]
         public string Name { get; set; }
+
+        //public virtual ICollection<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
     }
 }
