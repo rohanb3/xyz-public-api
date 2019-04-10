@@ -87,7 +87,6 @@ namespace Xyzies.TWC.Public.Api.Models
         public IList<int> UserIds { get; set; } = new List<int>();
 
         public virtual IList<BranchModel> Branches { get; set; } = new List<BranchModel>();
-
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

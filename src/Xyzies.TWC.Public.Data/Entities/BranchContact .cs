@@ -20,16 +20,20 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         public string Value { get; set; }
 
+        // TODO: Why is it nullable
         public DateTime? CreatedDate { get; private set; }
 
         public DateTime? ModifiedDate { get; private set; }
 
+        // TODO: Why is it nullable
+        [ForeignKey(nameof(BranchContactType))]
         public Guid? BranchContactTypeId { get; set; }
 
         public virtual BranchContactType BranchContactType { get; set; }
 
-        public Guid? BranchPrimaryContactId { get; set; }
+        [ForeignKey(nameof(Branch))]
+        public Guid? BranchId { get; set; }
 
-        public virtual Branch BranchPrimaryContact { get; set; }
+        public virtual Branch Branch { get; set; }
     }
 }

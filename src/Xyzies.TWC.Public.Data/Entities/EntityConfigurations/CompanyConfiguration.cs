@@ -10,7 +10,6 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
             companyBuilder.ToTable("TWC_Companies").HasKey(p => p.Id).HasName("CompanyID");
 
             companyBuilder.Property(p => p.IsEnabled).HasDefaultValue(true);
-
-    }
+        }
     }
 }

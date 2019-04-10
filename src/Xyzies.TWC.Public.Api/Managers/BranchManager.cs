@@ -1,21 +1,19 @@
 ﻿using Mapster;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
-using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
-using System;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
+#pragma warning disable CA1063 // Implement IDisposable Correctly
     /// <inheritdoc />
     public class BranchManager : IBranchManager
     {
-
         private readonly ILogger<BranchManager> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
         private readonly IUserRepository _userRepository = null;
@@ -27,11 +25,16 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
         /// <param name="userRepository"></param>
-        public BranchManager(ILogger<BranchManager> logger, IBranchRepository branchRepository, IUserRepository userRepository)
+        public BranchManager(ILogger<BranchManager> logger,
+            IBranchRepository branchRepository,
+            IUserRepository userRepository)
         {
-            _logger = logger;
-            _branchRepository = branchRepository;
-            _userRepository = userRepository;
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+            _branchRepository = branchRepository ??
+                throw new ArgumentNullException(nameof(branchRepository));
+            _userRepository = userRepository ??
+                throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <inheritdoc />
@@ -67,7 +70,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<BranchModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
+                ItemsPerPage = paginable.Take ?? default(int),
                 Data = branchModelList
             };
         }
@@ -124,7 +127,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<BranchModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
+                ItemsPerPage = paginable.Take ?? 0,
                 Data = branchModelList
             };
         }
@@ -181,11 +184,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Branch> Filtering(BranchFilter branchFilter, IQueryable<Branch> query)
+        private IQueryable<Branch> Filtering(BranchFilter branchFilter, IQueryable<Branch> query)
         {
-            if (branchFilter.UserIds.Count <= 0)
+            // TODO: Fix
+            if (branchFilter.UserIds.Count == 0)
             {
-
                 if (!string.IsNullOrEmpty(branchFilter.StateFilter))
                 {
                     query = query.Where(x => x.State.ToLower().Equals(branchFilter.StateFilter.ToLower()));
@@ -221,7 +224,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Branch> Sorting(Sortable sortable, IQueryable<Branch> query)
+        private IQueryable<Branch> Sorting(Sortable sortable, IQueryable<Branch> query)
         {
             if (sortable.SortBy.ToLower() == "createddate")
             {
@@ -232,13 +235,14 @@ namespace Xyzies.TWC.Public.Api.Managers
                 else query = query.OrderBy(x => x.CreatedDate);
             }
 
+            // NOTE: Sorting by active status
             if (sortable.SortBy.ToLower() == "status")
             {
                 if (sortable.SortOrder.Equals("desc"))
                 {
-                    query = query.OrderByDescending(x => x.Status);
+                    query = query.OrderByDescending(x => x.IsEnabled);
                 }
-                else query = query.OrderBy(x => x.Status);
+                else query = query.OrderBy(x => x.IsEnabled);
             }
 
             if (sortable.SortBy.ToLower() == "state")
@@ -250,6 +254,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 else query = query.OrderBy(x => x.State);
             }
 
+            // NOTE: The same as above
             if (sortable.SortBy.ToLower() == "isenabled")
             {
                 if (sortable.SortOrder.Equals("desc"))
@@ -290,22 +295,22 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public IQueryable<Branch> Pagination(Paginable paginable, IQueryable<Branch> query)
+        private IQueryable<Branch> Pagination(Paginable paginable, IQueryable<Branch> query)
         {
             if (paginable.Take.HasValue && paginable.Skip.HasValue)
             {
                 return query.Skip(paginable.Skip.Value).Take(paginable.Take.Value);
             }
+
             return query;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             _userRepository.Dispose();
             _branchRepository.Dispose();
         }
+#pragma warning restore CA1063 // Implement IDisposable Correctly
     }
 }

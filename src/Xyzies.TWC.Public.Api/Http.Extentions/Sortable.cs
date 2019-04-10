@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
+namespace Xyzies.TWC.Public.Api
 {
     /// <summary>
     /// Represents a data sorting model

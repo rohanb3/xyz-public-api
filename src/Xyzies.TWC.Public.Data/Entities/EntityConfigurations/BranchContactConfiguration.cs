@@ -16,14 +16,11 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
 
             branchContactBuilder
                 .HasOne(n => n.BranchContactType);
-                //.WithMany(c => c.BranchContacts)
-                //.HasForeignKey(sc => sc.BranchContactTypeId);
 
             branchContactBuilder
-                .HasOne(n => n.BranchPrimaryContact)
+                .HasOne(n => n.Branch)
                 .WithMany(c => c.BranchContacts)
-                .HasForeignKey(x=>x.BranchPrimaryContactId);
-
+                .HasForeignKey(x => x.BranchId);
         }
     }
 }

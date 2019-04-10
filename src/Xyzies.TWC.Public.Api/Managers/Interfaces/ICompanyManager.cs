@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Models;
-using Xyzies.TWC.Public.Data.Entities;
 
-namespace Xyzies.TWC.Public.Api.Managers.Interfaces
+namespace Xyzies.TWC.Public.Api.Managers
 {
     /// <summary>
     /// Facade of manage a company requests
     /// </summary>
-    public interface ICompanyManager : IManager<Company>
+    public interface ICompanyManager : IDisposable
     {
         /// <summary>
         /// Getting all companies or first 15 by defolt

@@ -47,7 +47,7 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         [Column("CompanyID")]
         public int? CompanyId { get; set; }
-        public virtual Company Company { get; set; }
 
+        public virtual Company Company { get; set; }
     }
 }

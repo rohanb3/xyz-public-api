@@ -16,14 +16,10 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         }
 
-        public override async Task<Branch> GetAsync(Guid id)
-        {
-            var branches = await Data
-                .Include(x => x.BranchContacts).Where(entity => entity.Id.Equals(id))
+        public override async Task<Branch> GetAsync(Guid id) =>
+            await Data.Include(x => x.BranchContacts)
+                .Where(entity => entity.Id.Equals(id))
                 .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
-
-            return branches;
-        }
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync() =>
@@ -69,7 +65,8 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<Guid> AddAsync(Branch branch)
         {
             branch.CreatedDate = DateTime.Now;
-            return await Task.FromResult(base.Add(branch));
+
+            return await base.AddAsync(branch);
         }
     }
 }
