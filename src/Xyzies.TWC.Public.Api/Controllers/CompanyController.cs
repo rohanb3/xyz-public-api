@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,7 @@ using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
+using Xyzies.TWC.Public.Data.Entities.Azure;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Controllers
@@ -26,6 +28,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         private readonly ILogger<CompanyController> _logger = null;
         private readonly ICompanyRepository _companyRepository = null;
         private readonly ICompanyManager _companyManager = null;
+        private readonly ICompanyAvatarsManager _companyAvatarsManager = null;
 
         /// <summary>
         /// 
@@ -33,13 +36,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="logger"></param>
         /// <param name="companyRepository"></param>
         /// <param name="companyManager"></param>
+        /// <param name="companyAvatarsManager"></param>
         public CompanyController(ILogger<CompanyController> logger,
             ICompanyRepository companyRepository,
-            ICompanyManager companyManager)
+            ICompanyManager companyManager,
+            ICompanyAvatarsManager companyAvatarsManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
             _companyManager = companyManager ?? throw new ArgumentNullException(nameof(companyManager));
+            _companyAvatarsManager = companyAvatarsManager ?? throw new ArgumentNullException(nameof(companyAvatarsManager));
         }
 
         /// <summary>
@@ -211,6 +217,21 @@ namespace Xyzies.TWC.Public.Api.Controllers
         public void Delete(int id)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Updates company avatar
+        /// </summary>
+        /// <param name="companyId">company id to update avatar</param>
+        /// <param name="avatar">Avatar file</param>
+        /// <returns></returns>
+        [HttpPut("{companyId}/avatar")]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
+        public async Task<IActionResult> UpdateCompanyAvatar(string companyId, [FromForm] [Required] AvatarModel avatar)
+        {
+            var result = await _companyAvatarsManager.UploadCompanyAvatarAsync(new CompanyAvatar { File = avatar.File, Id = companyId });
+
+            return result ? Ok() : throw new ApplicationException("result is false");
         }
 
         /// <inheritdoc />

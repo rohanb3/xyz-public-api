@@ -8,7 +8,7 @@ using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
-using System;
+using Xyzies.TWC.Public.Data.Repositories.Azure;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -18,6 +18,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
         private readonly ILogger<CompanyManager> _logger = null;
         private readonly ICompanyRepository _companyRepository = null;
+        private readonly IAzureCompanyAvatarRepository _companyAvatarsRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly string salesRoleId = "2";
 
@@ -27,10 +28,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="logger"></param>
         /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
-        public CompanyManager(ILogger<CompanyManager> logger, ICompanyRepository companyRepository, IUserRepository userRepository)
+        /// <param name="companyAvatarsRepository"></param>
+        public CompanyManager(ILogger<CompanyManager> logger, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
         {
             _logger = logger;
             _companyRepository = companyRepository;
+            _companyAvatarsRepository = companyAvatarsRepository;
             _userRepository = userRepository;
         }
 
@@ -73,10 +76,10 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<CompanyModel> GetCompanyById(int Id)
+        public async Task<CompanyModelExtended> GetCompanyById(int Id)
         {
             var companyDetails = await _companyRepository.GetAsync(Id);
-            var companyDetailModel = companyDetails.Adapt<CompanyModel>();
+            var companyDetailModel = companyDetails.Adapt<CompanyModelExtended>();
 
             if (companyDetailModel != null)
             {
@@ -85,6 +88,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
                 companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count() ?? 0;
                 companyDetailModel.CountBranch = companyDetails.Branches.Count;
+                companyDetailModel.LogoUrl = await _companyAvatarsRepository.GetAvatarPath(Id.ToString());
             }
 
             return companyDetailModel;

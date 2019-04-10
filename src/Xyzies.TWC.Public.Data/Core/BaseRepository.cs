@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Xyzies.TWC.Public.Data.Providers.Behaviour;
 
 namespace Xyzies.TWC.Public.Data.Core
 {
@@ -13,28 +13,34 @@ namespace Xyzies.TWC.Public.Data.Core
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TProvider"></typeparam>
-    public abstract class BaseRepository<TKey, TEntity>
+    public abstract class BaseRepository<TKey, TEntity, TProvider>
         : IRepository<TKey, TEntity>, IDisposable
+        where TProvider : class, IDisposable
         where TEntity : class, IEntity<TKey>
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
     {
-        public DbContext DbContext { get; }
+        protected TProvider Context { get; private set; }
+        protected IAccessPointProvider<TProvider> AccessPoint { get; private set; }
 
         /// <summary>
         /// Ctor of base repository
         /// </summary>
         /// <param name="accessPointProvider"></param>
-        public BaseRepository(DbContext dbContext) =>
-            DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-
+        public BaseRepository(IAccessPointProvider<TProvider> accessPointProvider)
+        {
+            AccessPoint = accessPointProvider ?? throw new ArgumentNullException(nameof(accessPointProvider));
+            Context = AccessPoint.Provider ?? throw new ArgumentNullException(nameof(AccessPoint.Provider));
+        }
+        
         #region Disposable
 
         /// <inheritdoc />
         public virtual void Dispose()
         {
-            if (DbContext != null)
+            if (this.AccessPoint != null)
             {
-                DbContext.Dispose();
+                this.AccessPoint.Dispose();
+                this.AccessPoint = null;
             }
         }
 
