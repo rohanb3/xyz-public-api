@@ -37,16 +37,16 @@ namespace Xyzies.TWC.Public.Api.Models
 
         /// <summary>
         /// 0 - deactivated / 1 - activated
-        /// TODO: Rename to IsStatusActive
         /// </summary>
-        public bool Status { get; set; }
+        public bool IsStatusActive { get; set; }
 
         public bool IsEnabled { set; get; }
 
         public int CompanyId { get; set; }
 
         // TODO: Add new props to store branch contact
-    }
+        public BranchContact BranchContacts { get; set; }
+}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
 
