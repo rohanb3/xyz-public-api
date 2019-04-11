@@ -11,7 +11,7 @@ namespace Xyzies.TWC.Public.Data.Entities
     /// </summary>
     public class Branch : BaseEntity<Guid>
     {
-        [Column ("BranchID")]
+        [Column ("Id")]
         public override Guid Id { get; set; }
 
         public string BranchName { get; set; }
@@ -38,8 +38,7 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         public bool IsEnabled { get; set; }
 
-        // TODO: Why is it nullable
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
 
@@ -54,7 +53,7 @@ namespace Xyzies.TWC.Public.Data.Entities
 
         public virtual ICollection<BranchContact> BranchContacts { get; set; } = new List<BranchContact>();
 
-        public virtual ICollection<User> BranchUsers { get; set; } = new List<User>();
+        public virtual ICollection<Users> BranchUsers { get; set; } = new List<Users>();
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

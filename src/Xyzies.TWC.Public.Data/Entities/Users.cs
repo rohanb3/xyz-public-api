@@ -4,10 +4,10 @@ using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities
 {
-    public class User : BaseEntity<int>
+    public class Users : BaseEntity<int>
     {
         [Column("UserID")]
-        public new int Id { get; set; }
+        public override int Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }

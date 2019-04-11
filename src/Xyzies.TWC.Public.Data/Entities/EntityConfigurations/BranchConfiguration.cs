@@ -7,7 +7,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Branch> branchBuilder)
         {
-            branchBuilder.ToTable("TWC_Branches").HasKey(p => p.Id).HasName("BranchID");
+            branchBuilder.ToTable("TWC_Branch").HasKey(p => p.Id);
             
             branchBuilder.Property(p => p.BranchName).HasMaxLength(256).IsRequired();
             branchBuilder.Property(p => p.Email).HasMaxLength(128);

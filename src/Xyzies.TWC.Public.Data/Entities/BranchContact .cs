@@ -9,7 +9,7 @@ namespace Xyzies.TWC.Public.Data.Entities
     /// </summary>
     public class BranchContact : BaseEntity<Guid>
     {
-        [Column("BranchContactID")]
+        [Column("Id")]
         public override Guid Id { get; set; }
 
         public string PersonName { get; set; }
@@ -19,20 +19,18 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string PersonTitle { get; set; }
 
         public string Value { get; set; }
-
-        // TODO: Why is it nullable
-        public DateTime? CreatedDate { get; private set; }
+        
+        public DateTime CreatedDate { get; private set; }
 
         public DateTime? ModifiedDate { get; private set; }
-
-        // TODO: Why is it nullable
+        
         [ForeignKey(nameof(BranchContactType))]
-        public Guid? BranchContactTypeId { get; set; }
+        public Guid BranchContactTypeId { get; set; }
 
         public virtual BranchContactType BranchContactType { get; set; }
 
         [ForeignKey(nameof(Branch))]
-        public Guid? BranchId { get; set; }
+        public Guid BranchId { get; set; }
 
         public virtual Branch Branch { get; set; }
     }
