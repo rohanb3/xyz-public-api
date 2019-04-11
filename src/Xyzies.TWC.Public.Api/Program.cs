@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace Xyzies.TWC.Public.Api
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

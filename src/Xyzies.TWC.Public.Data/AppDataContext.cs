@@ -20,9 +20,9 @@ namespace Xyzies.TWC.Public.Data
 
         public DbSet<BranchContact> PrimaryContacts { get; set; }
 
-        public DbSet<BranchContactType> BranchContactType { get; set; }
+        public DbSet<BranchContactType> BranchContactTypes { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Users> Users { get; set; }
 
         #endregion
 

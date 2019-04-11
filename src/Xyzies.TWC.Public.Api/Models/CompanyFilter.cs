@@ -6,7 +6,7 @@ namespace Xyzies.TWC.Public.Api.Models
     /// <summary>
     /// 
     /// </summary>
-    public class CompanyFilter //: Searchable
+    public class CompanyFilter
     {
         /// <summary>
         /// 
@@ -68,23 +68,9 @@ namespace Xyzies.TWC.Public.Api.Models
         /// </summary>
         public List<int> UserIds { get; set; } = new List<int>();
 
-        // <summary>
+        /// <summary>
         /// filter for requests from, cancels all other filters
         /// </summary>
         public List<int> CompanyIds { get; set; } = new List<int>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        //public IEnumerable<string> GetName()
-        //{
-        //    //if (string.IsNullOrEmpty(CompanyNameFilter))
-        //    //{
-        //    //    return Enumerable.Empty<string>();
-        //    //}
-
-        //    //return CompanyNameFilter.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower());
-        //}
     }
 }

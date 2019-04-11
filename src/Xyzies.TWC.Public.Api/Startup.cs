@@ -44,11 +44,11 @@ namespace Xyzies.TWC.Public.Api
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            string dbConnectionString = $"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.";            
-            //LOCAL: $"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = TWC02122019; Integrated Security = True; Pooling = False";
-            //REMOTE: $"Data Source=173.82.28.90;Initial Catalog=timewarner_20181026;User ID=sa;Password=4@ndr3w.";
-            //RELEASE: Configuration["connectionStrings:db"];
-            //$"Data Source=173.82.28.90;Initial Catalog=TWC02122019;User ID=sa;Password=4@ndr3w.";
+            string dbConnectionString = Configuration.GetConnectionString("db");
+            if (string.IsNullOrEmpty(dbConnectionString))
+            {
+                StartupException.Throw("Missing the connection string to database");
+            }
 
             // TODO: ExecutionStrategy
             services.AddDbContext<AppDataContext>(ctxOptions =>
@@ -150,9 +150,9 @@ namespace Xyzies.TWC.Public.Api
 
             TypeAdapterConfig<Branch, BranchModel>.NewConfig();
             TypeAdapterConfig<Company, CompanyModel>.NewConfig();
-            TypeAdapterConfig<Branch, UploadBranchModel>.NewConfig();
-            TypeAdapterConfig<UploadBranchModel, Branch>.NewConfig();
-            TypeAdapterConfig<Company, UploadCompanyModel>.NewConfig();
+            TypeAdapterConfig<Branch, CreateBranchModel>.NewConfig();
+            TypeAdapterConfig<CreateBranchModel, Branch>.NewConfig();
+            TypeAdapterConfig<Company, CreateCompanyModel>.NewConfig();
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 
             #endregion

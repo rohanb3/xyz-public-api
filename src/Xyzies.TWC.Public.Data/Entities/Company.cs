@@ -76,7 +76,7 @@ namespace Xyzies.TWC.Public.Data.Entities
         public bool IsEnabled { get; set; } = true;
 
         public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
-        public virtual ICollection<User> CompanyUsers { get; set; } = new List<User>();
+        public virtual ICollection<Users> CompanyUsers { get; set; } = new List<Users>();
 
     }
 }

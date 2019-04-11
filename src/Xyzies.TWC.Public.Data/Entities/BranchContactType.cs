@@ -6,7 +6,7 @@ namespace Xyzies.TWC.Public.Data.Entities
 {
     public class BranchContactType : BaseEntity<Guid>
     {
-        [Column("BranchContactTypeID")]
+        [Column("Id")]
         public override Guid Id { get; set; }
         public string Name { get; set; }
 

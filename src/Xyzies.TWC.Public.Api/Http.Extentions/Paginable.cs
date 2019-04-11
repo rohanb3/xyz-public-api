@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
+namespace Xyzies.TWC.Public.Api
 {
     /// <summary>
     /// Represents a pagination model
@@ -10,7 +10,7 @@ namespace Xyzies.TWC.Public.Api.Controllers.Http.Extentions
         /// <summary>
         /// 15 items per page by default. You can change this value.
         /// </summary>
-        //public static int DEFAULT_PER_PAGE = 50;
+        public static int DEFAULT_PER_PAGE = 50;
 
         /// <summary>
         /// From

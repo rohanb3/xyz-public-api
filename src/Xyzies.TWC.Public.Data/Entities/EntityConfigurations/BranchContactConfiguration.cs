@@ -7,7 +7,7 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<BranchContact> branchContactBuilder)
         {
-            branchContactBuilder.ToTable("TWC_BranchContacts").HasKey(p => p.Id).HasName("BranchContactID");
+            branchContactBuilder.ToTable("TWC_BranchContact").HasKey(p => p.Id);
 
             branchContactBuilder.Property(p => p.PersonName).HasMaxLength(50);
             branchContactBuilder.Property(p => p.PersonLastName).HasMaxLength(50);
@@ -16,14 +16,11 @@ namespace Xyzies.TWC.Public.Data.Entities.EntityConfigurations
 
             branchContactBuilder
                 .HasOne(n => n.BranchContactType);
-                //.WithMany(c => c.BranchContacts)
-                //.HasForeignKey(sc => sc.BranchContactTypeId);
 
             branchContactBuilder
-                .HasOne(n => n.BranchPrimaryContact)
+                .HasOne(n => n.Branch)
                 .WithMany(c => c.BranchContacts)
-                .HasForeignKey(x=>x.BranchPrimaryContactId);
-
+                .HasForeignKey(x => x.BranchId);
         }
     }
 }

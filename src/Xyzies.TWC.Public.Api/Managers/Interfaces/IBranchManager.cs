@@ -1,16 +1,14 @@
-﻿using System.Threading.Tasks;
-using Xyzies.TWC.Public.Api.Models;
-using Xyzies.TWC.Public.Api.Controllers.Http.Extentions;
-using Xyzies.TWC.Public.Data.Entities;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Threading.Tasks;
+using Xyzies.TWC.Public.Api.Models;
 
-namespace Xyzies.TWC.Public.Api.Managers.Interfaces
+namespace Xyzies.TWC.Public.Api.Managers
 {
     /// <summary>
     /// Facade of manage a branch requests
     /// </summary>
-    public interface IBranchManager : IManager<Branch>
+    public interface IBranchManager : IDisposable
     {
         /// <summary>
         /// Getting all branches or first 15 by defolt

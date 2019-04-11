@@ -1,44 +1,43 @@
-CREATE TABLE [TWC_BranchContactTypes] (
-    [BranchContactTypeID] uniqueidentifier NOT NULL,
-    [Name] nvarchar(50) NULL,
-    CONSTRAINT [BranchContactTypeID] PRIMARY KEY ([BranchContactTypeID])
+CREATE TABLE [TWC_BranchContactType] (
+    [Id] uniqueidentifier NOT NULL,
+    [Name] nvarchar(128) NULL,
+    CONSTRAINT [PK_TWC_BranchContactType] PRIMARY KEY ([Id])
 );
 
-CREATE TABLE [TWC_Branches] (
-    [BranchID] uniqueidentifier NOT NULL,
-    [BranchName] nvarchar(250) NOT NULL,
-    [Email] nvarchar(50) NULL,
-    [Phone] nvarchar(50) NULL,
-    [Fax] nvarchar(50) NULL,
-    [State] nvarchar(50) NULL,
-    [City] nvarchar(50) NULL,
-    [ZipCode] nvarchar(50) NULL,
-    [AddressLine1] nvarchar(50) NULL,
-    [AddressLine2] nvarchar(50) NULL,
-    [GeoLat] nvarchar(50) NULL,
-    [GeoLng] nvarchar(50) NULL,
+CREATE TABLE [TWC_Branch] (
+    [Id] uniqueidentifier NOT NULL,
+    [BranchName] nvarchar(256) NOT NULL,
+    [Email] nvarchar(128) NULL,
+    [Phone] nvarchar(16) NULL,
+    [Fax] nvarchar(16) NULL,
+    [State] nvarchar(64) NULL,
+    [City] nvarchar(64) NULL,
+    [ZipCode] nvarchar(16) NULL,
+    [AddressLine1] nvarchar(max) NULL,
+    [AddressLine2] nvarchar(max) NULL,
+    [GeoLat] nvarchar(32) NULL,
+    [GeoLng] nvarchar(32) NULL,
     [IsEnabled] bit NOT NULL DEFAULT 1,
-    [Status] int NULL,
-    [CreatedDate] datetime2 NULL,
+    [CreatedDate] datetime2 NOT NULL,
     [ModifiedDate] datetime2 NULL,
     [CreatedBy] int NULL,
     [ModifiedBy] int NULL,
     [CompanyId] int NOT NULL,
-    CONSTRAINT [BranchID] PRIMARY KEY ([BranchID]),
-    CONSTRAINT [FK_TWC_Branches_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE
+    CONSTRAINT [PK_TWC_Branch] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TWC_Branch_TWC_Companies_CompanyId] FOREIGN KEY ([CompanyId]) REFERENCES [TWC_Companies] ([CompanyID]) ON DELETE CASCADE
 );
 
-CREATE TABLE [TWC_BranchContacts] (
-    [BranchContactID] int NOT NULL IDENTITY,
+CREATE TABLE [TWC_BranchContact] (
+    [Id] uniqueidentifier NOT NULL,
     [PersonName] nvarchar(50) NULL,
     [PersonLastName] nvarchar(50) NULL,
     [PersonTitle] nvarchar(100) NULL,
     [Value] nvarchar(100) NOT NULL,
-    [CreatedDate] datetime2 NULL,
+    [CreatedDate] datetime2 NOT NULL,
     [ModifiedDate] datetime2 NULL,
-    [BranchContactTypeId] int NOT NULL,
-    [BranchPrimaryContactId] int NOT NULL,
-    CONSTRAINT [BranchContactID] PRIMARY KEY ([BranchContactID]),
-    CONSTRAINT [FK_TWC_BranchContacts_TWC_BranchContactTypes_BranchContactTypeId] FOREIGN KEY ([BranchContactTypeId]) REFERENCES [TWC_BranchContactTypes] ([BranchContactTypeID]) ON DELETE CASCADE,
-    CONSTRAINT [FK_TWC_BranchContacts_TWC_Branches_BranchPrimaryContactId] FOREIGN KEY ([BranchPrimaryContactId]) REFERENCES [TWC_Branches] ([BranchID]) ON DELETE CASCADE
+    [BranchContactTypeId] uniqueidentifier NOT NULL,
+    [BranchId] uniqueidentifier NOT NULL,
+    CONSTRAINT [PK_TWC_BranchContact] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TWC_BranchContact_TWC_BranchContactType_BranchContactTypeId] FOREIGN KEY ([BranchContactTypeId]) REFERENCES [TWC_BranchContactType] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TWC_BranchContact_TWC_Branch_BranchId] FOREIGN KEY ([BranchId]) REFERENCES [TWC_Branch] ([Id]) ON DELETE CASCADE
 );
