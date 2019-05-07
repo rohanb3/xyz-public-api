@@ -17,7 +17,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="sortable"></param>
         /// <param name="paginable"></param>
         /// <returns></returns>
-        Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter, Sortable sortable, Paginable paginable);
+        Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter = null, Sortable sortable = null, Paginable paginable = null);
 
         /// <summary>
         /// 
