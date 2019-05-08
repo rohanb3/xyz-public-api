@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2041
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xyzies.TWC.Public.Api", "Xyzies.TWC.Public.Api\Xyzies.TWC.Public.Api.csproj", "{2C30EC37-8417-4FD2-A05C-4ABB6E6B4C43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xyzies.TWC.Public.Api", "Xyzies.TWC.Public.Api\Xyzies.TWC.Public.Api.csproj", "{2C30EC37-8417-4FD2-A05C-4ABB6E6B4C43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xyzies.TWC.Public.Data", "Xyzies.TWC.Public.Data\Xyzies.TWC.Public.Data.csproj", "{9024B217-2A96-40B1-A93C-4761A6991314}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xyzies.TWC.Public.Data", "Xyzies.TWC.Public.Data\Xyzies.TWC.Public.Data.csproj", "{9024B217-2A96-40B1-A93C-4761A6991314}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xyzies.Logger", "Xyzies.Logger\Xyzies.Logger.csproj", "{FA018EA2-8522-4746-A8F7-2E37DB49FE4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9024B217-2A96-40B1-A93C-4761A6991314}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9024B217-2A96-40B1-A93C-4761A6991314}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9024B217-2A96-40B1-A93C-4761A6991314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA018EA2-8522-4746-A8F7-2E37DB49FE4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA018EA2-8522-4746-A8F7-2E37DB49FE4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA018EA2-8522-4746-A8F7-2E37DB49FE4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA018EA2-8522-4746-A8F7-2E37DB49FE4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
