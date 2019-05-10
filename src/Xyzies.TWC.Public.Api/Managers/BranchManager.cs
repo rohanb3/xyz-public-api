@@ -78,7 +78,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 return new PagingResult<BranchModel>
                 {
                     Total = totalCount,
-                    ItemsPerPage = paginable != null && paginable.Take.HasValue ? paginable.Take.Value : default(int),
+                    ItemsPerPage = paginable?.Take ?? default(int),
                     Data = branchModelList
                 };
             }
