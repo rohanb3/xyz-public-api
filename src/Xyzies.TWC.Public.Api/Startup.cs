@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using Ardas.AspNetCore.Logging;
 using HealthChecks.SqlServer;
 using HealthChecks.UI.Client;
 using Mapster;
@@ -87,6 +88,7 @@ namespace Xyzies.TWC.Public.Api
             }
 
             services.AddSingleton(storageAccount);
+            services.AddTcpStreamLogging(options => Configuration.Bind("Logstash", options));
 
             #region DI configuration
 
