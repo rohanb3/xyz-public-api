@@ -12,12 +12,14 @@ using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 using System.Collections.Generic;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Xyzies.TWC.Public.Api.Controllers
 {
     /// <summary>
     /// Resource of branch
     /// </summary>
+    [Authorize]
     [ApiController]
     public class BranchController : Controller
     {
@@ -67,6 +69,27 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             result = await _branchManager.GetBranches(filterModel, sortable, paginable);
 
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Returns a list of branches of companies for trusted microservice by token
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("branch/{token}/trusted")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(PagingResult<BranchModel>), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
+        [SwaggerOperation(Tags = new[] { "Branch API" })]
+        public async Task<IActionResult> Get([FromRoute] string token)
+        {
+            if (token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+
+            var result = await _branchManager.GetBranches();
             return Ok(result);
         }
 

@@ -38,24 +38,28 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter, Sortable sortable, Paginable paginable)
+        public async Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter = null, Sortable sortable = null, Paginable paginable = null)
         {
             try
             {
                 IQueryable<Branch> query = null;
 
                 query = await _branchRepository.GetAsync();
-
-                query = Filtering(filter, query);
-
+                if (filter != null)
+                {
+                    query = Filtering(filter, query);
+                }
                 // Calculate total count
                 var queryableCount = query;
                 int totalCount = queryableCount.Count();
-
-                query = Sorting(sortable, query);
-
-                query = Pagination(paginable, query);
-
+                if (sortable != null)
+                {
+                    query = Sorting(sortable, query);
+                }
+                if (paginable != null)
+                {
+                    query = Pagination(paginable, query);
+                }
                 var branches = query.ToList();
                 var branchModelList = new List<BranchModel>();
 
@@ -74,7 +78,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 return new PagingResult<BranchModel>
                 {
                     Total = totalCount,
-                    ItemsPerPage = paginable.Take ?? default(int),
+                    ItemsPerPage = paginable?.Take ?? default(int),
                     Data = branchModelList
                 };
             }
