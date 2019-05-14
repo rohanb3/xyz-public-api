@@ -38,18 +38,25 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter, Sortable sortable, Paginable paginable)
+        public async Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter = null, Sortable sortable = null, Paginable paginable = null)
         {
             IQueryable<Company> query = await _companyRepository.GetAsync();
 
-            query = Filtering(filter, query);
-
+            if (filter != null)
+            {
+                query = Filtering(filter, query);
+            }
             var queryableCount = query;
             int totalCount = queryableCount.Count();
 
-            query = Sorting(sortable, query);
-
-            query = Pagination(paginable, query);
+            if (sortable != null)
+            {
+                query = Sorting(sortable, query);
+            }
+            if (paginable != null)
+            {
+                query = Pagination(paginable, query);
+            }
 
             var companies = query.ToList();
             var companyModelList = new List<CompanyModel>();
@@ -70,7 +77,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             return new PagingResult<CompanyModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable.Take.HasValue ? paginable.Take.Value : default(int),
+                ItemsPerPage = paginable?.Take ?? default(int),
                 Data = companyModelList
             };
         }

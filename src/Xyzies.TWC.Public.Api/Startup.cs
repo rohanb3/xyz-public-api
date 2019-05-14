@@ -6,6 +6,8 @@ using Ardas.AspNetCore.Logging;
 using HealthChecks.SqlServer;
 using HealthChecks.UI.Client;
 using Mapster;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -50,7 +52,8 @@ namespace Xyzies.TWC.Public.Api
             {
                 StartupException.Throw("Missing the connection string to database");
             }
-
+            services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
+                .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
             // TODO: ExecutionStrategy
             services.AddDbContext<AppDataContext>(ctxOptions =>
                 ctxOptions.UseSqlServer(dbConnectionString));
@@ -105,7 +108,7 @@ namespace Xyzies.TWC.Public.Api
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
+                //options.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
 
                 options.SwaggerDoc("v1", new Info
                 {
@@ -114,6 +117,14 @@ namespace Xyzies.TWC.Public.Api
                     Description =
                         "Healthcheck End-point: <a href=\"/healthchecks\" target=\"_blank\">/healthchecks</a><br/>" +
                         "Healthcheck UI: <a href=\"/healthchecks-ui\" target=\"_blank\">/healthchecks-ui</a><br/>"
+                });
+
+                options.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    In = "header",
+                    Name = "Authorization",
+                    Description = "Please enter JWT with Bearer into field",
+                    Type = "apiKey"
                 });
 
                 options.EnableAnnotations();
@@ -160,13 +171,14 @@ namespace Xyzies.TWC.Public.Api
             #endregion
 
             app.UseHealthChecks(epApiHealthChecks, 8083, new HealthCheckOptions
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                })
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            })
                 .UseHealthChecksUI(options => options.ApiPath = epApiHealthChecks)
                 .UseCors("dev")
                 .UseResponseCompression()
+                .UseAuthentication()
                 .UseMvc()
                 .UseSwagger(options =>
                 {

@@ -17,7 +17,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="sortable"></param>
         /// <param name="paginable"></param>
         /// <returns></returns>
-        Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter, Sortable sortable, Paginable paginable);
+        Task<PagingResult<BranchModel>> GetBranches(BranchFilter filter = null, Sortable sortable = null, Paginable paginable = null);
 
         /// <summary>
         /// Getting branches by company all or first 15 by defolt
