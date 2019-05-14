@@ -108,7 +108,7 @@ namespace Xyzies.TWC.Public.Api
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
+                //options.SwaggerGeneratorOptions.IgnoreObsoleteActions = true;
 
                 options.SwaggerDoc("v1", new Info
                 {
