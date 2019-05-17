@@ -20,7 +20,9 @@ using Microsoft.WindowsAzure.Storage;
 using Swashbuckle.AspNetCore.Swagger;
 using Xyzies.TWC.Public.Api.Managers;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
+using Xyzies.TWC.Public.Api.Managers.Relation;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Api.Models.Options;
 using Xyzies.TWC.Public.Data;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories;
@@ -94,6 +96,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddTcpStreamLogging(options => Configuration.Bind("Logstash", options));
 
             #region DI configuration
+            services.Configure<RelationOptions>(options => Configuration.Bind("Relations", options));
 
             services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
@@ -102,6 +105,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBranchManager, BranchManager>();
             services.AddScoped<ICompanyManager, CompanyManager>();
+            services.AddScoped<IRelationService, RelationService>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
 
             #endregion
