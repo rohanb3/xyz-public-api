@@ -27,6 +27,6 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
         /// </summary>
         /// <param name="objectId">Azure AD B2C user id</param>
         /// <returns>User's profile or null if not found</returns>
-        Task<User> GetAzureUserByObjectIdAsync(string objectId)
+        Task<User> GetAzureUserByObjectIdAsync(string objectId);
     }
 }

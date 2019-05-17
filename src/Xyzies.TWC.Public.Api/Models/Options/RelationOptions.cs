@@ -10,6 +10,10 @@
         /// </summary>
         public string IdentityServiceUrl { get; set; }
         /// <summary>
+        /// Identity MS static token
+        /// </summary>
+        public string IdentityStaticToken { get; set; }
+        /// <summary>
         /// VSP Video MS url
         /// </summary>
         public string VspVideoServiceUrl { get; set; }

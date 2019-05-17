@@ -16,6 +16,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
     public class RelationService : IRelationService
     {
         private readonly string _identityServiceUrl = null;
+        private readonly string _identityServiceStaticToken = null;
         private readonly string _vspVideoServiceUrl = null;
 
         /// <summary>
@@ -27,12 +28,13 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
 
             _identityServiceUrl = options?.IdentityServiceUrl ?? throw new ArgumentNullException(nameof(_identityServiceUrl));
             _vspVideoServiceUrl = options?.VspVideoServiceUrl ?? throw new ArgumentNullException(nameof(_vspVideoServiceUrl));
+            _identityServiceStaticToken = options?.IdentityStaticToken ?? throw new ArgumentNullException(nameof(_identityServiceStaticToken));
         }
 
         /// <inheritdoc /> 
         public async Task<User> GetAzureUserByCPUserIdAsync(int cpUserId)
         {
-            var responseString = await SendGetRequest(new Uri(_identityServiceUrl + "/users/cp/" + cpUserId.ToString()));
+            var responseString = await SendGetRequest(new Uri(_identityServiceUrl + "/users/" + _identityServiceStaticToken + "/cp/" + cpUserId.ToString()));
             return responseString != null
                 ? GetIdentityResponse<User>(responseString)
                 : null;
@@ -41,7 +43,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
         /// <inheritdoc /> 
         public async Task<User> GetAzureUserByObjectIdAsync(string objectId)
         {
-            var responseString = await SendGetRequest(new Uri(_identityServiceUrl + "/users/" + objectId));
+            var responseString = await SendGetRequest(new Uri(_identityServiceUrl + "/users/" +  _identityServiceStaticToken + "/trusted/" + objectId));
             return responseString != null
                 ? GetIdentityResponse<User>(responseString)
                 : null;
@@ -57,8 +59,8 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
                                 ? GetIdentityResponse<ActiveCall>(responseString)
                                 : null;
 
-            var user = activeCall != null 
-                ? await GetAzureUserByObjectIdAsync(activeCall.SalesRepId) 
+            var user = activeCall != null
+                ? await GetAzureUserByObjectIdAsync(activeCall.SalesRepId)
                 : null;
 
             return user;
