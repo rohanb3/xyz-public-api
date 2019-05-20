@@ -55,7 +55,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
             var azureOperator = await GetAzureUserByCPUserIdAsync(cpUserId);
             var responseString = await SendGetRequest(new Uri(_vspVideoServiceUrl + "/active-call-salesrep/" + azureOperator.ObjectId));
 
-            var activeCall = string.IsNullOrEmpty(responseString)
+            var activeCall = !string.IsNullOrEmpty(responseString)
                                 ? GetIdentityResponse<ActiveCall>(responseString)
                                 : null;
 
