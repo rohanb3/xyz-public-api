@@ -49,5 +49,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="branchIds"></param>
         /// <returns></returns>
         Task<PagingResult<BranchMin>> GetBranchesById(List<Guid> branchIds);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task SeedDefaultBranches();
     }
 }

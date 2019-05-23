@@ -156,6 +156,20 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             return Ok(await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable));
         }
+        /// <summary>
+        /// Seed default branches for company without branch
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("seed", Name = "SeedDefaultBranches")]
+        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Branch API" })]
+        public async Task<IActionResult> FillDefaultBranches()
+        {
+            await _branchManager.SeedDefaultBranches();
+            return Ok();
+        }
+
 
         /// <summary>
         /// POST api/branches

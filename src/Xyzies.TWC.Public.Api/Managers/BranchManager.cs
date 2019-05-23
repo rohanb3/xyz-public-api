@@ -16,6 +16,7 @@ namespace Xyzies.TWC.Public.Api.Managers
     {
         private readonly ILogger<BranchManager> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
+        private readonly ICompanyRepository _companyRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly string salesRoleId = "2";
 
@@ -24,15 +25,19 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
+        /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
         public BranchManager(ILogger<BranchManager> logger,
             IBranchRepository branchRepository,
+            ICompanyRepository companyRepository,
             IUserRepository userRepository)
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
             _branchRepository = branchRepository ??
                 throw new ArgumentNullException(nameof(branchRepository));
+            _companyRepository = companyRepository ??
+                 throw new ArgumentNullException(nameof(companyRepository));
             _userRepository = userRepository ??
                 throw new ArgumentNullException(nameof(userRepository));
         }
@@ -106,6 +111,39 @@ namespace Xyzies.TWC.Public.Api.Managers
             branchDetailModel.CountSalesRep = salesBranchUser.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count();
 
             return branchDetailModel;
+        }
+
+        /// <inheritdoc />
+        public async Task SeedDefaultBranches()
+        {
+            var companies = (await _companyRepository.GetAsync()).ToList();
+            var branches = (await _branchRepository.GetAsync()).ToList();
+
+            foreach(var company in companies)
+            {
+                if(!branches.Any(branch=>branch.CompanyId == company.Id))
+                {
+                    await _branchRepository.AddAsync(new Branch()
+                    {
+                        BranchName = company.CompanyName + "#1",
+                        Email = company.Email,
+                        Phone = company.Phone,
+                        Fax = company.Fax,
+                        City = company.City,
+                        ZipCode = company.ZipCode,
+                        AddressLine1 = company.Address,
+                        AddressLine2 = company.Address,
+                        GeoLat = company.GeoLat,
+                        GeoLng = company.GeoLon,
+                        IsEnabled = company.IsEnabled,
+                        CreatedDate = DateTime.UtcNow,
+                        ModifiedDate = null,
+                        CreatedBy = company.CreatedBy,
+                        ModifiedBy = company.ModifiedBy,
+                        CompanyId = company.Id
+                    });
+                }
+            }
         }
 
         /// <inheritdoc />
