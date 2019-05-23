@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Api.Managers.Relation;
 
@@ -31,10 +32,15 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [HttpGet("user-on-call/{cpUserId}")]
         public async Task<IActionResult> GetUserOnCallWith(int cpUserId)
         {
-            var user = await _relationService.GetUserOnCallWithIdAsync(cpUserId);
-            return user == null
-                ? NotFound()
-                : (IActionResult)Ok(user);
+            try
+            {
+                var user = await _relationService.GetUserOnCallWithIdAsync(cpUserId);
+                return Ok(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
