@@ -17,7 +17,6 @@ namespace Xyzies.TWC.Public.Api.Models
         [Phone(ErrorMessage = "Please enter valid phone no.")]
         public string Phone { get; set; }
 
-        [Phone(ErrorMessage = "Please enter valid fax no.")]
         public string Fax { get; set; }
 
         public string State { set; get; }
