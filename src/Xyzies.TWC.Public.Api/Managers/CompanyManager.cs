@@ -7,6 +7,7 @@ using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 using Xyzies.TWC.Public.Data.Repositories.Azure;
+using System;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -27,23 +28,26 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
         /// <param name="companyAvatarsRepository"></param>
-        public CompanyManager(ILogger<CompanyManager> logger, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
+        public CompanyManager(ILogger<CompanyManager> logger, IRequestStatusRepository requestStatusRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
         {
-            _logger = logger;
-            _companyRepository = companyRepository;
-            _companyAvatarsRepository = companyAvatarsRepository;
-            _userRepository = userRepository;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
+            _companyAvatarsRepository = companyAvatarsRepository ?? throw new ArgumentNullException(nameof(companyAvatarsRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <inheritdoc />
         public async Task<PagingResult<CompanyModel>> GetCompanies(CompanyFilter filter = null, Sortable sortable = null, Paginable paginable = null)
         {
+            _logger.LogInformation("GET Companies requested with filters: {filter}, sort params {sortable}, paging params {paginable}", filter, sortable, paginable);
+
             IQueryable<Company> query = await _companyRepository.GetAsync();
 
             if (filter != null)
             {
                 query = Filtering(filter, query);
             }
+
             var queryableCount = query;
             int totalCount = queryableCount.Count();
 
@@ -60,7 +64,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companyModelList = new List<CompanyModel>();
 
             var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
-            var allUsers = allUsersQuery.ToList().GroupBy(x => x.CompanyId).AsQueryable();
+            var allUsers = allUsersQuery.GroupBy(x => x.CompanyId).ToList();
 
             foreach (var company in companies)
             {
@@ -72,10 +76,12 @@ namespace Xyzies.TWC.Public.Api.Managers
                 companyModelList.Add(companyModel);
             }
 
+            _logger.LogInformation("GET Companies ended, total companies fetched: {total}", totalCount);
+
             return new PagingResult<CompanyModel>
             {
                 Total = totalCount,
-                ItemsPerPage = paginable?.Take ?? default(int),
+                ItemsPerPage = paginable?.Take ?? default,
                 Data = companyModelList
             };
         }
@@ -160,6 +166,18 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
+            if (companyFilter.RequestStatusNames == null || !companyFilter.RequestStatusNames.Any())
+            {
+                query = query.Where(x => x.RequestStatus != null && x.RequestStatus.Name.ToLower().Contains("onboarded"));
+            }
+            else
+            {
+                query = query.Where(x => x.RequestStatus != null &&
+                                    companyFilter.RequestStatusNames
+                                        .Select(name => name.ToLower())
+                                        .Contains(x.RequestStatus.Name.ToLower()));
+            }
+
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
                 query = query.Where(x => x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
