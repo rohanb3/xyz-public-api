@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
@@ -80,7 +81,8 @@ namespace Xyzies.TWC.Public.Api.Models
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
         public bool NoSyncInfusion { get; set; }
-
+        public Guid? CompanyStatusKey { get; set; }
+        public RequestStatus RequestStatus{ get; set; }
         public int? CountSalesRep { get; set; }
         public int? CountBranch { get; set; }
 

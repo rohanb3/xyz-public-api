@@ -14,6 +14,11 @@ namespace Xyzies.TWC.Public.Api.Models
         public string StateFilter { get; set; }
 
         /// <summary>
+        /// Show company with all statuses
+        /// </summary>
+        public IList<string> RequestStatusNames { get; set; }
+
+        /// <summary>
         /// Quick search by company name
         /// </summary>
         public string SearchFilter { get; set; }

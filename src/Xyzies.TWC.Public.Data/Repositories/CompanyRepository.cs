@@ -18,13 +18,15 @@ namespace Xyzies.TWC.Public.Data.Repositories
         /// <inheritdoc />
         public override async Task<IQueryable<Company>> GetAsync() =>
             await Task.FromResult(base.Data
-                .Include(b => b.Branches));
+                .Include(b => b.Branches)
+                .Include(b => b.RequestStatus));
 
         /// <inheritdoc />
         public override async Task<Company> GetAsync(int id)
         {
             var companies = await Data
                 .Include(x => x.Branches)
+                .Include(b => b.RequestStatus)
                 .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
 
             return companies;

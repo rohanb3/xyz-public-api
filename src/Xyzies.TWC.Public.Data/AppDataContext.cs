@@ -16,6 +16,8 @@ namespace Xyzies.TWC.Public.Data
 
         public DbSet<Branch> Branches { get; set; }
 
+        public DbSet<RequestStatus> RequestStatuses { get; set; }
+
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<BranchContact> PrimaryContacts { get; set; }
@@ -33,6 +35,7 @@ namespace Xyzies.TWC.Public.Data
             modelBuilder.ApplyConfiguration(new BranchConfiguration());
             modelBuilder.ApplyConfiguration(new BranchContactConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RequestStatusConfiguration());
         }
     }
 }

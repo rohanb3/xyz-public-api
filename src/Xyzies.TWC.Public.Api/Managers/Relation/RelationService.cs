@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -43,7 +44,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
         /// <inheritdoc /> 
         public async Task<User> GetAzureUserByObjectIdAsync(string objectId)
         {
-            var responseString = await SendGetRequest(new Uri(_identityServiceUrl + "/users/" +  _identityServiceStaticToken + "/trusted/" + objectId));
+            var responseString = await SendGetRequest(new Uri(_identityServiceUrl + "/users/" + _identityServiceStaticToken + "/trusted/" + objectId));
             return responseString != null
                 ? GetIdentityResponse<User>(responseString)
                 : null;
@@ -53,17 +54,21 @@ namespace Xyzies.TWC.Public.Api.Managers.Relation
         public async Task<User> GetUserOnCallWithIdAsync(int cpUserId)
         {
             var azureOperator = await GetAzureUserByCPUserIdAsync(cpUserId);
+            if (azureOperator == null)
+            {
+                throw new KeyNotFoundException("User does not exist");
+            }
+
             var responseString = await SendGetRequest(new Uri(_vspVideoServiceUrl + "/active-call-salesrep/" + azureOperator.ObjectId));
-
-            var activeCall = string.IsNullOrEmpty(responseString)
+            var activeCall = !string.IsNullOrEmpty(responseString)
                                 ? GetIdentityResponse<ActiveCall>(responseString)
-                                : null;
+                                : throw new KeyNotFoundException("There are no active calls for current user");
 
-            var user = activeCall != null
-                ? await GetAzureUserByObjectIdAsync(activeCall.SalesRepId)
-                : null;
+            var user = activeCall.SalesRepId != null ?
+                await GetAzureUserByObjectIdAsync(activeCall.SalesRepId):
+            throw new KeyNotFoundException("No id for current call");
 
-            return user;
+            return user ?? throw new KeyNotFoundException("User on call does not exist");
         }
 
         private T GetIdentityResponse<T>(string responseString)
