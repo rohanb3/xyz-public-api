@@ -64,6 +64,7 @@ namespace Xyzies.TWC.Public.Api.Tests
             services.AddScoped<ICompanyManager, CompanyManager>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped <IAzureCompanyAvatarRepository, AzureCompanyAvatarRepository>();
+            services.AddScoped<IRequestStatusRepository, RequestStatusRepository>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
 
             services.AddScoped<IBranchManager, BranchManager>();
