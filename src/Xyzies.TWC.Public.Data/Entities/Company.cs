@@ -72,9 +72,10 @@ namespace Xyzies.TWC.Public.Data.Entities
         public string MarketPlaceName { get; set; }
         public string PhysicalName { get; set; }
         public string MarketStrategy { get; set; }
-
+        public Guid? CompanyStatusKey { get; set; }
+        [ForeignKey(nameof(CompanyStatusKey))]
+        public virtual RequestStatus RequestStatus { get; set; }
         public bool IsEnabled { get; set; } = true;
-
         public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
         public virtual ICollection<Users> CompanyUsers { get; set; } = new List<Users>();
 
