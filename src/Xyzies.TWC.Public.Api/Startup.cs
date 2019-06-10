@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using Ardas.AspNetCore.Logging;
 using HealthChecks.SqlServer;
@@ -130,6 +132,11 @@ namespace Xyzies.TWC.Public.Api
                     Name = "Authorization",
                     Description = "Please enter JWT with Bearer into field",
                     Type = "apiKey"
+                });
+
+                options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                {
+                    { "Bearer", Enumerable.Empty<string>() }
                 });
 
                 options.EnableAnnotations();

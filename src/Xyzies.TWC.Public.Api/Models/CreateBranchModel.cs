@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
@@ -23,6 +24,7 @@ namespace Xyzies.TWC.Public.Api.Models
 
         public string City { get; set; }
 
+        [JsonProperty("address")]
         public string AddressLine1 { get; set; }
 
         public string AddressLine2 { get; set; }
