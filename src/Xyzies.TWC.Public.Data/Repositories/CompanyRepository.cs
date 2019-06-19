@@ -19,7 +19,8 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<IQueryable<Company>> GetAsync() =>
             await Task.FromResult(base.Data
                 .Include(b => b.Branches)
-                .Include(b => b.RequestStatus));
+                .Include(b => b.RequestStatus)
+                .Where(x => x.RequestStatus.Name.ToLower() == OnBoardedStatusName));
 
         /// <inheritdoc />
         public override async Task<Company> GetAsync(int id)
@@ -27,7 +28,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
             var companies = await Data
                 .Include(x => x.Branches)
                 .Include(b => b.RequestStatus)
-                .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
+                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.RequestStatus.Name.ToLower() == OnBoardedStatusName);
 
             return companies;
         }

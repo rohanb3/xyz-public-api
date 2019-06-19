@@ -19,20 +19,22 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<Branch> GetAsync(Guid id) =>
             await Data.Include(x => x.BranchContacts)
                 .Where(entity => entity.Id.Equals(id))
-                .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
+                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.Company.RequestStatus.Name.ToLower() == OnBoardedStatusName);
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync() =>
             await Task.FromResult(base.Data
                 .Include(b => b.BranchContacts)
                     .ThenInclude(x => x.BranchContactType)
-                .Include(v=>v.BranchUsers));
+                .Include(v => v.BranchUsers)
+                .Where(x => x.Company.RequestStatus.Name.ToLower() == OnBoardedStatusName));
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync(Expression<Func<Branch, bool>> predicate) =>
             await Task.FromResult(base.Data
                 .Include(b => b.BranchContacts)
                     .ThenInclude(x => x.BranchContactType)
+                .Where(x => x.Company.RequestStatus.Name.ToLower() == OnBoardedStatusName)
                 .Where(predicate));
 
         public override Task<bool> UpdateAsync(Branch entity)
