@@ -28,7 +28,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
             var companies = await Data
                 .Include(x => x.Branches)
                 .Include(b => b.RequestStatus)
-                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.RequestStatus.Name == OnBoardedStatusName);
+                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.RequestStatus.Name.ToLower() == OnBoardedStatusName);
 
             return companies;
         }

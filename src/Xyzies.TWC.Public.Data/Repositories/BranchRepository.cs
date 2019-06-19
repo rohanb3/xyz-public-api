@@ -10,8 +10,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
 {
     public class BranchRepository : EfCoreBaseRepository<Guid, Branch>, IBranchRepository
     {
-        private const string _onBoardedStatusName = "onboarded";
-
         public BranchRepository(AppDataContext dbContext)
             : base(dbContext)
         {
@@ -21,7 +19,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         public override async Task<Branch> GetAsync(Guid id) =>
             await Data.Include(x => x.BranchContacts)
                 .Where(entity => entity.Id.Equals(id))
-                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.Company.RequestStatus.Name == OnBoardedStatusName);
+                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.Company.RequestStatus.Name.ToLower() == OnBoardedStatusName);
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync() =>
@@ -29,14 +27,14 @@ namespace Xyzies.TWC.Public.Data.Repositories
                 .Include(b => b.BranchContacts)
                     .ThenInclude(x => x.BranchContactType)
                 .Include(v => v.BranchUsers)
-                .Where(x => x.Company.RequestStatus.Name == OnBoardedStatusName));
+                .Where(x => x.Company.RequestStatus.Name.ToLower() == OnBoardedStatusName));
 
         /// <inheritdoc />
         public override async Task<IQueryable<Branch>> GetAsync(Expression<Func<Branch, bool>> predicate) =>
             await Task.FromResult(base.Data
                 .Include(b => b.BranchContacts)
                     .ThenInclude(x => x.BranchContactType)
-                .Where(x => x.Company.RequestStatus.Name == OnBoardedStatusName)
+                .Where(x => x.Company.RequestStatus.Name.ToLower() == OnBoardedStatusName)
                 .Where(predicate));
 
         public override Task<bool> UpdateAsync(Branch entity)
