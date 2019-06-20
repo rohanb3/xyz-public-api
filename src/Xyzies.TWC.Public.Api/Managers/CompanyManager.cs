@@ -166,11 +166,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
-            if (companyFilter.RequestStatusNames == null || !companyFilter.RequestStatusNames.Any())
-            {
-                query = query.Where(x => x.RequestStatus != null && x.RequestStatus.Name.ToLower().Contains("onboarded"));
-            }
-            else
+            if (companyFilter.RequestStatusNames != null && companyFilter.RequestStatusNames.Any())
             {
                 query = query.Where(x => x.RequestStatus != null &&
                                     companyFilter.RequestStatusNames
