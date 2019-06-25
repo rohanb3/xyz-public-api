@@ -292,6 +292,17 @@ namespace Xyzies.TWC.Public.Api.Managers
             return query;
         }
 
+        /// <inheritdoc />
+        public async Task<CompanyMin> GetAnyCompanyById(int companyId)
+        {
+            var company = await _companyRepository.GetAnyCompanyAsync(companyId);
+            if(company == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            return company.Adapt<CompanyMin>();
+        }
+
         /// <summary>
         /// 
         /// </summary>

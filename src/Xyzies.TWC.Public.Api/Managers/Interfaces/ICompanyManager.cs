@@ -39,5 +39,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="companyIds"></param>
         /// <returns></returns>
         Task<PagingResult<CompanyMin>> GetCompanyNameById(List<int> companyIds);
+
+        /// <summary>
+        /// Get any company by id
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        Task<CompanyMin> GetAnyCompanyById(int companyId);
     }
 }
