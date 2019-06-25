@@ -252,6 +252,36 @@ namespace Xyzies.TWC.Public.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Get any branch by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("branch/{id}/{token}/trusted", Name = "GetAnyBranchById")]
+        [ProducesResponseType(typeof(BranchMin), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
+        [SwaggerOperation(Tags = new[] { "Branch API" })]
+        public async Task<IActionResult> GetAnyBranchById([FromRoute]Guid id, [FromRoute]string token)
+        {
+            if (token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+
+            try
+            {
+                var branchMinModel = await _branchManager.GetAnyBranchById(id);
+                return Ok(branchMinModel);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {

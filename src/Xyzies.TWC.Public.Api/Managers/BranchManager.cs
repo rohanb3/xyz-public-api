@@ -238,6 +238,17 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
+        public async Task<BranchMin> GetAnyBranchById(Guid branchId)
+        {
+            var branch = await _branchRepository.GetAnyBranchAsync(branchId);
+            if(branch == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            return branch.Adapt<BranchMin>();
+        }
+
+        /// <inheritdoc />
         private IQueryable<Branch> Sorting(Sortable sortable, IQueryable<Branch> query)
         {
             if (sortable.SortBy.ToLower() == "createddate")

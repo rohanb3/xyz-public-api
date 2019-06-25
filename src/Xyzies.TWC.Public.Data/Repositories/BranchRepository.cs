@@ -70,5 +70,9 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
             return await base.AddAsync(branch);
         }
+
+        /// <inheritdoc />
+        public async Task<Branch> GetAnyBranchAsync(Guid id)
+        => await Data.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
     }
 }
