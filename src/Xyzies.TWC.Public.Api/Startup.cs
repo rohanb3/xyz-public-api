@@ -36,6 +36,8 @@ namespace Xyzies.TWC.Public.Api
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class Startup
     {
+        private const string _devEnvironmentName = "dev";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -110,6 +112,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyManager, CompanyManager>();
             services.AddScoped<IRelationService, RelationService>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
+            services.AddSingleton<TestSeed>();
 
             #endregion
 
@@ -151,8 +154,15 @@ namespace Xyzies.TWC.Public.Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        /// <param name="testSeed"></param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, TestSeed testSeed)
         {
+            var environment = Configuration.GetSection("DbSettings")["Environment"];
+            if (environment.ToLower() == _devEnvironmentName.ToLower())
+            {
+                testSeed.Seed();
+            }
+
             string epApiHealthChecks = $"/healthchecks";
 
             if (env.IsDevelopment())
