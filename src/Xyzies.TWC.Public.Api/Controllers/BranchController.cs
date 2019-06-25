@@ -260,7 +260,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <returns></returns>
         [HttpGet("branch/{id}/{token}/trusted", Name = "GetAnyBranchById")]
         [ProducesResponseType(typeof(BranchMin), (int)HttpStatusCode.OK /* 200 */)]
-        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
@@ -280,10 +279,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
             catch(KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
             }
         }
 
