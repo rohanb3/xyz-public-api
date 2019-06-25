@@ -8,7 +8,7 @@ namespace Xyzies.TWC.Public.Data
     {
         public const string DefaultCompanyName = "CompanyNameTest";
 
-        public const string DefaultBranchName = "BranchNameTest";
+        public const string DefaultBranchName = "BranchNameTest"; 
 
         ///// <summary>
         ///// Company onboarded status
