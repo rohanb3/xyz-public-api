@@ -60,14 +60,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         /// <inheritdoc />
-        public override async Task<int> AddAsync(Company company)
-        {
-            var result = await this.Data.AddAsync(company);
-            await this.Context.SaveChangesAsync();
-            return result.Entity.Id;
-        }
-
-        /// <inheritdoc />
         public async Task<Company> GetAnyCompanyAsync(int id)
         => await Data.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
     }
