@@ -27,11 +27,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
         protected DbSet<TEntity> Data { get; private set; }
 
         /// <summary>
-        /// Company onboarded status
-        /// </summary>
-        protected const string OnBoardedStatusName = "onboarded";
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="dbContext"></param>
