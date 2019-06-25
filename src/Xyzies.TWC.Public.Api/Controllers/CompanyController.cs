@@ -265,19 +265,19 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get any company by id
+        /// Get any company by id or by name
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="requestModel"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpGet("{id}/{token}/trusted", Name = "GetAnyCompanyById")]
+        [HttpGet("{token}/trusted/internal", Name = "GetAnyCompanyAsync")]
         [ProducesResponseType(typeof(CompanyMin), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public async Task<IActionResult> GetAnyCompanyById([FromRoute] int id, [FromRoute]string token)
+        public async Task<IActionResult> GetAnyCompanyAsync([FromQuery] CompanyMinRequestModel requestModel, [FromRoute]string token)
         {
             if (token != Consts.StaticToken)
             {
@@ -286,8 +286,12 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             try
             {
-                var company = await _companyManager.GetAnyCompanyById(id);
+                var company = await _companyManager.GetAnyCompanyAsync(requestModel);
                 return Ok(company);
+            }
+            catch(ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch(KeyNotFoundException ex)
             {

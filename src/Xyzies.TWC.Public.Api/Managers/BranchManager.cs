@@ -238,9 +238,21 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<BranchMin> GetAnyBranchById(Guid branchId)
+        public async Task<BranchMin> GetAnyBranchAsync(BranchMinRequestModel requestModel)
         {
-            var branch = await _branchRepository.GetAnyBranchAsync(branchId);
+            if (requestModel == null)
+            {
+                throw new ArgumentNullException(nameof(requestModel));
+            }
+            Branch branch = null;
+            if (requestModel.Id.HasValue)
+            {
+                branch = await _branchRepository.GetAnyBranchAsync(requestModel.Id.Value);
+            }
+            else
+            {
+                branch = await _branchRepository.GetByAsync(x => x.BranchName == requestModel.BranchName);
+            }
             if(branch == null)
             {
                 throw new KeyNotFoundException();
