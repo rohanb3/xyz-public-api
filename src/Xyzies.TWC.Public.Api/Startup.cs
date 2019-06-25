@@ -112,7 +112,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyManager, CompanyManager>();
             services.AddScoped<IRelationService, RelationService>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
-            services.AddSingleton<TestSeed>();
+            services.AddScoped<TestSeed>();
 
             #endregion
 
