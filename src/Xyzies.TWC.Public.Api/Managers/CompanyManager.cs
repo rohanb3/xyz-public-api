@@ -309,9 +309,22 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
         
         /// <inheritdoc />
-        public async Task<CompanyMin> GetAnyCompanyById(int companyId)
+        public async Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel)
         {
-            var company = await _companyRepository.GetAnyCompanyAsync(companyId);
+            if(requestModel == null)
+            {
+                throw new ArgumentNullException(nameof(requestModel));
+            }
+            Company company = null;
+            if (requestModel.Id.HasValue)
+            {
+                company = await _companyRepository.GetAnyCompanyAsync(requestModel.Id.Value);
+            }
+            else
+            {
+                company = await _companyRepository.GetByAsync(x => x.CompanyName == requestModel.CompanyName);
+            }
+
             if(company == null)
             {
                 throw new KeyNotFoundException();

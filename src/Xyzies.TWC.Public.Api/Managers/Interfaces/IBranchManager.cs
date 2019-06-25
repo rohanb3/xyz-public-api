@@ -51,10 +51,10 @@ namespace Xyzies.TWC.Public.Api.Managers
         Task<PagingResult<BranchMin>> GetBranchesById(List<Guid> branchIds);
 
         /// <summary>
-        /// Get any branch by id
+        /// Get any branch by id or by name
         /// </summary>
-        /// <param name="branchId"></param>
+        /// <param name="requestModel"></param>
         /// <returns></returns>
-        Task<BranchMin> GetAnyBranchById(Guid branchId);
+        Task<BranchMin> GetAnyBranchAsync(BranchMinRequestModel requestModel);
     }
 }

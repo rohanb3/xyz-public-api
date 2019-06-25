@@ -253,18 +253,18 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get any branch by id
+        /// Get any branch by id or by name
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="requestModel"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpGet("branch/{id}/{token}/trusted", Name = "GetAnyBranchById")]
+        [HttpGet("branch/{token}/trusted/internal", Name = "GetAnyBranchAsync")]
         [ProducesResponseType(typeof(BranchMin), (int)HttpStatusCode.OK /* 200 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public async Task<IActionResult> GetAnyBranchById([FromRoute]Guid id, [FromRoute]string token)
+        public async Task<IActionResult> GetAnyBranchAsync([FromQuery]BranchMinRequestModel requestModel, [FromRoute]string token)
         {
             if (token != Consts.StaticToken)
             {
@@ -273,7 +273,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             try
             {
-                var branchMinModel = await _branchManager.GetAnyBranchById(id);
+                var branchMinModel = await _branchManager.GetAnyBranchAsync(requestModel);
                 return Ok(branchMinModel);
             }
             catch(KeyNotFoundException ex)
