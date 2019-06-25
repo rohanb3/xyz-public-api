@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
@@ -261,6 +262,41 @@ namespace Xyzies.TWC.Public.Api.Controllers
             var result = await _companyAvatarsManager.UploadCompanyAvatarAsync(new CompanyAvatar { File = avatar.File, Id = companyId });
 
             return result ? Ok() : throw new ApplicationException("result is false");
+        }
+
+        /// <summary>
+        /// Get any company by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("{id}/{token}/trusted", Name = "GetAnyCompanyById")]
+        [ProducesResponseType(typeof(CompanyMin), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
+        public async Task<IActionResult> GetAnyCompanyById([FromRoute] int id, [FromRoute]string token)
+        {
+            if (token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+
+            try
+            {
+                var company = await _companyManager.GetAnyCompanyById(id);
+                return Ok(company);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <inheritdoc />

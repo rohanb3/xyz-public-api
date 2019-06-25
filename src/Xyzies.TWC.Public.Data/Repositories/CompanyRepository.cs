@@ -66,5 +66,9 @@ namespace Xyzies.TWC.Public.Data.Repositories
             await this.Context.SaveChangesAsync();
             return result.Entity.Id;
         }
+
+        /// <inheritdoc />
+        public async Task<Company> GetAnyCompanyAsync(int id)
+        => await Data.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
     }
 }
