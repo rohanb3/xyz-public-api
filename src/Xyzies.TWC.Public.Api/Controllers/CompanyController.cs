@@ -152,13 +152,19 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
-                var companyEntity = companyModel.Adapt<Company>();
-                int companyId = await _companyRepository.AddAsync(companyEntity);
+                int companyId = await _companyManager.CreateCompany(companyModel);
 
                 return Ok(companyId);
+            }
+            catch(ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
