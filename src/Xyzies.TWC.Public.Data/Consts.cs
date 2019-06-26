@@ -7,6 +7,7 @@ namespace Xyzies.TWC.Public.Data
     public class Consts
     {
         public const string DefaultCompanyName = "CompanyNameTest";
+        public const string DefaultCompanyNameNotBindAnyBranch = "CompanyNameTestNotBindAnyBranch";
 
         public const string DefaultBranchName = "BranchNameTest"; 
 

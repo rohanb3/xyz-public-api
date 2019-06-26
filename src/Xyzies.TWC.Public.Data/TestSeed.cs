@@ -30,7 +30,10 @@ namespace Xyzies.TWC.Public.Data
 
                 var companyId = _dbContext.Companies.FirstOrDefault(x => x.CompanyName.ToLower() == Consts.DefaultCompanyName.ToLower())?.Id;
                 if (companyId == null)
-                    companyId = _dbContext.Companies.Add(GetCompany(requestStatusId.Value)).Entity.Id;
+                    companyId = _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyName)).Entity.Id;
+
+                if (!_dbContext.Companies.Any(x => x.CompanyName == Consts.DefaultCompanyNameNotBindAnyBranch))
+                    _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyNameNotBindAnyBranch));
 
                 if (!_dbContext.Branches.Any(x => x.BranchName.ToLower() == Consts.DefaultBranchName.ToLower()))
                     _dbContext.Branches.Add(GetBranch(companyId.Value));
@@ -46,10 +49,10 @@ namespace Xyzies.TWC.Public.Data
             }
         }
 
-        private Company GetCompany(Guid? requestStatusId)
+        private Company GetCompany(Guid? requestStatusId, string companyName)
         => new Company
         {
-            CompanyName = Consts.DefaultCompanyName,
+            CompanyName = companyName,
             Email = $"{Guid.NewGuid()}test.com",
             CompanyStatusKey = requestStatusId
         };
