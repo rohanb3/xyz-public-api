@@ -20,7 +20,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
             await Task.FromResult(base.Data
                 .Include(b => b.Branches)
                 .Include(b => b.RequestStatus)
-                .Where(x => x.RequestStatus.Name.ToLower() == OnBoardedStatusName));
+                .Where(x => x.RequestStatus.Name.ToLower() == Consts.OnBoardedStatusName));
 
         /// <inheritdoc />
         public override async Task<Company> GetAsync(int id)
@@ -28,7 +28,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
             var companies = await Data
                 .Include(x => x.Branches)
                 .Include(b => b.RequestStatus)
-                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.RequestStatus.Name.ToLower() == OnBoardedStatusName);
+                .FirstOrDefaultAsync(entity => entity.Id.Equals(id) && entity.RequestStatus.Name.ToLower() == Consts.OnBoardedStatusName);
 
             return companies;
         }
@@ -60,10 +60,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         /// <inheritdoc />
-        public override async Task<int> AddAsync(Company company)
-        {
-            company.CreatedDate = DateTime.Now;
-            return await Task.FromResult(base.Add(company));
-        }
+        public async Task<Company> GetAnyCompanyAsync(int id)
+        => await Data.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
     }
 }

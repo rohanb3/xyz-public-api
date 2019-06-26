@@ -8,7 +8,7 @@ namespace Xyzies.TWC.Public.Data.Entities
     public class Company : BaseEntity<int>
     {
         [Column("CompanyID")]
-        public new int Id { get; set; }
+        public override int Id { get; set; }
         public string CompanyName { get; set; }
         public string LegalName { get; set; }
         public string Email { get; set; }

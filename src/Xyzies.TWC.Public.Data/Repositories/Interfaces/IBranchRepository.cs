@@ -8,5 +8,6 @@ namespace Xyzies.TWC.Public.Data.Repositories.Interfaces
     public interface IBranchRepository : IRepository<Guid, Branch>, IDisposable
     {
         Task<bool> SetActivationState(Guid id, bool isEnabled);
+        Task<Branch> GetAnyBranchAsync(Guid id);
     }
 }

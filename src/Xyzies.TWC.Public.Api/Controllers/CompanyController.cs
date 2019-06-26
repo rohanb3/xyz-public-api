@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
@@ -151,13 +152,19 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
-                var companyEntity = companyModel.Adapt<Company>();
-                int companyId = await _companyRepository.AddAsync(companyEntity);
+                int companyId = await _companyManager.CreateCompany(companyModel);
 
                 return Ok(companyId);
+            }
+            catch(ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
@@ -255,6 +262,45 @@ namespace Xyzies.TWC.Public.Api.Controllers
             var result = await _companyAvatarsManager.UploadCompanyAvatarAsync(new CompanyAvatar { File = avatar.File, Id = companyId });
 
             return result ? Ok() : throw new ApplicationException("result is false");
+        }
+
+        /// <summary>
+        /// Get any company by id or by name
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet("{token}/trusted/internal", Name = "GetAnyCompanyAsync")]
+        [ProducesResponseType(typeof(CompanyMin), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
+        [SwaggerOperation(Tags = new[] { "Company API" })]
+        public async Task<IActionResult> GetAnyCompanyAsync([FromQuery] CompanyMinRequestModel requestModel, [FromRoute]string token)
+        {
+            if (token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+
+            try
+            {
+                var company = await _companyManager.GetAnyCompanyAsync(requestModel);
+                return Ok(company);
+            }
+            catch(ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <inheritdoc />

@@ -27,11 +27,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
         protected DbSet<TEntity> Data { get; private set; }
 
         /// <summary>
-        /// Company onboarded status
-        /// </summary>
-        protected const string OnBoardedStatusName = "onboarded";
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="dbContext"></param>
@@ -114,11 +109,11 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         /// <inheritdoc />
         public override TKey Add(TEntity entity) =>
-            Commit(() => Data.Add(entity).Entity.Id);
+            Commit(() => Data.Add(entity)).Entity.Id;
 
         /// <inheritdoc />
         public override async Task<TKey> AddAsync(TEntity entity) =>
-            await Commit(async () => (await Data.AddAsync(entity)).Entity.Id);
+            (await Commit(async () => (await Data.AddAsync(entity)))).Entity.Id;
 
         /// <inheritdoc />
         public override void AddRange(IEnumerable<TEntity> entities) =>

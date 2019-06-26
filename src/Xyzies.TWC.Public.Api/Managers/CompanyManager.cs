@@ -292,6 +292,46 @@ namespace Xyzies.TWC.Public.Api.Managers
             return query;
         }
 
+        /// <inheritdoc />
+        public async Task<int> CreateCompany(CreateCompanyModel createCompanyModel)
+        {
+            if(createCompanyModel == null)
+            {
+                throw new ArgumentNullException(nameof(createCompanyModel));
+            }
+            if(await _companyRepository.HasAsync(x=>x.Email == createCompanyModel.Email))
+            {
+                throw new ApplicationException($"Company with email: {createCompanyModel.Email} already exist");
+            }
+            var company = createCompanyModel.Adapt<Company>();
+            company.CreatedDate = DateTime.Now;
+            return await _companyRepository.AddAsync(company);
+        }
+        
+        /// <inheritdoc />
+        public async Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel)
+        {
+            if(requestModel == null)
+            {
+                throw new ArgumentNullException(nameof(requestModel));
+            }
+            Company company = null;
+            if (requestModel.Id.HasValue)
+            {
+                company = await _companyRepository.GetAnyCompanyAsync(requestModel.Id.Value);
+            }
+            else
+            {
+                company = await _companyRepository.GetByAsync(x => x.CompanyName == requestModel.CompanyName);
+            }
+
+            if(company == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            return company.Adapt<CompanyMin>();
+        }
+
         /// <summary>
         /// 
         /// </summary>
