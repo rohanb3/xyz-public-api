@@ -35,15 +35,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         }
 
         [Fact]
-        public async Task ShouldReturnSuccessResultWhenGetUserOnCallWith()
+        public async Task ShouldReturnNotFoundResultIfUserNoGasCallWhenGetUserOnCallWith()
         {
             // Arrange
             // Act
-            var response = await _baseTest.HttpClient.GetAsync($"{_baseUserUrl}/user-on-call/10011");//{_baseTest.AdminProfile.CPUserId}
-            response.EnsureSuccessStatusCode();
+            var response = await _baseTest.HttpClient.GetAsync($"{_baseUserUrl}/user-on-call/{_baseTest.AdminProfile.CPUserId}");
 
             //Assert
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
 
     }

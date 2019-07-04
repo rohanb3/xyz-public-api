@@ -205,7 +205,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 if (!string.IsNullOrEmpty(branchFilter.StateFilter))
                 {
-                    query = query.Where(x => x.State.ToLower().Equals(branchFilter.StateFilter.ToLower()));
+                    query = query.Where(x => x.State != null &&  x.State.ToLower().Equals(branchFilter.StateFilter.ToLower()));
                 }
 
                 if (!string.IsNullOrEmpty(branchFilter.CityFilter))
