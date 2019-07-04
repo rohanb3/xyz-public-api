@@ -1,43 +1,24 @@
-﻿//using Microsoft.AspNetCore.TestHost;
-//using System;
-//using System.Threading.Tasks;
-//using Xunit;
-//using Xyzies.TWC.Public.Api.Models;
+﻿using Microsoft.AspNetCore.TestHost;
+using System;
+using System.Threading.Tasks;
+using Xunit;
+using Xyzies.TWC.Public.Api.Models;
 
-//namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
-//{
-//    public class CompanyControllerTest : IDisposable
-//    {
-//        private TestServer _testServer = null;
-//        private readonly Uri BASE_ADDRESS = new Uri("http://localhost:8083");
-//        private readonly string TOKEN = Consts.StaticToken;
+namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
+{
+    public class CompanyControllerTest : IClassFixture<BaseTest>
+    {
+        private readonly BaseTest _baseTest = null;
+        private readonly string _baseCompanyUrl = null;
 
-//        public CompanyControllerTest()
-//        {
-//            _testServer = Startup.CreateTestServer() ?? throw new InvalidOperationException("Issues with test server");
-//        }
+        public CompanyControllerTest(BaseTest baseTest)
+        {
+            _baseTest = baseTest ?? throw new ArgumentNullException(nameof(baseTest));
+            _baseTest.DbContext.ClearContext();
 
-//        [Fact]
-//        public async Task GetForInternalServices()
-//        {
-//            //Arrange
-//            using (var http = _testServer.CreateClient())
-//            {
-//                http.BaseAddress = BASE_ADDRESS;
-//                Uri.TryCreate($"company/{TOKEN}/trusted", UriKind.Relative, out Uri uri);
+            _baseCompanyUrl = "company";
+        }
 
-//                //Act
-//                var response = await http.GetAsync(uri);
 
-//                //Assert
-//                response.EnsureSuccessStatusCode();
-//            }
-//        }
-
-//        public void Dispose()
-//        {
-//            _testServer.Dispose();
-//        }
-
-//    }
-//}
+    }
+}

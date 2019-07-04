@@ -33,9 +33,7 @@ namespace Xyzies.TWC.Public.Api.Tests
         public TokenModel AdminToken;
         public IHttpServiceTest HttpServiceTest = null;
         public User AdminProfile = null;
-
         private UserLoginOption _userLogin = null;
-
 
         public async Task DisposeAsync()
         {
