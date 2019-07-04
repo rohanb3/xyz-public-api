@@ -51,7 +51,7 @@ namespace Xyzies.TWC.Public.Api
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services"></param>
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             string dbConnectionString = Configuration.GetConnectionString("db");
             if (string.IsNullOrEmpty(dbConnectionString))
