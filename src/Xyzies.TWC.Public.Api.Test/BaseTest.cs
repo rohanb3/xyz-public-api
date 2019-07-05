@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -20,6 +21,7 @@ using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Api.Tests.IntegrationTests.Services;
 using Xyzies.TWC.Public.Api.Tests.Models.User;
 using Xyzies.TWC.Public.Data;
+using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Tests
 {
@@ -29,10 +31,12 @@ namespace Xyzies.TWC.Public.Api.Tests
         public TestServer TestServer;
         public HttpClient HttpClient;
         public AppDataContext DbContext;
+        public TestSeed TestSeed;
         public Fixture Fixture;
         public TokenModel AdminToken;
         public IHttpServiceTest HttpServiceTest = null;
         public User AdminProfile = null;
+        public readonly int SalesRoleId = 2;
         private UserLoginOption _userLogin = null;
 
         public async Task DisposeAsync()
@@ -75,6 +79,7 @@ namespace Xyzies.TWC.Public.Api.Tests
                 });
                 TestServer = new TestServer(webHostBuild);
                 DbContext = TestServer.Host.Services.GetRequiredService<AppDataContext>();
+                TestSeed = TestServer.Host.Services.GetRequiredService<TestSeed>();
                 HttpClient = TestServer.CreateClient();
                 Fixture = new Fixture();
                 Fixture.Customizations.Add(new IgnoreVirtualMembers());

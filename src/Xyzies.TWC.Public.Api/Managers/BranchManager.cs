@@ -127,7 +127,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x => string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
 
             foreach (var branch in branches)
             {
@@ -210,7 +210,7 @@ namespace Xyzies.TWC.Public.Api.Managers
 
                 if (!string.IsNullOrEmpty(branchFilter.CityFilter))
                 {
-                    query = query.Where(x => x.City.ToLower().Contains(branchFilter.CityFilter.ToLower()));
+                    query = query.Where(x => x.City != null && x.City.ToLower().Contains(branchFilter.CityFilter.ToLower()));
                 }
 
                 if (!string.IsNullOrEmpty(branchFilter.EmailFilter))
@@ -298,7 +298,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 {
                     query = query.OrderByDescending(x => x.IsEnabled);
                 }
-                else query = query.OrderBy(x => x.State);
+                else query = query.OrderBy(x => x.IsEnabled);
             }
 
             if (sortable.SortBy.ToLower() == "city")
