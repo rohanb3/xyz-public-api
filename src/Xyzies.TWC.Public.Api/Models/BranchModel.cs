@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,6 +22,7 @@ namespace Xyzies.TWC.Public.Api.Models
         [Phone(ErrorMessage = "Please enter valid fax no.")]
         public string Fax { get; set; }
 
+        [JsonProperty("address")]
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
 

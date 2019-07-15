@@ -39,5 +39,19 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="companyIds"></param>
         /// <returns></returns>
         Task<PagingResult<CompanyMin>> GetCompanyNameById(List<int> companyIds);
+
+        /// <summary>
+        /// Create new company
+        /// </summary>
+        /// <param name="createCompanyModel"></param>
+        /// <returns></returns>
+        Task<int> CreateCompany(CreateCompanyModel createCompanyModel);
+
+        /// <summary>
+        /// Get any company by id or by name
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
+        Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel);
     }
 }
