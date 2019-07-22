@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xyzies.TWC.Public.Api.Models;
@@ -19,7 +21,6 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
     {
         private readonly BaseTest _baseTest = null;
         private readonly string _baseBrqanchUrl = null;
-        private readonly string TOKEN = Consts.StaticToken;
 
         public BranchControllerTest(BaseTest baseTest)
         {
@@ -686,9 +687,6 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             result.Data.All(x => x.CompanyId == secondCompany.Id).Should().BeTrue();
         }
 
-
-        //------------------------------------------------------- copy paste
-
         [Fact]
         public async Task ShouldReturnSuccessResultFileredByStateWhenGetBranchesByCompany()
         {
@@ -1109,22 +1107,493 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         }
 
         #endregion
-        //[Fact]
-        //public async Task GetForInternalServices()
-        //{
-        //    //Arrange
-        //    using (var http = _testServer.CreateClient())
-        //    {
-        //        http.BaseAddress = BASE_ADDRESS;
-        //        Uri.TryCreate($"branch/{TOKEN}/trusted", UriKind.Relative, out Uri uri);
 
-        //        //Act
-        //        var response = await http.GetAsync(uri);
+        #region Post Branch
 
-        //        //Assert
-        //        response.EnsureSuccessStatusCode();
-        //    }
-        //}
+        [Fact]
+        public async Task ShouldReturnUnauthorizedResultWhenPostBranch()
+        {
+            // Arrange
+            string uri = $"{_baseBrqanchUrl}";
+            var content = new StringContent(JsonConvert.SerializeObject(string.Empty), Encoding.UTF8, "application/json");
 
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.PostAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfBranchNameIsEmptyWhenPostBranch()
+        {
+            // Arrange
+            string uri = $"{_baseBrqanchUrl}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                           .With(x => x.BranchName, string.Empty)
+                                           .With(x => x.Phone, "066-432-43-56")
+                                           .With(x => x.Email, "test@email.com")
+                                           .With(x => x.ZipCode, "7582")
+                                           .Without(x => x.BranchContacts)
+                                           .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PostAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfEmailNoCorrectWhenPostBranch()
+        {
+            // Arrange
+            string uri = $"{_baseBrqanchUrl}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                           .With(x => x.Phone, "066-432-43-56")
+                                           .With(x => x.ZipCode, "7582")
+                                           .Without(x => x.BranchContacts)
+                                           .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PostAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfPhoneNoCorrectWhenPostBranch()
+        {
+            // Arrange
+            string uri = $"{_baseBrqanchUrl}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                           .With(x => x.Email, "test@email.com")
+                                           .With(x => x.ZipCode, "7582")
+                                           .Without(x => x.BranchContacts)
+                                           .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PostAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfZipCodeNoCorrectWhenPostBranch()
+        {
+            // Arrange
+            string uri = $"{_baseBrqanchUrl}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                           .With(x => x.Email, "test@email.com")
+                                           .With(x => x.Phone, "066-432-43-56")
+                                           .With(x=>x.ZipCode, "testZipCode")
+                                           .Without(x => x.BranchContacts)
+                                           .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PostAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultWhenPostBranch()
+        {
+            // Arrange
+            string uri = $"{_baseBrqanchUrl}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                           .With(x => x.Email, "test@email.com")
+                                           .With(x => x.Phone, "066-432-43-56")
+                                           .With(x => x.ZipCode, "578")
+                                           //.Without(x=>x.BranchContacts)
+                                           .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PostAsync(uri, content);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<Guid>(responseString);
+            var branchFromDb = _baseTest.DbContext.Branches.First(x => x.BranchName == request.BranchName);
+            //Assert
+            result.Should().Be(branchFromDb.Id);
+        }
+        #endregion
+
+        #region Put Branch
+
+        [Fact]
+        public async Task ShouldReturnUnauthorizedResultWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var content = new StringContent(JsonConvert.SerializeObject(string.Empty), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfBranchNameIsEmptyWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.BranchName, string.Empty)
+                                            .With(x => x.Phone, "066-432-43-56")
+                                            .With(x => x.Email, "test@email.com")
+                                            .With(x => x.ZipCode, "7582")
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfEmailNoCorrectWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.Phone, "066-432-43-56")
+                                            .With(x => x.ZipCode, "7582")
+                                            .Without(x=>x.BranchContacts)
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfPhoneWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.Email, "test@email.com")
+                                            .With(x => x.ZipCode, "7582")
+                                            .Without(x => x.BranchContacts)
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestResultIfZipCodeNoCorrectWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.Email, "test@email.com")
+                                            .With(x => x.Phone, "066-432-43-56")
+                                            .Without(x => x.BranchContacts)
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
+        [Fact]
+        public async Task ShouldReturnNotFoundResultIfBranchNotExistWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.Email, "test@email.com")
+                                            .With(x => x.Phone, "066-432-43-56")
+                                            .With(x => x.ZipCode, "7582")
+                                            .Without(x => x.BranchContacts)
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultWhenPutBranch()
+        {
+            // Arrange
+            var branch = _baseTest.Fixture.Build<Branch>()
+                                          .With(x => x.Id, Guid.NewGuid())
+                                          .Create();
+            _baseTest.DbContext.Branches.Add(branch);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseBrqanchUrl}/{branch.Id}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.Email, "test@email.com")
+                                            .With(x => x.Phone, "066-432-43-56")
+                                            .With(x => x.ZipCode, "7582")
+                                            //.Without(x => x.BranchContacts)
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
+            response.EnsureSuccessStatusCode();
+
+            await _baseTest.DbContext.Entry(branch).ReloadAsync();
+            var branchFromDb = _baseTest.DbContext.Branches.First(x => x.Id == branch.Id);
+            //Assert
+            branch.Id.Should().Be(branch.Id);
+            branch.BranchName.Should().Be(request.BranchName);
+            branch.Email.Should().Be(request.Email);
+            branch.Phone.Should().Be(request.Phone);
+            branch.Fax.Should().Be(request.Fax);
+            branch.State.Should().Be(request.State);
+            branch.City.Should().Be(request.City);
+            branch.AddressLine1.Should().Be(request.AddressLine1);
+            branch.AddressLine2.Should().Be(request.AddressLine2);
+            branch.ZipCode.Should().Be(request.ZipCode);
+            branch.GeoLat.Should().Be(request.GeoLat);
+            branch.GeoLng.Should().Be(request.GeoLng);
+            //branch.IsStatusActive.Should().Be(request.IsStatusActive);
+            branch.CompanyId.Should().Be(request.CompanyId);
+            branch.IsEnabled.Should().Be(request.IsEnabled);
+        }
+
+        #endregion
+
+        #region Patch Branch
+
+        [Fact]
+        public async Task ShouldReturnUnauthorizedResultWhenPatchBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.PatchAsync(uri, null);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        }
+
+        [Fact]
+        public async Task ShouldReturnNotFoundResultIfBranchNotExistWhenPatchBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
+
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PatchAsync(uri, null);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldReturnNotFoundResultIfBranchExistButRequestStatusNotOnBoardedWhenPatchBranch()
+        {
+            // Arrange
+            var branch = _baseTest.Fixture.Build<Branch>()
+                                            .With(x => x.Id, Guid.NewGuid())
+                                            .Create();
+            _baseTest.DbContext.Branches.Add(branch);
+            _baseTest.DbContext.SaveChanges();
+            string uri = $"{_baseBrqanchUrl}/{branch.Id}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PatchAsync(uri, null);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultWhenPatchBranch()
+        {
+            // Arrange
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .Create();
+            var branch = _baseTest.Fixture.Build<Branch>()
+                                            .With(x => x.Company, company)
+                                            .With(x=>x.IsEnabled, false)
+                                            .Create();
+            _baseTest.DbContext.Branches.Add(branch);
+            _baseTest.DbContext.SaveChanges();
+            string uri = $"{_baseBrqanchUrl}/{branch.Id}?isEnabled={true}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PatchAsync(uri, null);
+            response.EnsureSuccessStatusCode();
+
+            await _baseTest.DbContext.Entry(branch).ReloadAsync();
+            var branchFromDb = _baseTest.DbContext.Branches.First(x => x.Id == branch.Id);
+            //Assert
+            branchFromDb.IsEnabled.Should().BeTrue();
+        }
+
+        #endregion
+
+        #region GetAnyBranchAsync
+
+        [Fact]
+        public async Task ShouldReturnUnauthorizedResultWheGetAnyBranchAsync()
+        {
+            // Arrange
+            string trustedToken = _baseTest.Fixture.Create<string>();
+            string uri = $"{_baseBrqanchUrl}/{trustedToken}/trusted/internal";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        }
+
+        [Fact]
+        public async Task ShouldReturnForbiddenResultWheGetAnyBranchAsync()
+        {
+            // Arrange
+            string trustedToken = _baseTest.Fixture.Create<string>();
+            string uri = $"{_baseBrqanchUrl}/{trustedToken}/trusted/internal";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        }
+
+        [Fact]
+        public async Task ShouldReturnNoFoundByIdResultIfBranchNotExistWheGetAnyBranchAsync()
+        {
+            // Arrange
+            var branch = _baseTest.Fixture.Create<Branch>();
+            _baseTest.DbContext.Branches.Add(branch);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted/internal?{nameof(BranchMinRequestModel.Id)}={Guid.NewGuid()}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+
+        [Fact]
+        public async Task ShouldReturnSuccessByIdResultWheGetAnyBranchAsync()
+        {
+            // Arrange
+            var branch = _baseTest.Fixture.Create<Branch>();
+            _baseTest.DbContext.Branches.Add(branch);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted/internal?{nameof(BranchMinRequestModel.BranchName)}={branch.BranchName}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<BranchMin>(responseString);
+            //Assert
+
+            result.Id.Should().Be(branch.Id);
+            result.BranchName.Should().Be(branch.BranchName);
+            result.CreatedDate.Should().Be(branch.CreatedDate);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessByNameResultWheGetAnyBranchAsync()
+        {
+            // Arrange
+            var branch = _baseTest.Fixture.Create<Branch>();
+            _baseTest.DbContext.Branches.Add(branch);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted/internal?{nameof(BranchMinRequestModel.Id)}={branch.Id}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<BranchMin>(responseString);
+            //Assert
+
+            result.Id.Should().Be(branch.Id);
+            result.BranchName.Should().Be(branch.BranchName);
+            result.CreatedDate.Should().Be(branch.CreatedDate);
+        }
+
+        #endregion
     }
 }
