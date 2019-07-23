@@ -176,6 +176,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             try
             {
+                // TODO can not adapt because CreateBranchModel has one object BranchContacts, but need has collection
                 var branchEntity = branchModel.Adapt<Branch>();
                 Guid branchId = await _branchRepository.AddAsync(branchEntity);
 
@@ -207,6 +208,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             try
             {
+                // TODO can not adapt because CreateBranchModel has one object BranchContacts, but need has collection
                 var branchEntity = branchModel.Adapt<Branch>();
                 branchEntity.Id = id;
 

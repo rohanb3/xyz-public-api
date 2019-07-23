@@ -36,6 +36,7 @@ namespace Xyzies.TWC.Public.Api.Models
 
         public string GeoLng { get; set; }
 
+        //TODO What is this status. It is not used in Post and Put
         /// <summary>
         /// 0 - deactivated / 1 - activated
         /// </summary>
