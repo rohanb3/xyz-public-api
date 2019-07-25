@@ -166,6 +166,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
+            //TODO why this filter?
             if (companyFilter.RequestStatusNames != null && companyFilter.RequestStatusNames.Any())
             {
                 query = query.Where(x => x.RequestStatus != null &&
@@ -176,17 +177,17 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
-                query = query.Where(x => x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.State) && x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.CityFilter))
             {
-                query = query.Where(x => x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.City) && x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.EmailFilter))
             {
-                query = query.Where(x => x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.Email) && x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
             }
 
             if (companyFilter.CompanyNameFilter != null && companyFilter.CompanyNameFilter.Count > 0)

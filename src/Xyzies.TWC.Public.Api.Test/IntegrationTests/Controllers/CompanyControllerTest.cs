@@ -1,8 +1,16 @@
-﻿using Microsoft.AspNetCore.TestHost;
+﻿using FluentAssertions;
+using AutoFixture;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xyzies.TWC.Public.Api.Models;
+using System.Linq;
+using Xyzies.TWC.Public.Data.Entities;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using Xyzies.TWC.Public.Api.Tests.Extensions;
 
 namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
 {
@@ -15,10 +23,829 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             _baseTest = baseTest ?? throw new ArgumentNullException(nameof(baseTest));
             _baseTest.DbContext.ClearContext();
-
+            _baseTest.TestSeed.Seed();
+            _baseTest.DbContext.RemoveRange(_baseTest.DbContext.Companies);
+            _baseTest.DbContext.SaveChanges();
             _baseCompanyUrl = "company";
         }
 
+        #region Get branches list
 
+        [Fact]
+        public async Task ShouldReturnUnauthorizedResultWhenGetCompanies()
+        {
+            // Arrange
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.GetAsync(_baseCompanyUrl);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByStateWhenGetCompanies()
+        {
+            // Arrange
+            int countCompanyWithOneState = 3;
+            int countCompanyWithDifferenceState = 5;
+            string state = _baseTest.Fixture.Create<string>();
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompanyWithDifferenceState)
+                                           .ToList();
+            companies.AddRange(_baseTest.Fixture.Build<Company>()
+                                                .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                                .With(x => x.State, state)
+                                                .CreateMany(countCompanyWithOneState));
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.StateFilter)}={state}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyWithOneState);
+            result.Data.Count.Should().Be(countCompanyWithOneState);
+            result.Data.All(x => x.State.ToLower() == state.ToLower()).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultIfCompanyHasNotRequestStatusWhenGetCompanies()
+        {
+            // Arrange
+            var company = _baseTest.Fixture.Create<Company>();
+           
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Data.FirstOrDefault(x=>x.Id == company.Id).Should().BeNull();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByCityWhenGetCompanies()
+        {
+            // Arrange
+            int countCompanyWithOneCity = 3;
+            int countCompanyWithDifferenceCity = 5;
+            string city = _baseTest.Fixture.Create<string>();
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompanyWithDifferenceCity)
+                                           .ToList();
+            companies.AddRange(_baseTest.Fixture.Build<Company>()
+                                                .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                                .With(x => x.City, city)
+                                                .CreateMany(countCompanyWithOneCity));
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.CityFilter)}={city}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyWithOneCity);
+            result.Data.Count.Should().Be(countCompanyWithOneCity);
+            result.Data.All(x => x.City.ToLower().Contains(city.ToLower())).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByEmailWhenGetCompanies()
+        {
+            // Arrange
+            int countCompanyWithOneEmail = 3;
+            int countCompanyWithDifferenceEmail = 5;
+            string email = _baseTest.Fixture.Create<string>();
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompanyWithDifferenceEmail)
+                                           .ToList();
+            companies.AddRange(_baseTest.Fixture.Build<Company>()
+                                                .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                                .With(x => x.Email, email)
+                                                .CreateMany(countCompanyWithOneEmail));
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.EmailFilter)}={email}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyWithOneEmail);
+            result.Data.Count.Should().Be(countCompanyWithOneEmail);
+            result.Data.All(x => x.Email.ToLower().Contains(email.ToLower())).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByCompanyNamesWhenGetCompanies()
+        {
+            // Arrange
+            int countCompanyMustBeFounded = 3;
+            int countCompany = 10;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+           
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            var expectedCompanies = _baseTest.DbContext.Companies.Take(countCompanyMustBeFounded);
+            var expectedCompanyNameQuery = string.Join('&', expectedCompanies.Select(x => $"{nameof(CompanyFilter.CompanyNameFilter)}={x.CompanyName}"));
+            string uri = $"{_baseCompanyUrl}?{expectedCompanyNameQuery}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyMustBeFounded);
+            result.Data.Count.Should().Be(countCompanyMustBeFounded);
+            result.Data.All(x => expectedCompanies.Select(c=>c.CompanyName).Contains(x.CompanyName)).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByDateFromWhenGetCompanies()
+        {
+            // Arrange
+            var dateCreated = DateTime.Now;
+            int countCompanyMustBeFounded = 3;
+            int countCompany = 10;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .With(x=>x.CreatedDate, DateTime.Now.AddDays(-1))
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            var expectedCompanies = companies.Take(countCompanyMustBeFounded).ToList();
+            for (int i = 0; i < expectedCompanies.Count; i++)
+            {
+                expectedCompanies[i].CreatedDate = dateCreated.AddDays(i);
+            }
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.DateFrom)}={dateCreated.ToString("yyyy-MM-dd")}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyMustBeFounded);
+            result.Data.Count.Should().Be(countCompanyMustBeFounded);
+            result.Data.All(x=>x.CreatedDate >= dateCreated).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByDateToWhenGetCompanies()
+        {
+            // Arrange
+            var dateCreated = DateTime.Now;
+            int countCompanyMustBeFounded = 3;
+            int countCompany = 10;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .With(x => x.CreatedDate, DateTime.Now.AddDays(+1))
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            var expectedCompanies = companies.Take(countCompanyMustBeFounded).ToList();
+            for (int i = 0; i < expectedCompanies.Count; i++)
+            {
+                expectedCompanies[i].CreatedDate = dateCreated.AddDays(-(i+1));
+            }
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.DateTo)}={dateCreated.ToString("yyyy-MM-dd")}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyMustBeFounded);
+            result.Data.Count.Should().Be(countCompanyMustBeFounded);
+            result.Data.All(x => x.CreatedDate <= dateCreated).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByDateFromAndDateToWhenGetCompanies()
+        {
+            // Arrange
+            int countCompany = 10;
+            int countCompanyMustBeFounded = 4;
+            var dateCreatedFrom = DateTime.Now;
+            var dateCreatedTo = DateTime.Now.AddDays(countCompanyMustBeFounded);
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            for (int i = 0; i < companies.Count; i++)
+            {
+                companies[i].CreatedDate = dateCreatedFrom.AddDays(i);
+            }
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.DateFrom)}={dateCreatedFrom.ToString("yyyy-MM-dd")}&{nameof(CompanyFilter.DateTo)}={dateCreatedTo.ToString("yyyy-MM-dd")}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyMustBeFounded);
+            result.Data.Count.Should().Be(countCompanyMustBeFounded);
+            result.Data.All(x => x.CreatedDate >= dateCreatedFrom && x.CreatedDate <= dateCreatedTo).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByEnabledWhenGetCompanies()
+        {
+            // Arrange
+            int countCompany = 10;
+            bool isEnabled = true;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.IsEnabledFilter)}={isEnabled}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            int countIsEnabledEntity = _baseTest.DbContext.Companies.Count(x => x.IsEnabled == isEnabled);
+            result.Total.Should().Be(countIsEnabledEntity);
+            result.Data.Count.Should().Be(countIsEnabledEntity);
+            result.Data.All(x => x.IsEnabled == isEnabled).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByListIdWhenGetCompanies()
+        {
+            // Arrange
+            int countCompany = 10;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            var expectedCompany = companies.First();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.CompanyIdFilter)}={expectedCompany.Id}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(1);
+            result.Data.Count.Should().Be(1);
+            result.Data.First().Id.Should().Be(expectedCompany.Id);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByIdWhenGetCompanies()
+        {
+            // Arrange
+            int countCompany = 10;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            var expectedCompany = companies.First();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.CompanyIdFilter)}={expectedCompany.Id}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(1);
+            result.Data.Count.Should().Be(1);
+            result.Data.First().Id.Should().Be(expectedCompany.Id);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByCompanyNameWhenGetCompanies()
+        {
+            // Arrange
+            int countCompany = 10;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+            string companyNameStartWith = "Test";
+            companies.ForEach(x => x.CompanyName = $"{companyNameStartWith}{x.CompanyName}");
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string expectedContainsCompanyName = $"{companyNameStartWith}{nameof(Company.CompanyName)}";
+            string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.SearchFilter)}={expectedContainsCompanyName}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompany);
+            result.Data.Count.Should().Be(countCompany);
+            result.Data.All(x=>x.CompanyName.ToLower().Contains(expectedContainsCompanyName));
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultFileredByCompanyIdsWithoutOthersFilterWhenGetCompanies()
+        {
+            // Arrange
+            int countCompanyMustBeFounded = 3;
+            int countCompany = 10;
+            string state = _baseTest.Fixture.Create<string>();
+            string city = _baseTest.Fixture.Create<string>();
+            string email = _baseTest.Fixture.Create<string>();
+            string companyName = _baseTest.Fixture.Create<string>();
+            var dateFrom = DateTime.Now.AddDays(-1);
+            var dateTo = DateTime.Now.AddDays(1);
+            var dateCreated = DateTime.Now;
+            bool isEnabled = true;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .With(x => x.State, state)
+                                           .With(x => x.City, city)
+                                           .With(x => x.Email, email)
+                                           .With(x => x.CompanyName, companyName)
+                                           .With(x => x.IsEnabled, isEnabled)
+                                           .With(x => x.CreatedDate, dateCreated)
+                                           .CreateMany(countCompany)
+                                           .ToList();
+
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            var expectedCompanies = _baseTest.DbContext.Companies.Take(countCompanyMustBeFounded);
+            var expectedCompanyIdQuery = string.Join('&', expectedCompanies.Select(x => $"{nameof(CompanyFilter.CompanyIds)}={x.Id}"));
+            string uri = $"{_baseCompanyUrl}?{expectedCompanyIdQuery}&{nameof(CompanyFilter.StateFilter)}={state}&{nameof(CompanyFilter.CityFilter)}={city}&{nameof(CompanyFilter.EmailFilter)}={email}&{nameof(CompanyFilter.IsEnabledFilter)}={isEnabled}&{nameof(CompanyFilter.SearchFilter)}={companyName}&{nameof(CompanyFilter.DateFrom)}={dateFrom.ToString("yyyy-MM-dd")}&{nameof(CompanyFilter.DateTo)}={dateTo.ToString("yyyy-MM-dd")}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyMin>>(responseString);
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyMustBeFounded);
+            result.Data.Count.Should().Be(countCompanyMustBeFounded);
+            result.Data.All(x => expectedCompanies.Select(c => c.Id).Contains(x.Id)).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultCheckCorrectDataWhenGetCompanies()
+        {
+            // Arrange
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            int branchCount = 5;
+            int usersCount = 5;
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .Create();
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            var branches = _baseTest.Fixture.Build<Branch>()
+                                            .With(x=>x.CompanyId, company.Id)
+                                            .CreateMany(branchCount);
+
+            var users = _baseTest.Fixture.Build<Users>()
+                                       .With(x => x.Role, _baseTest.SalesRoleId.ToString())
+                                       .With(x => x.CompanyId, company.Id)
+                                       .CreateMany(usersCount);
+
+            _baseTest.DbContext.Branches.AddRange(branches);
+            _baseTest.DbContext.Users.AddRange(users);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(countCompanyInDb);
+            result.Data.Count.Should().Be(countCompanyInDb);
+            var companyResult = result.Data.First(x => x.Id == company.Id);
+            companyResult.CountBranch.Should().Be(branchCount);
+            companyResult.CountSalesRep.Should().Be(usersCount);
+            companyResult.CompanyName.Should().Be(company.CompanyName);
+            companyResult.LegalName.Should().Be(company.LegalName);
+            companyResult.Email.Should().Be(company.Email);
+            companyResult.Phone.Should().Be(company.Phone);
+            companyResult.Address.Should().Be(company.Address);
+            companyResult.City.Should().Be(company.City);
+            companyResult.State.Should().Be(company.State);
+            companyResult.ZipCode.Should().Be(company.ZipCode);
+            companyResult.StoreID.Should().Be(company.StoreID);
+            companyResult.CreatedDate.Should().Be(company.CreatedDate);
+            companyResult.ModifiedDate.Should().Be(company.ModifiedDate);
+            companyResult.CreatedBy.Should().Be(company.CreatedBy);
+            companyResult.ModifiedBy.Should().Be(company.ModifiedBy);
+            companyResult.Agentid.Should().Be(company.Agentid);
+            companyResult.Status.Should().Be(company.Status);
+            companyResult.StoreLocationCount.Should().Be(company.StoreLocationCount);
+            companyResult.PrimaryContactName.Should().Be(company.PrimaryContactName);
+            companyResult.PrimaryContactTitle.Should().Be(company.PrimaryContactTitle);
+            companyResult.IsEnabled.Should().Be(company.IsEnabled);
+            companyResult.Fax.Should().Be(company.Fax);
+            companyResult.FedId.Should().Be(company.FedId);
+            companyResult.TypeOfCompany.Should().Be(company.TypeOfCompany);
+            companyResult.StateEstablished.Should().Be(company.StateEstablished);
+            companyResult.CompanyType.Should().Be(company.CompanyType);
+            companyResult.CallerId.Should().Be(company.CallerId);
+            companyResult.IsAgreement.Should().Be(company.IsAgreement.Value);
+            companyResult.ActivityStatus.Should().Be(company.ActivityStatus);
+            companyResult.CompanyKey.Should().Be(company.CompanyKey?.ToString());
+            companyResult.FirstName.Should().Be(company.FirstName);
+            companyResult.LastName.Should().Be(company.LastName);
+            companyResult.CellNumber.Should().Be(company.CellNumber);
+            companyResult.BankNumber.Should().Be(company.BankNumber);
+            companyResult.BankName.Should().Be(company.BankName);
+            companyResult.BankAccountNumber.Should().Be(company.BankAccountNumber);
+            companyResult.XyziesId.Should().Be(company.XyziesId);
+            companyResult.ApprovedDate.Should().Be(company.ApprovedDate.Value);
+            companyResult.BankInfoGiven.Should().Be(company.BankInfoGiven.Value);
+            companyResult.AccountManager.Should().Be(company.AccountManager.Value);
+            companyResult.CrmCompanyId.Should().Be(company.CrmCompanyId);
+            companyResult.IsCallCenter.Should().Be(company.IsCallCenter.Value);
+            companyResult.ParentCompanyId.Should().Be(company.ParentCompanyId);
+            companyResult.TeamKey.Should().Be(company.TeamKey.Value);
+            companyResult.RetailerGroupKey.Should().Be(company.RetailerGroupKey.Value);
+            companyResult.SocialMediaAccount.Should().Be(company.SocialMediaAccount);
+            companyResult.RetailerGoogleAccount.Should().Be(company.RetailerGoogleAccount);
+            companyResult.RetailerGooglePassword.Should().Be(company.RetailerGooglePassword);
+            companyResult.PaymentMode.Should().Be(company.PaymentMode);
+            companyResult.CustomerDemographicId.Should().Be(company.CustomerDemographicId);
+            companyResult.LocationTypeId.Should().Be(company.LocationTypeId);
+            companyResult.IsOwnerPassBackground.Should().Be(company.IsOwnerPassBackground.Value);
+            companyResult.IsWebsite.Should().Be(company.IsWebsite.Value);
+            companyResult.IsSellsLifelineWireless.Should().Be(company.IsSellsLifelineWireless.Value);
+            companyResult.NumberofStores.Should().Be(company.NumberofStores);
+            companyResult.BusinessDescription.Should().Be(company.BusinessDescription);
+            companyResult.WebsiteList.Should().Be(company.WebsiteList);
+            companyResult.IsSpectrum.Should().Be(company.IsSpectrum.Value);
+            companyResult.BusinessSource.Should().Be(company.BusinessSource);
+            companyResult.GeoLat.Should().Be(company.GeoLat);
+            companyResult.GeoLon.Should().Be(company.GeoLon);
+            companyResult.IsMarketPlace.Should().Be(company.IsMarketPlace.Value);
+            companyResult.MarketPlaceName.Should().Be(company.MarketPlaceName);
+            companyResult.PhysicalName.Should().Be(company.PhysicalName);
+            companyResult.MarketStrategy.Should().Be(company.MarketStrategy);
+            companyResult.CompanyStatusKey.Should().Be(company.CompanyStatusKey);
+        }
+
+        [Theory]
+        [InlineData(0, 50)]
+        [InlineData(30, 35)]
+        public async Task ShouldReturnSuccessResulttWithPaginationWhenGetCompanies(int skip, int take)
+        {
+            // Arrange
+            int countCompany = 100;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany);
+
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(Paginable.Skip)}={skip}&{nameof(Paginable.Take)}={take}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Total.Should().Be(_baseTest.DbContext.Companies.Count());
+            result.Data.Count.Should().Be(_baseTest.DbContext.Companies.Skip(skip).Take(take).Count());
+            result.ItemsPerPage.Should().Be(take);
+        }
+
+        [Theory]
+        //------ Default sorting
+        [InlineData(nameof(CompanyModel.CreatedDate), "", "")]
+        //-----------------------
+
+        [InlineData(nameof(CompanyModel.CreatedDate), "createddate", "desc")]
+        [InlineData(nameof(CompanyModel.CreatedDate), "createddate", "asc")]
+
+        [InlineData(nameof(CompanyModel.Status), "status", "desc")]
+        [InlineData(nameof(CompanyModel.Status), "status", "asc")]
+
+        [InlineData(nameof(CompanyModel.State), "state", "desc")]
+        [InlineData(nameof(CompanyModel.State), "state", "asc")]
+
+        [InlineData(nameof(CompanyModel.City), "city", "desc")]
+        [InlineData(nameof(CompanyModel.City), "city", "asc")]
+
+        [InlineData(nameof(CompanyModel.CompanyName), "companyname", "desc")]
+        [InlineData(nameof(CompanyModel.CompanyName), "companyname", "asc")]
+
+        [InlineData(nameof(CompanyModel.Id), "id", "desc")]
+        [InlineData(nameof(CompanyModel.Id), "id", "asc")]
+        public async Task ShouldReturnSuccessResulttWithSortingWhenGetCompanies(string sortBy, string sortByRequest, string order)
+        {
+            // Arrange
+            int countCompany = 100;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany);
+
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}?{nameof(Sortable.SortBy)}={sortByRequest}&{nameof(Sortable.SortOrder)}={order}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+
+            //Assert
+            var expression = typeof(CompanyModel).GetExpression<CompanyModel>(sortBy);
+
+            result.Total.Should().Be(countCompanyInDb);
+            result.Data.Count.Should().Be(countCompanyInDb);
+            result.Data.All(x => x.GetType().GetProperty(sortBy).GetValue(x) == null).Should().BeFalse();
+            result.ItemsPerPage.Should().Be(0);
+            if (order == "asc")
+            {
+                bool resultSequence = result.Data.SequenceEqual(result.Data.OrderBy(expression));
+                resultSequence.Should().BeTrue();
+            }
+            else
+            {
+                bool resultSequence = result.Data.SequenceEqual(result.Data.OrderByDescending(expression));
+                resultSequence.Should().BeTrue();
+            }
+        }
+        #endregion
+
+        #region Get company list by trusted token
+
+        [Fact]
+        public async Task ShouldReturnForbiddenResultWhenGetCompaniesByTrustedToken()
+        {
+            // Arrange
+            string token = _baseTest.Fixture.Create<string>();
+            string uri = $"{_baseCompanyUrl}/{token}/trusted";
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultWhenGetCompaniesByTrustedToken()
+        {
+            // Arrange
+            int countCompany = 100;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var companies = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .CreateMany(countCompany);
+
+            _baseTest.DbContext.Companies.AddRange(companies);
+            _baseTest.DbContext.SaveChanges();
+            string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted";
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            //Assert
+            result.Total.Should().Be(countCompanyInDb);
+            result.Data.Count.Should().Be(countCompanyInDb);
+            result.ItemsPerPage.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessResultWithCheckCorrectDataWhenGetCompaniesByTrustedToken()
+        {
+            // Arrange
+            int usersCount = 5;
+            int branchCount = 9;
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .Create();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            var branches = _baseTest.Fixture.Build<Branch>()
+                                           .With(x => x.CompanyId, company.Id)
+                                           .CreateMany(branchCount);
+
+            var users = _baseTest.Fixture.Build<Users>()
+                                       .With(x => x.Role, _baseTest.SalesRoleId.ToString())
+                                       .With(x => x.CompanyId, company.Id)
+                                       .CreateMany(usersCount);
+
+            _baseTest.DbContext.Branches.AddRange(branches);
+            _baseTest.DbContext.Users.AddRange(users);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted";
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
+            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            //Assert
+            result.Total.Should().Be(countCompanyInDb);
+            result.Data.Count.Should().Be(countCompanyInDb);
+            result.ItemsPerPage.Should().Be(0);
+            var companyResult = result.Data.First(x => x.Id == company.Id);
+            companyResult.CountBranch.Should().Be(branchCount);
+            companyResult.CountSalesRep.Should().Be(usersCount);
+            companyResult.CompanyName.Should().Be(company.CompanyName);
+            companyResult.LegalName.Should().Be(company.LegalName);
+            companyResult.Email.Should().Be(company.Email);
+            companyResult.Phone.Should().Be(company.Phone);
+            companyResult.Address.Should().Be(company.Address);
+            companyResult.City.Should().Be(company.City);
+            companyResult.State.Should().Be(company.State);
+            companyResult.ZipCode.Should().Be(company.ZipCode);
+            companyResult.StoreID.Should().Be(company.StoreID);
+            companyResult.CreatedDate.Should().Be(company.CreatedDate);
+            companyResult.ModifiedDate.Should().Be(company.ModifiedDate);
+            companyResult.CreatedBy.Should().Be(company.CreatedBy);
+            companyResult.ModifiedBy.Should().Be(company.ModifiedBy);
+            companyResult.Agentid.Should().Be(company.Agentid);
+            companyResult.Status.Should().Be(company.Status);
+            companyResult.StoreLocationCount.Should().Be(company.StoreLocationCount);
+            companyResult.PrimaryContactName.Should().Be(company.PrimaryContactName);
+            companyResult.PrimaryContactTitle.Should().Be(company.PrimaryContactTitle);
+            companyResult.IsEnabled.Should().Be(company.IsEnabled);
+            companyResult.Fax.Should().Be(company.Fax);
+            companyResult.FedId.Should().Be(company.FedId);
+            companyResult.TypeOfCompany.Should().Be(company.TypeOfCompany);
+            companyResult.StateEstablished.Should().Be(company.StateEstablished);
+            companyResult.CompanyType.Should().Be(company.CompanyType);
+            companyResult.CallerId.Should().Be(company.CallerId);
+            companyResult.IsAgreement.Should().Be(company.IsAgreement.Value);
+            companyResult.ActivityStatus.Should().Be(company.ActivityStatus);
+            companyResult.CompanyKey.Should().Be(company.CompanyKey?.ToString());
+            companyResult.FirstName.Should().Be(company.FirstName);
+            companyResult.LastName.Should().Be(company.LastName);
+            companyResult.CellNumber.Should().Be(company.CellNumber);
+            companyResult.BankNumber.Should().Be(company.BankNumber);
+            companyResult.BankName.Should().Be(company.BankName);
+            companyResult.BankAccountNumber.Should().Be(company.BankAccountNumber);
+            companyResult.XyziesId.Should().Be(company.XyziesId);
+            companyResult.ApprovedDate.Should().Be(company.ApprovedDate.Value);
+            companyResult.BankInfoGiven.Should().Be(company.BankInfoGiven.Value);
+            companyResult.AccountManager.Should().Be(company.AccountManager.Value);
+            companyResult.CrmCompanyId.Should().Be(company.CrmCompanyId);
+            companyResult.IsCallCenter.Should().Be(company.IsCallCenter.Value);
+            companyResult.ParentCompanyId.Should().Be(company.ParentCompanyId);
+            companyResult.TeamKey.Should().Be(company.TeamKey.Value);
+            companyResult.RetailerGroupKey.Should().Be(company.RetailerGroupKey.Value);
+            companyResult.SocialMediaAccount.Should().Be(company.SocialMediaAccount);
+            companyResult.RetailerGoogleAccount.Should().Be(company.RetailerGoogleAccount);
+            companyResult.RetailerGooglePassword.Should().Be(company.RetailerGooglePassword);
+            companyResult.PaymentMode.Should().Be(company.PaymentMode);
+            companyResult.CustomerDemographicId.Should().Be(company.CustomerDemographicId);
+            companyResult.LocationTypeId.Should().Be(company.LocationTypeId);
+            companyResult.IsOwnerPassBackground.Should().Be(company.IsOwnerPassBackground.Value);
+            companyResult.IsWebsite.Should().Be(company.IsWebsite.Value);
+            companyResult.IsSellsLifelineWireless.Should().Be(company.IsSellsLifelineWireless.Value);
+            companyResult.NumberofStores.Should().Be(company.NumberofStores);
+            companyResult.BusinessDescription.Should().Be(company.BusinessDescription);
+            companyResult.WebsiteList.Should().Be(company.WebsiteList);
+            companyResult.IsSpectrum.Should().Be(company.IsSpectrum.Value);
+            companyResult.BusinessSource.Should().Be(company.BusinessSource);
+            companyResult.GeoLat.Should().Be(company.GeoLat);
+            companyResult.GeoLon.Should().Be(company.GeoLon);
+            companyResult.IsMarketPlace.Should().Be(company.IsMarketPlace.Value);
+            companyResult.MarketPlaceName.Should().Be(company.MarketPlaceName);
+            companyResult.PhysicalName.Should().Be(company.PhysicalName);
+            companyResult.MarketStrategy.Should().Be(company.MarketStrategy);
+            companyResult.CompanyStatusKey.Should().Be(company.CompanyStatusKey);
+
+        }
+        #endregion
     }
 }
