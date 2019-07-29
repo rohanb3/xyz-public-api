@@ -158,6 +158,42 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
+        /// Returns all found branches related to the specific company
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="filterModel"></param>
+        /// <param name="sortable"></param>
+        /// <param name="paginable"></param>
+        /// <returns></returns>
+        /// <response code="200">List of branches related to the specific company by truested token</response>
+        /// <response code="400">Some input params were wrong</response>
+        /// <response code="404">Company not found</response>
+        [HttpGet("company/{companyId}/branch/{token}/trusted")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound /* 404 */)] // Company not found
+        [SwaggerOperation(Tags = new[] { "Company API" })]
+        public async Task<IActionResult> GetBranchesOfCompanyTrusted(
+            [FromRoute] int companyId,
+            [FromRoute] string token,
+            [FromQuery] BranchFilter filterModel,
+            [FromQuery] Sortable sortable,
+            [FromQuery] Paginable paginable)
+        {
+            if (token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable));
+        }
+
+        /// <summary>
         /// POST api/branches
         /// </summary>
         /// <param name="branchModel"></param>
