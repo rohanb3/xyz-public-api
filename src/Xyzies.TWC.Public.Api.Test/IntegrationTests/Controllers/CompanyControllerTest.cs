@@ -640,7 +640,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
 
         [Theory]
         //------ Default sorting
-        [InlineData(nameof(CompanyModel.CreatedDate), "", "")]
+        //[InlineData(nameof(CompanyModel.CreatedDate), "", "")]
         //-----------------------
 
         [InlineData(nameof(CompanyModel.CreatedDate), "createddate", "desc")]
@@ -897,7 +897,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
-                                           .With(x => x.Id, 145)
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
             _baseTest.DbContext.Companies.Add(company);
@@ -1003,19 +1003,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
-                                           .With(x => x.Id, 145)
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
             _baseTest.DbContext.Companies.Add(company);
             _baseTest.DbContext.SaveChanges();
-
-            var companyRepository = _baseTest.TestServer.Host.Services.GetRequiredService<IAzureCompanyAvatarRepository>();
-
-            string path = await companyRepository.AddAsync(new CompanyAvatar()
-            {
-                Id = company.Id.ToString(),
-                File = GetFormFileMoq()
-            });
+            var file = GetFormFileMoq();
+            await _baseTest.AddImageInBlobStorage(file);
             CompanyModelExtended companyResult = null;
 
             var branches = _baseTest.Fixture.Build<Branch>()
@@ -1038,7 +1032,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             companyResult = JsonConvert.DeserializeObject<CompanyModelExtended>(responseString);
-
+            await _baseTest.DeleteImageInBlobStorage(null);
             //Assert
             companyResult.CountBranch.Should().Be(branchCount);
             companyResult.CountSalesRep.Should().Be(usersCount);
@@ -1106,7 +1100,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             companyResult.PhysicalName.Should().Be(company.PhysicalName);
             companyResult.MarketStrategy.Should().Be(company.MarketStrategy);
             companyResult.CompanyStatusKey.Should().Be(company.CompanyStatusKey);
-            companyResult.LogoUrl.Should().Be(path);
+            companyResult.LogoUrl.Should().NotBeNullOrWhiteSpace();
         }
         #endregion
 
@@ -1575,29 +1569,248 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
         }
 
+        [Theory]
+        [InlineData("test.txt")]
+        [InlineData("test.jpeg")]
+        public async Task ShouldReturnBadRequestResultIfFileIsNotImageOrHasBigSizeWhenUpdateCompanyAvatar(string path)
+        {
+            // Arrange
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
+                                           .Create();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{company.Id}/avatar";
+            var index = Directory.GetCurrentDirectory().ToString().IndexOf("bin");
+
+            string productFolder = Directory.GetCurrentDirectory().ToString().Substring(0, index);
+            var fileStream = File.OpenRead(Path.Combine(productFolder, "TestFiles", path));
+            byte[] data;
+            using (var br = new BinaryReader(fileStream))
+                data = br.ReadBytes((int)fileStream.Length);
+
+            ByteArrayContent bytes = new ByteArrayContent(data);
+
+            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+
+            multiContent.Add(bytes, "file", fileStream.Name);
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, multiContent);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        }
+
         [Fact]
         public async Task ShouldReturnNotFoundResultIfCompanyNotExistWhenUpdateCompanyAvatar()
         {
             // Arrange
-            int companyId = _baseTest.Fixture.Create<int>();
-            string uri = $"{_baseCompanyUrl}/{companyId}/avatar";
+            string uri = $"{_baseCompanyUrl}/{_baseTest.DefaultCompanyId}/avatar";
+            var file = GetFormFileMoq();
+            byte[] data;
+            using (var br = new BinaryReader(file.OpenReadStream()))
+                data = br.ReadBytes((int)file.OpenReadStream().Length);
+
             ByteArrayContent bytes = new ByteArrayContent(data);
 
+
+            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+
+            multiContent.Add(bytes, "file", file.FileName);
             // Act
             _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
-            var response = await _baseTest.HttpClient.PutAsync(uri, null);
+            var response = await _baseTest.HttpClient.PutAsync(uri, multiContent);
+            await _baseTest.DeleteImageInBlobStorage(Path.GetExtension(file.FileName));
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        [Theory]
+        [InlineData(".jpg", 102400)]
+        [InlineData(".jpeg", 0)]
+        [InlineData(".png", 20)]
+        [InlineData(".ico", 0)]
+        public async Task ShouldReturnSuccessResultWhenUpdateCompanyAvatar(string extension, long length)
+        {
+            // Arrange
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
+                                           .With(x=>x.Id, _baseTest.DefaultCompanyId)
+                                           .Create();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{company.Id}/avatar";
+            var file = GetFormFileMoq(extension, length);
+            byte[] data;
+            using (var br = new BinaryReader(file.OpenReadStream()))
+                data = br.ReadBytes((int)file.OpenReadStream().Length);
+
+            ByteArrayContent bytes = new ByteArrayContent(data);
+
+
+            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+
+            multiContent.Add(bytes, "file", file.FileName);
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, multiContent);
+            response.EnsureSuccessStatusCode();
+            await _baseTest.DeleteImageInBlobStorage(Path.GetExtension(file.FileName));
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        }
+        #endregion
+
+        #region GetAnyCompanyAsync
+
+        [Fact]
+        public async Task ShouldReturnUnauthorizedResultWhenGetAnyCompanyAsync()
+        {
+            // Arrange
+            string token = _baseTest.Fixture.Create<string>();
+            string uri = $"{_baseCompanyUrl}/{token}/trusted/internal";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
+            var response = await _baseTest.HttpClient.GetAsync(uri);
 
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
         }
+
+        [Fact]
+        public async Task ShouldReturnForbiddenResultWhenGetAnyCompanyAsync()
+        {
+            // Arrange
+            string token = _baseTest.Fixture.Create<string>();
+            string uri = $"{_baseCompanyUrl}/{token}/trusted/internal";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        }
+
+        [Fact]
+        public async Task ShouldReturnNotFoundByIdResultWhenGetAnyCompanyAsync()
+        {
+            // Arrange
+            int companyId = 1;
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
+                                           .Create();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.Id)}={companyId}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldReturnNotFoundByCompanyNameResultWhenGetAnyCompanyAsync()
+        {
+            // Arrange
+            string companyName = "Test";
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
+                                           .Create();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.CompanyName)}={companyName}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessFoundedByIdResultWhenGetAnyCompanyAsync()
+        {
+            // Arrange
+            var company = _baseTest.Fixture.Create<Company>();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.Id)}={company.Id}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<CompanyMin>(responseString);
+            //Assert
+            result.Id.Should().Be(company.Id);
+            result.CompanyName.Should().Be(company.CompanyName);
+            result.CreatedDate.Should().Be(company.CreatedDate);
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessFoundedByCompanyNameResultWhenGetAnyCompanyAsync()
+        {
+            // Arrange
+            var company = _baseTest.Fixture.Build<Company>()
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
+                                           .Create();
+
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
+
+            string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.CompanyName)}={company.CompanyName}";
+
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<CompanyMin>(responseString);
+            //Assert
+            result.Id.Should().Be(company.Id);
+            result.CompanyName.Should().Be(company.CompanyName);
+            result.CreatedDate.Should().Be(company.CreatedDate);
+        }
+
         #endregion
 
-        private IFormFile GetFormFileMoq()
+        private IFormFile GetFormFileMoq(string extension = null, long length = 0)
         {
             var fileMock = new Mock<IFormFile>();
             //Setup mock file using a memory stream
             var content = "Hello World from a Fake File";
-            var fileName = "test.jpeg";
+            string fileName;
+            if (extension == null)
+            {
+                fileName = "test.jpeg";
+            }
+            else
+            {
+                fileName = $"test{extension}";
+            }
             var ms = new MemoryStream();
             var writer = new StreamWriter(ms);
             writer.Write(content);
@@ -1605,7 +1818,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             ms.Position = 0;
             fileMock.Setup(x => x.OpenReadStream()).Returns(ms);
             fileMock.Setup(x => x.FileName).Returns(fileName);
-            fileMock.Setup(x => x.Length).Returns(ms.Length);
+            if (length == 0)
+            {
+                fileMock.Setup(x => x.Length).Returns(ms.Length);
+            }
+            else
+            {
+                fileMock.Setup(x => x.Length).Returns(length);
+            }
 
             return fileMock.Object;
         }

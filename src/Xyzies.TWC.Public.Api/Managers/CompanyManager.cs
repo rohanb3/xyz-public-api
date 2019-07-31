@@ -70,7 +70,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 var companyModel = company.Adapt<CompanyModel>();
 
-                companyModel.CountSalesRep = allUsers.Where(x => x.Key == company.Id)?.Count();
+                companyModel.CountSalesRep = allUsers.FirstOrDefault(x => x.Key == company.Id)?.Count();
                 companyModel.CountBranch = company.Branches.Count;
 
                 companyModelList.Add(companyModel);

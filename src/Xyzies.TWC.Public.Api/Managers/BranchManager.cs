@@ -16,6 +16,7 @@ namespace Xyzies.TWC.Public.Api.Managers
     {
         private readonly ILogger<BranchManager> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
+        private readonly ICompanyRepository _companyRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly string salesRoleId = "2";
 
@@ -24,15 +25,19 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
+        /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
         public BranchManager(ILogger<BranchManager> logger,
             IBranchRepository branchRepository,
+            ICompanyRepository companyRepository,
             IUserRepository userRepository)
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
             _branchRepository = branchRepository ??
                 throw new ArgumentNullException(nameof(branchRepository));
+            _companyRepository = companyRepository ??
+                throw new ArgumentNullException(nameof(companyRepository));
             _userRepository = userRepository ??
                 throw new ArgumentNullException(nameof(userRepository));
         }
@@ -111,7 +116,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<PagingResult<BranchModel>> GetBranchesByCompany(int companyId, BranchFilter filter, Sortable sortable, Paginable paginable)
         {
-            // TODO: Add check: Is company exist?
+            var company = await _companyRepository.GetAsync(companyId);
+
+            if(company == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             IQueryable<Branch> query = await _branchRepository.GetAsync(x => x.Company.Id == companyId);
 
