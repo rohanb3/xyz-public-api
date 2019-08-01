@@ -145,7 +145,10 @@ namespace Xyzies.TWC.Public.Api.Tests
                 foreach (var fileName in fileNamesList)
                 {
                     cloudBlockBlob = _cloudBlobContainer.GetBlockBlobReference(fileName);
-                    await cloudBlockBlob.DeleteIfExistsAsync();
+                    if (!(await cloudBlockBlob.DeleteIfExistsAsync()))
+                    {
+                        throw new ApplicationException();
+                    }
                 }
             }
             catch (Exception)

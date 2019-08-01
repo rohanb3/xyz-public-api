@@ -186,7 +186,7 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<Branch, BranchModel>.NewConfig();
             TypeAdapterConfig<Company, CompanyModel>.NewConfig();
             TypeAdapterConfig<Branch, CreateBranchModel>.NewConfig();
-            TypeAdapterConfig<CreateBranchModel, Branch>.NewConfig();
+            TypeAdapterConfig<CreateBranchModel, Branch>.NewConfig().Ignore(x=>x.BranchContacts);
             TypeAdapterConfig<Company, CreateCompanyModel>.NewConfig();
             TypeAdapterConfig<CreateCompanyModel, Company>.NewConfig().Map(dest => dest.GeoLon, src => src.GeoLog);
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();

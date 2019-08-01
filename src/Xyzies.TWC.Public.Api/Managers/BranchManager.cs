@@ -282,6 +282,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new KeyNotFoundException();
             }
             var branch = request.Adapt<Branch>();
+            branch.Id = id;
             branch.BranchContacts = new List<BranchContact>() { request.BranchContacts };
 
             return await _branchRepository.UpdateAsync(branch);

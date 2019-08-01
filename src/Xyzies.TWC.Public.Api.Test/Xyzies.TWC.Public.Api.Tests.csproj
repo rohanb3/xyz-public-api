@@ -8,11 +8,11 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
-<!-- <ItemGroup>
+<ItemGroup>
   <None Update="xunit.runner.json"> 
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </None>
-</ItemGroup> -->
+</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.10.0" />

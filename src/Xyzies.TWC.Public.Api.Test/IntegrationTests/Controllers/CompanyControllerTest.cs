@@ -1032,7 +1032,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             companyResult = JsonConvert.DeserializeObject<CompanyModelExtended>(responseString);
-            await _baseTest.DeleteImageInBlobStorage(null);
+            await _baseTest.DeleteImageInBlobStorage();
             //Assert
             companyResult.CountBranch.Should().Be(branchCount);
             companyResult.CountSalesRep.Should().Be(usersCount);
@@ -1625,7 +1625,6 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Act
             _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
             var response = await _baseTest.HttpClient.PutAsync(uri, multiContent);
-            await _baseTest.DeleteImageInBlobStorage(Path.GetExtension(file.FileName));
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
@@ -1663,7 +1662,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
             var response = await _baseTest.HttpClient.PutAsync(uri, multiContent);
             response.EnsureSuccessStatusCode();
-            await _baseTest.DeleteImageInBlobStorage(Path.GetExtension(file.FileName));
+            await _baseTest.DeleteImageInBlobStorage();
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
         }

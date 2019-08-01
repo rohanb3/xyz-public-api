@@ -1398,21 +1398,21 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             await _baseTest.DbContext.Entry(branch).ReloadAsync();
             var branchFromDb = _baseTest.DbContext.Branches.First(x => x.Id == branch.Id);
             //Assert
-            branch.Id.Should().Be(branch.Id);
-            branch.BranchName.Should().Be(request.BranchName);
-            branch.Email.Should().Be(request.Email);
-            branch.Phone.Should().Be(request.Phone);
-            branch.Fax.Should().Be(request.Fax);
-            branch.State.Should().Be(request.State);
-            branch.City.Should().Be(request.City);
-            branch.AddressLine1.Should().Be(request.AddressLine1);
-            branch.AddressLine2.Should().Be(request.AddressLine2);
-            branch.ZipCode.Should().Be(request.ZipCode);
-            branch.GeoLat.Should().Be(request.GeoLat);
-            branch.GeoLng.Should().Be(request.GeoLng);
-            //branch.IsStatusActive.Should().Be(request.IsStatusActive);
-            branch.CompanyId.Should().Be(request.CompanyId);
-            branch.IsEnabled.Should().Be(request.IsEnabled);
+            branchFromDb.Id.Should().Be(branch.Id);
+            branchFromDb.BranchName.Should().Be(request.BranchName);
+            branchFromDb.Email.Should().Be(request.Email);
+            branchFromDb.Phone.Should().Be(request.Phone);
+            branchFromDb.Fax.Should().Be(request.Fax);
+            branchFromDb.State.Should().Be(request.State);
+            branchFromDb.City.Should().Be(request.City);
+            branchFromDb.AddressLine1.Should().Be(request.AddressLine1);
+            branchFromDb.AddressLine2.Should().Be(request.AddressLine2);
+            branchFromDb.ZipCode.Should().Be(request.ZipCode);
+            branchFromDb.GeoLat.Should().Be(request.GeoLat);
+            branchFromDb.GeoLng.Should().Be(request.GeoLng);
+            //branchFromDb.IsStatusActive.Should().Be(request.IsStatusActive);
+            branchFromDb.CompanyId.Should().Be(request.CompanyId);
+            branchFromDb.IsEnabled.Should().Be(request.IsEnabled);
         }
 
         #endregion
