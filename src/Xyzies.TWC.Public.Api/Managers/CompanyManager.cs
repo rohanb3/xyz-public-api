@@ -317,31 +317,14 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            var company = _companyRepository.GetAsync(id).GetAwaiter().GetResult();
-            if (company == null)
+            if (!(await _companyRepository.HasAsync(id)))
             {
                 throw new KeyNotFoundException();
             }
 
-            company.CompanyName = request.CompanyName;
-            company.LegalName = request.LegalName;
-            company.Email = request.Email;
-            company.Phone = request.Phone;
-            company.Address = request.Address;
-            company.City = request.City;
-            company.State = request.State;
-            company.ZipCode = request.ZipCode;
-            company.StoreID = request.StoreID;
-            company.Agentid = request.Agentid;
-            company.Status = request.Status;
-            company.PrimaryContactName = request.PrimaryContactName;
-            company.PrimaryContactTitle = request.PrimaryContactTitle;
-            company.Fax = request.Fax;
-            company.FirstName = request.FirstName;
-            company.GeoLat = request.GeoLat;
-            company.GeoLon = request.GeoLog;
-            company.IsEnabled = request.IsEnabled;
-
+            var company = request.Adapt<Company>();
+            company.Id = id;
+            
             return await _companyRepository.UpdateAsync(company);
         }
 
