@@ -70,7 +70,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 var companyModel = company.Adapt<CompanyModel>();
 
-                companyModel.CountSalesRep = allUsers.Where(x => x.Key == company.Id)?.Count();
+                companyModel.CountSalesRep = allUsers.FirstOrDefault(x => x.Key == company.Id)?.Count();
                 companyModel.CountBranch = company.Branches.Count;
 
                 companyModelList.Add(companyModel);
@@ -166,6 +166,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
+            //TODO why this filter?
             if (companyFilter.RequestStatusNames != null && companyFilter.RequestStatusNames.Any())
             {
                 query = query.Where(x => x.RequestStatus != null &&
@@ -176,17 +177,17 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
-                query = query.Where(x => x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.State) && x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.CityFilter))
             {
-                query = query.Where(x => x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.City) && x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.EmailFilter))
             {
-                query = query.Where(x => x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.Email) && x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
             }
 
             if (companyFilter.CompanyNameFilter != null && companyFilter.CompanyNameFilter.Count > 0)
@@ -295,11 +296,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<int> CreateCompany(CreateCompanyModel createCompanyModel)
         {
-            if(createCompanyModel == null)
+            if (createCompanyModel == null)
             {
                 throw new ArgumentNullException(nameof(createCompanyModel));
             }
-            if(await _companyRepository.HasAsync(x=>x.Email == createCompanyModel.Email))
+            if (await _companyRepository.HasAsync(x => x.Email == createCompanyModel.Email))
             {
                 throw new ApplicationException($"Company with email: {createCompanyModel.Email} already exist");
             }
@@ -307,11 +308,30 @@ namespace Xyzies.TWC.Public.Api.Managers
             company.CreatedDate = DateTime.Now;
             return await _companyRepository.AddAsync(company);
         }
-        
+
+        /// <inheritdoc />
+        public async Task<bool> Update(int id, CreateCompanyModel request)
+        {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (!(await _companyRepository.HasAsync(id)))
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var company = request.Adapt<Company>();
+            company.Id = id;
+            
+            return await _companyRepository.UpdateAsync(company);
+        }
+
         /// <inheritdoc />
         public async Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel)
         {
-            if(requestModel == null)
+            if (requestModel == null)
             {
                 throw new ArgumentNullException(nameof(requestModel));
             }
@@ -325,7 +345,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 company = await _companyRepository.GetByAsync(x => x.CompanyName == requestModel.CompanyName);
             }
 
-            if(company == null)
+            if (company == null)
             {
                 throw new KeyNotFoundException();
             }
