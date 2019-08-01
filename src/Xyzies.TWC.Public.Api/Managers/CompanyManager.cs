@@ -296,11 +296,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<int> CreateCompany(CreateCompanyModel createCompanyModel)
         {
-            if(createCompanyModel == null)
+            if (createCompanyModel == null)
             {
                 throw new ArgumentNullException(nameof(createCompanyModel));
             }
-            if(await _companyRepository.HasAsync(x=>x.Email == createCompanyModel.Email))
+            if (await _companyRepository.HasAsync(x => x.Email == createCompanyModel.Email))
             {
                 throw new ApplicationException($"Company with email: {createCompanyModel.Email} already exist");
             }
@@ -308,11 +308,47 @@ namespace Xyzies.TWC.Public.Api.Managers
             company.CreatedDate = DateTime.Now;
             return await _companyRepository.AddAsync(company);
         }
-        
+
+        /// <inheritdoc />
+        public async Task<bool> Update(int id, CreateCompanyModel request)
+        {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var company = _companyRepository.GetAsync(id).GetAwaiter().GetResult();
+            if (company == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            company.CompanyName = request.CompanyName;
+            company.LegalName = request.LegalName;
+            company.Email = request.Email;
+            company.Phone = request.Phone;
+            company.Address = request.Address;
+            company.City = request.City;
+            company.State = request.State;
+            company.ZipCode = request.ZipCode;
+            company.StoreID = request.StoreID;
+            company.Agentid = request.Agentid;
+            company.Status = request.Status;
+            company.PrimaryContactName = request.PrimaryContactName;
+            company.PrimaryContactTitle = request.PrimaryContactTitle;
+            company.Fax = request.Fax;
+            company.FirstName = request.FirstName;
+            company.GeoLat = request.GeoLat;
+            company.GeoLon = request.GeoLog;
+            company.IsEnabled = request.IsEnabled;
+
+            return await _companyRepository.UpdateAsync(company);
+        }
+
         /// <inheritdoc />
         public async Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel)
         {
-            if(requestModel == null)
+            if (requestModel == null)
             {
                 throw new ArgumentNullException(nameof(requestModel));
             }
@@ -326,7 +362,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 company = await _companyRepository.GetByAsync(x => x.CompanyName == requestModel.CompanyName);
             }
 
-            if(company == null)
+            if (company == null)
             {
                 throw new KeyNotFoundException();
             }

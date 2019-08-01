@@ -242,27 +242,24 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Put([FromRoute]Guid id, [FromBody] CreateBranchModel branchModel)
+        public async Task<IActionResult> Put([FromRoute]Guid id, [FromBody] CreateBranchModel branchModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var branch = _branchRepository.GetAsync(id).GetAwaiter().GetResult();
-                if(branch == null)
+                bool result = await _branchManager.Update(id, branchModel);
+                if(!result)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-                // TODO can not adapt because CreateBranchModel has one object BranchContacts, but need has collection
-                var branchEntity = branchModel.Adapt<Branch>();
-                branchEntity.Id = id;
-
-                bool result = _branchRepository.Update(branchEntity);
-                
                 return Ok();
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {

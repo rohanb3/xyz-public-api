@@ -184,26 +184,24 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Put([FromRoute]int id, [FromBody] CreateCompanyModel companyModel)
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody] CreateCompanyModel companyModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var company = _companyRepository.GetAsync(id).GetAwaiter().GetResult();
-                if(company == null)
+                bool result = await _companyManager.Update(id, companyModel);
+                if (!result)
                 {
-                   return NotFound();
+                    return BadRequest();
                 }
-                var companyEntity = companyModel.Adapt<Company>();
-                companyEntity.Id = id;
-
-                bool result = _companyRepository.Update(companyEntity);
-
                 return Ok();
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (SqlException ex)
             {

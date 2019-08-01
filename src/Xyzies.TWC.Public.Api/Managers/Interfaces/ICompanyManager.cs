@@ -53,5 +53,13 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="requestModel"></param>
         /// <returns></returns>
         Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel);
+
+        /// <summary>
+        /// Update company
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<bool> Update(int id, CreateCompanyModel request);
     }
 }

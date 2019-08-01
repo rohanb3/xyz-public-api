@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -640,20 +641,20 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
         }
 
-        //[Fact]
-        //public async Task ShouldReturnNotFoundResultWhenGetBranchesByCompany()
-        //{
-        //    // Arrange
-        //    int companyId = _baseTest.Fixture.Create<int>();
-        //    string uri = $"company/{companyId}/{_baseBrqanchUrl}";
+        [Fact]
+        public async Task ShouldReturnNotFoundResultWhenGetBranchesByCompany()
+        {
+            // Arrange
+            int companyId = _baseTest.Fixture.Create<int>();
+            string uri = $"company/{companyId}/{_baseBrqanchUrl}";
 
-        //    // Act
-        //    _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
-        //    var response = await _baseTest.HttpClient.GetAsync(uri);
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.GetAsync(uri);
 
-        //    //Assert
-        //    response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        //}
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
 
         [Fact]
         public async Task ShouldReturnSuccessResultFileredByCompanyWhenGetBranchesByCompany()
@@ -1330,6 +1331,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var request = _baseTest.Fixture.Build<CreateBranchModel>()
                                             .With(x => x.Email, "test@email.com")
                                             .With(x => x.Phone, "066-432-43-56")
+                                            .With(x=>x.ZipCode, "testZipCode")
                                             .Without(x => x.BranchContacts)
                                             .Create();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
@@ -1342,35 +1344,40 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
         }
 
-        //[Fact]
-        //public async Task ShouldReturnNotFoundResultIfBranchNotExistWhenPutBranch()
-        //{
-        //    // Arrange
-        //    Guid branchId = Guid.NewGuid();
+        [Fact]
+        public async Task ShouldReturnNotFoundResultIfBranchNotExistWhenPutBranch()
+        {
+            // Arrange
+            Guid branchId = Guid.NewGuid();
 
-        //    string uri = $"{_baseBrqanchUrl}/{branchId}";
-        //    var request = _baseTest.Fixture.Build<CreateBranchModel>()
-        //                                    .With(x => x.Email, "test@email.com")
-        //                                    .With(x => x.Phone, "066-432-43-56")
-        //                                    .With(x => x.ZipCode, "7582")
-        //                                    .Without(x => x.BranchContacts)
-        //                                    .Create();
-        //    var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            string uri = $"{_baseBrqanchUrl}/{branchId}";
+            var request = _baseTest.Fixture.Build<CreateBranchModel>()
+                                            .With(x => x.Email, "test@email.com")
+                                            .With(x => x.Phone, "066-432-43-56")
+                                            .With(x => x.ZipCode, "7582")
+                                            .Without(x => x.BranchContacts)
+                                            .Create();
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
-        //    // Act
-        //    _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
-        //    var response = await _baseTest.HttpClient.PutAsync(uri, content);
+            // Act
+            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
+            var response = await _baseTest.HttpClient.PutAsync(uri, content);
 
-        //    //Assert
-        //    response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        //}
+            //Assert
+            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
 
         [Fact]
         public async Task ShouldReturnSuccessResultWhenPutBranch()
         {
             // Arrange
+            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
+            _baseTest.DbContext.Companies.Add(company);
+            _baseTest.DbContext.SaveChanges();
             var branch = _baseTest.Fixture.Build<Branch>()
                                           .With(x => x.Id, Guid.NewGuid())
+                                          .With(x=>x.CompanyId, company.Id)
                                           .Create();
             _baseTest.DbContext.Branches.Add(branch);
             _baseTest.DbContext.SaveChanges();
@@ -1380,7 +1387,6 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                             .With(x => x.Email, "test@email.com")
                                             .With(x => x.Phone, "066-432-43-56")
                                             .With(x => x.ZipCode, "7582")
-                                            .Without(x => x.BranchContacts)
                                             .Create();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 

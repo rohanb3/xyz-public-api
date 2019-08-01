@@ -269,6 +269,36 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
             return branch.Adapt<BranchMin>();
         }
+        /// <inheritdoc />
+        public async Task<bool> Update(Guid id, CreateBranchModel request)
+        {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var branch = await _branchRepository.GetAsync(id);
+            if (branch == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            branch.BranchName = request.BranchName;
+            branch.Email = request.Email;
+            branch.Phone = request.Phone;
+            branch.Fax = request.Fax;
+            branch.State = request.State;
+            branch.City = request.City;
+            branch.ZipCode = request.ZipCode;
+            branch.AddressLine1 = request.AddressLine1;
+            branch.AddressLine2 = request.AddressLine2;
+            branch.GeoLat = request.GeoLat;
+            branch.GeoLng = request.GeoLng;
+            branch.IsEnabled = request.IsEnabled;
+            branch.CompanyId = request.CompanyId;
+            branch.BranchContacts = new List<BranchContact>() { request.BranchContacts };
+
+            return await _branchRepository.UpdateAsync(branch);
+        }
 
         /// <inheritdoc />
         private IQueryable<Branch> Sorting(Sortable sortable, IQueryable<Branch> query)
