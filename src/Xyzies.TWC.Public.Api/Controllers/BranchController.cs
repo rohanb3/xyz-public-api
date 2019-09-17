@@ -306,6 +306,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
+        [AllowAnonymous]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public async Task<IActionResult> GetAnyBranchAsync([FromQuery]BranchMinRequestModel requestModel, [FromRoute]string token)
         {
