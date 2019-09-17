@@ -1500,22 +1500,6 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         #endregion
 
         #region GetAnyBranchAsync
-
-        [Fact]
-        public async Task ShouldReturnUnauthorizedResultWheGetAnyBranchAsync()
-        {
-            // Arrange
-            string trustedToken = _baseTest.Fixture.Create<string>();
-            string uri = $"{_baseBrqanchUrl}/{trustedToken}/trusted/internal";
-
-            // Act
-            _baseTest.HttpClient.DefaultRequestHeaders.Authorization = null;
-            var response = await _baseTest.HttpClient.GetAsync(uri);
-
-            //Assert
-            response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-        }
-
         [Fact]
         public async Task ShouldReturnForbiddenResultWheGetAnyBranchAsync()
         {
