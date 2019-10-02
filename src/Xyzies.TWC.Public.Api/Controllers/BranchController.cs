@@ -197,7 +197,15 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable));
+            try
+            {
+                var branchList = await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable);
+                return Ok(branchList);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         /// <summary>
@@ -247,13 +255,13 @@ namespace Xyzies.TWC.Public.Api.Controllers
             try
             {
                 bool result = await _branchManager.Update(id, branchModel);
-                if(!result)
+                if (!result)
                 {
                     return BadRequest();
                 }
                 return Ok();
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -320,7 +328,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 var branchMinModel = await _branchManager.GetAnyBranchAsync(requestModel);
                 return Ok(branchMinModel);
             }
-            catch(KeyNotFoundException ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
