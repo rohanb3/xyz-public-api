@@ -8,8 +8,8 @@ using Xyzies.TWC.Public.Data;
 
 namespace Xyzies.TWC.Public.Data.Migrations
 {
-    [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(CablePortalAppDataContext))]
+    partial class CablePortalAppDataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

@@ -7,20 +7,20 @@ namespace Xyzies.TWC.Public.Api
     /// <summary>
     /// Remove
     /// </summary>
-    public class AppDataContextFactory : IDesignTimeDbContextFactory<AppDataContext>
+    public class CablePortalAppDataContextFactory : IDesignTimeDbContextFactory<CablePortalAppDataContext>
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public AppDataContext CreateDbContext(string[] args)
+        public CablePortalAppDataContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<AppDataContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<CablePortalAppDataContext>();
             optionsBuilder.UseSqlServer($"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.");
-                //($"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.");
+            //($"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.");
 
-            return new AppDataContext(optionsBuilder.Options);
+            return new CablePortalAppDataContext(optionsBuilder.Options);
         }
     }
 }

@@ -4,12 +4,12 @@
         <name>Xyzies.TWC.Public.Api</name>
     </assembly>
     <members>
-        <member name="T:Xyzies.TWC.Public.Api.AppDataContextFactory">
+        <member name="T:Xyzies.TWC.Public.Api.CablePortalAppDataContextFactory">
             <summary>
             
             </summary>
         </member>
-        <member name="M:Xyzies.TWC.Public.Api.AppDataContextFactory.CreateDbContext(System.String[])">
+        <member name="M:Xyzies.TWC.Public.Api.CablePortalAppDataContextFactory.CreateDbContext(System.String[])">
             <summary>
             
             </summary>

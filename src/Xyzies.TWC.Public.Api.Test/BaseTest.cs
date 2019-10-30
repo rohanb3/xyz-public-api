@@ -31,7 +31,7 @@ namespace Xyzies.TWC.Public.Api.Tests
         private readonly object _lock = new object();
         public TestServer TestServer;
         public HttpClient HttpClient;
-        public AppDataContext DbContext;
+        public CablePortalAppDataContext DbContext;
         private CloudBlobContainer _cloudBlobContainer;
         public TestSeed TestSeed;
         public Fixture Fixture;
@@ -73,7 +73,7 @@ namespace Xyzies.TWC.Public.Api.Tests
                 };
                 webHostBuild.ConfigureServices(service =>
                 {
-                    service.AddDbContextPool<AppDataContext>(ctxOptions =>
+                    service.AddDbContextPool<CablePortalAppDataContext>(ctxOptions =>
                     {
                         ctxOptions.UseInMemoryDatabase(dbConnectionString).EnableSensitiveDataLogging();
                         ctxOptions.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
@@ -88,13 +88,13 @@ namespace Xyzies.TWC.Public.Api.Tests
                     }
                     var blobStorageClient = storageAccount.CreateCloudBlobClient();
                     _cloudBlobContainer = blobStorageClient.GetContainerReference(DefaultCompanyId.ToString());
-                    if(_cloudBlobContainer == null)
+                    if (_cloudBlobContainer == null)
                     {
                         throw new ApplicationException("Blob container not exist");
                     }
                 });
                 TestServer = new TestServer(webHostBuild);
-                DbContext = TestServer.Host.Services.GetRequiredService<AppDataContext>();
+                DbContext = TestServer.Host.Services.GetRequiredService<CablePortalAppDataContext>();
                 TestSeed = TestServer.Host.Services.GetRequiredService<TestSeed>();
                 HttpClient = TestServer.CreateClient();
                 Fixture = new Fixture();
@@ -135,10 +135,10 @@ namespace Xyzies.TWC.Public.Api.Tests
                 }
                 else
                 {
-                   var blobItem = await _cloudBlobContainer.ListBlobsSegmentedAsync(null);
-                    if(blobItem != null)
+                    var blobItem = await _cloudBlobContainer.ListBlobsSegmentedAsync(null);
+                    if (blobItem != null)
                     {
-                        fileNamesList.AddRange(blobItem.Results.Select(x=>Path.GetFileName(x.Uri.AbsolutePath)));
+                        fileNamesList.AddRange(blobItem.Results.Select(x => Path.GetFileName(x.Uri.AbsolutePath)));
                     }
                 }
 

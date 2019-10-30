@@ -53,16 +53,17 @@ namespace Xyzies.TWC.Public.Api
         /// <param name="services"></param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            string cpDbConnectionString = Configuration.GetConnectionString("cpdb");
             string dbConnectionString = Configuration.GetConnectionString("db");
-            if (string.IsNullOrEmpty(dbConnectionString))
+            if (string.IsNullOrEmpty(cpDbConnectionString) || string.IsNullOrWhiteSpace(dbConnectionString))
             {
                 StartupException.Throw("Missing the connection string to database");
             }
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
             // TODO: ExecutionStrategy
-            services.AddDbContext<AppDataContext>(ctxOptions =>
-                ctxOptions.UseSqlServer(dbConnectionString));
+            services.AddDbContext<CablePortalAppDataContext>(ctxOptions =>
+                ctxOptions.UseSqlServer(cpDbConnectionString));
 
             // Response compression
             // https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.2#brotli-compression-provider
@@ -102,7 +103,7 @@ namespace Xyzies.TWC.Public.Api
             #region DI configuration
             services.Configure<RelationOptions>(options => Configuration.Bind("Relations", options));
 
-            services.AddScoped<DbContext, AppDataContext>();
+            services.AddScoped<DbContext, CablePortalAppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IRequestStatusRepository, RequestStatusRepository>();
@@ -112,6 +113,8 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyManager, CompanyManager>();
             services.AddScoped<IRelationService, RelationService>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
+            services.AddScoped<IServiceProviderRepository, ServiceProviderRepository>();
+            services.AddScoped<IServiceProviderManager, ServiceProviderManager>();
             services.AddScoped<TestSeed>();
 
             #endregion
@@ -186,7 +189,7 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<Branch, BranchModel>.NewConfig();
             TypeAdapterConfig<Company, CompanyModel>.NewConfig();
             TypeAdapterConfig<Branch, CreateBranchModel>.NewConfig();
-            TypeAdapterConfig<CreateBranchModel, Branch>.NewConfig().Ignore(x=>x.BranchContacts);
+            TypeAdapterConfig<CreateBranchModel, Branch>.NewConfig().Ignore(x => x.BranchContacts);
             TypeAdapterConfig<Company, CreateCompanyModel>.NewConfig();
             TypeAdapterConfig<CreateCompanyModel, Company>.NewConfig().Map(dest => dest.GeoLon, src => src.GeoLog);
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
@@ -206,7 +209,7 @@ namespace Xyzies.TWC.Public.Api
                 .UseSwagger(options =>
                 {
                     options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");
-                    
+
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>

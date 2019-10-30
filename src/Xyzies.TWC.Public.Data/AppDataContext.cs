@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Entities.EntityConfigurations;
+using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
 
 namespace Xyzies.TWC.Public.Data
 {
@@ -13,29 +15,30 @@ namespace Xyzies.TWC.Public.Data
         }
 
         #region Entities
-
-        public DbSet<Branch> Branches { get; set; }
-
-        public DbSet<RequestStatus> RequestStatuses { get; set; }
-
-        public DbSet<Company> Companies { get; set; }
-
-        public DbSet<BranchContact> PrimaryContacts { get; set; }
-
-        public DbSet<BranchContactType> BranchContactTypes { get; set; }
-
-        public DbSet<Users> Users { get; set; }
+        public DbSet<ServiceProvider> ServiceProviders { get; set; }
+        public DbSet<CompanyServiceProvider> CompanyServiceProviders { get; set; }
 
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new CompanyConfiguration());
-            modelBuilder.ApplyConfiguration(new BranchContactTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new BranchConfiguration());
-            modelBuilder.ApplyConfiguration(new BranchContactConfiguration());
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new RequestStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new CompanyServiceProvidersConfigurations());
         }
     }
+
+    public class CompanyServiceProvidersConfigurations : IEntityTypeConfiguration<CompanyServiceProvider>
+    {
+        public void Configure(EntityTypeBuilder<CompanyServiceProvider> companyServiceProviderBuilder)
+        {
+            companyServiceProviderBuilder.HasMany(n => n.Companies);
+        }
+    }
+
+    // public class ServiceProvidersConfigurations : IEntityTypeConfiguration<ServiceProvider>
+    // {
+    //     public void Configure(EntityTypeBuilder<ServiceProvider> serviceProviderBuilder)
+    //     {
+    //         serviceProviderBuilder.HasMany(n => n.Companies);
+    //     }
+    // }
 }
