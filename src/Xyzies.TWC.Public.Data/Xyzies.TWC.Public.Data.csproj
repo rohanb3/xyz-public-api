@@ -20,6 +20,7 @@
     <Compile Remove="Migrations\20190411082757_BranchTypes.cs" />
     <Compile Remove="Migrations\20190411083056_BranchTypes.cs" />
     <Compile Remove="Migrations\20190411083822_BranchTypes.cs" />
+    <Compile Remove="Migrations\AppData\20191030112835_blabla.cs" />
   </ItemGroup>
 
   <ItemGroup>

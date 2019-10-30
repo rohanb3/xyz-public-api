@@ -62,6 +62,9 @@ namespace Xyzies.TWC.Public.Api
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
             // TODO: ExecutionStrategy
+            services.AddDbContext<AppDataContext>(ctxOptions =>
+                ctxOptions.UseSqlServer(dbConnectionString));
+
             services.AddDbContext<CablePortalAppDataContext>(ctxOptions =>
                 ctxOptions.UseSqlServer(cpDbConnectionString));
 
@@ -104,6 +107,7 @@ namespace Xyzies.TWC.Public.Api
             services.Configure<RelationOptions>(options => Configuration.Bind("Relations", options));
 
             services.AddScoped<DbContext, CablePortalAppDataContext>();
+            services.AddScoped<DbContext, AppDataContext>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IRequestStatusRepository, RequestStatusRepository>();
