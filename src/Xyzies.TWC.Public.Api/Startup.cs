@@ -24,6 +24,7 @@ using Xyzies.TWC.Public.Api.Managers;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Managers.Relation;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Api.Models.MapperConfigurations;
 using Xyzies.TWC.Public.Api.Models.Options;
 using Xyzies.TWC.Public.Data;
 using Xyzies.TWC.Public.Data.Entities;
@@ -198,6 +199,8 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<CreateCompanyModel, Company>.NewConfig().Map(dest => dest.GeoLon, src => src.GeoLog);
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 
+            ServiceProviderMappingConfigurations.ConfigureServiceProviderMappers();
+
             #endregion
 
             app.UseHealthChecks(epApiHealthChecks, 8083, new HealthCheckOptions
@@ -212,7 +215,7 @@ namespace Xyzies.TWC.Public.Api
                 .UseMvc()
                 .UseSwagger(options =>
                 {
-                    options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");
+                    //options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");
 
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })

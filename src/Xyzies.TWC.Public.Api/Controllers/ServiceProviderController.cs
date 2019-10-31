@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +19,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     [ApiController]
     [Route("provider")]
     [Authorize]
-    public class ServiceProviderController :ControllerBase
+    public class ServiceProviderController : ControllerBase
     {
         private readonly ILogger<ServiceProviderController> _logger = null;
         private readonly IServiceProviderManager _serviceProviderService = null;
@@ -100,11 +99,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
             }
         }
 
-
         /// <summary>
         /// Get service provider list
         /// </summary>
-        /// <param name="lazyLoadFilters"></param>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(List<ServiceProviderModel>), StatusCodes.Status200OK  /* 200 */)]
@@ -115,6 +112,94 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             var serviceProviderList = await _serviceProviderService.Get();
             return Ok(serviceProviderList);
+        }
+
+        /// <summary>
+        /// Get service provider extended model by id(GUID)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{id}/extended")]
+        [ProducesResponseType(typeof(ServiceProviderModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        public async Task<IActionResult> GetExtended(Guid id)
+        {
+            try
+            {
+                var serviceProvider = await _serviceProviderService.GetExtended(id);
+                return Ok(serviceProvider);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get service provider single model by id(GUID)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{id}/single")]
+        [ProducesResponseType(typeof(ServiceProviderModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        public async Task<IActionResult> GetSingle(Guid id)
+        {
+            try
+            {
+                var serviceProvider = await _serviceProviderService.GetSingle(id);
+                return Ok(serviceProvider);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get service provider by company id(int)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("company/{id}")]
+        [ProducesResponseType(typeof(ServiceProviderSingleModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+                var serviceProvider = await _serviceProviderService.Get(id);
+                return Ok(serviceProvider);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get single model of service provider by company id(int)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("company/{id}/single")]
+        [ProducesResponseType(typeof(ServiceProviderSingleModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        public async Task<IActionResult> GetSingle(int id)
+        {
+            try
+            {
+                var serviceProvider = await _serviceProviderService.GetSingle(id);
+                return Ok(serviceProvider);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }

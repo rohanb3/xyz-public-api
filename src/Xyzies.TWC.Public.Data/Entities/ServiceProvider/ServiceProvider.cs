@@ -7,20 +7,15 @@ namespace Xyzies.TWC.Public.Data.Entities.ServiceProvider
 {
     public class ServiceProvider : BaseEntity<Guid>
     {
-        public ServiceProvider()
-        {
-            Companies = new List<Company>();
-        }
-
         [Required]
-        public string SeviceProviderName { get; set; }
+        public string ServiceProviderName { get; set; }
 
         [Required]
         public string Phone { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
-        public virtual List<Company> Companies { get; set; }
+        public virtual List<CompanyServiceProvider> Companies { get; set; }
 
     }
 }

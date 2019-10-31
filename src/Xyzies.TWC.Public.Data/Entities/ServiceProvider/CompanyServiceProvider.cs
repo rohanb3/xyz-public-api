@@ -10,7 +10,6 @@ namespace Xyzies.TWC.Public.Data.Entities.ServiceProvider
         public int CompanyId { get; set; }
         public Guid ServiceProviderId { get; set; }
 
-        [JsonIgnore]
-        public virtual ICollection<Company> Companies { get; set; }
+        public virtual ServiceProvider ServiceProvider { get; set; }
     }
 }
