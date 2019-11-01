@@ -10,6 +10,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
     {
         Task<Guid> Create(ServiceProviderRequest request);
         Task Update(Guid id, ServiceProviderRequest request);
+        Task UpdateByCompanyId(int companyId, ServiceProviderRequest request);
         Task<IEnumerable<ServiceProviderModel>> Get();
         Task<ServiceProviderModel> GetExtended(Guid id);
         Task<ServiceProviderSingleModel> GetSingle(Guid id);

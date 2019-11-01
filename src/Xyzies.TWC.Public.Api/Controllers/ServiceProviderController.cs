@@ -66,7 +66,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Update service provider
+        /// Update service provider by Id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="request"></param>
@@ -83,6 +83,40 @@ namespace Xyzies.TWC.Public.Api.Controllers
             try
             {
                 await _serviceProviderService.Update(id, request);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (DuplicateNameException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Update service provider by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPut("{id}/by-company")]
+        [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent  /* 204 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound /* 404 */)]
+        [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status409Conflict /* 409 */)]
+        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        public async Task<IActionResult> Put(int id, [FromBody] ServiceProviderRequest request)
+        {
+            try
+            {
+                await _serviceProviderService.UpdateByCompanyId(id, request);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -118,7 +152,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// Get service provider extended model by id(GUID)
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{id}/extended")]
+        [HttpGet("extended/{id}")]
         [ProducesResponseType(typeof(ServiceProviderModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
@@ -140,7 +174,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// Get service provider single model by id(GUID)
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{id}/single")]
+        [HttpGet("single/{id}")]
         [ProducesResponseType(typeof(ServiceProviderModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
@@ -162,7 +196,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// Get service provider by company id(int)
         /// </summary>
         /// <returns></returns>
-        [HttpGet("company/{id}")]
+        [HttpGet("{id}/by-company")]
         [ProducesResponseType(typeof(ServiceProviderSingleModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
@@ -184,7 +218,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// Get single model of service provider by company id(int)
         /// </summary>
         /// <returns></returns>
-        [HttpGet("company/{id}/single")]
+        [HttpGet("single/{id}/by-company")]
         [ProducesResponseType(typeof(ServiceProviderSingleModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]

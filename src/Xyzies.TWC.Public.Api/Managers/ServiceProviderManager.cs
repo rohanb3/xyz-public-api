@@ -138,5 +138,34 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
             return serviceProvider.Adapt<ServiceProviderSingleModel>();
         }
+
+        public async Task UpdateByCompanyId(int companyId, ServiceProviderRequest request)
+        {
+            if (request == null)
+            {
+                _logger.LogError($"[Update] Argument {nameof(request)} is null");
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var serviceProviders = await _serviceProviderRepository.GetAsync();
+            if (serviceProviders.Any(x => x.ServiceProviderName.ToLower() == request.Name.ToLower() &&
+                                          x.Companies.Select(c => c.Id).Contains(companyId)))
+            {
+                _logger.LogError($"[Update] Duplicate parameter: {nameof(request.Name)}");
+                throw new DuplicateNameException();
+            }
+
+            var serviceProvider = serviceProviders.FirstOrDefault(x => x.Companies.Select(c => c.Id).Contains(companyId));
+
+            if (serviceProvider == null)
+            {
+                _logger.LogError($"[Update] ServiceProvider with parameter: {nameof(companyId)} not found");
+                throw new KeyNotFoundException(nameof(companyId));
+            }
+
+            serviceProvider.ServiceProviderName = request.Name;
+            serviceProvider.Phone = request.Phone;
+            await _serviceProviderRepository.UpdateAsync(serviceProvider);
+        }
     }
 }
