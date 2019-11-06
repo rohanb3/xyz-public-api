@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 using Xyzies.TWC.Public.Data;
 
 namespace Xyzies.TWC.Public.Api
@@ -17,9 +19,13 @@ namespace Xyzies.TWC.Public.Api
         public CablePortalAppDataContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CablePortalAppDataContext>();
-            optionsBuilder.UseSqlServer($"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.");
-            //($"Data Source=173.82.28.90;Initial Catalog=TWC04052019;User ID=sa;Password=4@ndr3w.");
 
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+            string cpDbConnectionString = configuration.GetConnectionString("cpdb");
+            optionsBuilder.UseSqlServer(cpDbConnectionString);
             return new CablePortalAppDataContext(optionsBuilder.Options);
         }
     }

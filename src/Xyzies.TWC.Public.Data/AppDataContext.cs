@@ -19,25 +19,5 @@ namespace Xyzies.TWC.Public.Data
         public DbSet<CompanyServiceProvider> CompanyServiceProviders { get; set; }
 
         #endregion
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    //modelBuilder.ApplyConfiguration(new CompanyServiceProvidersConfigurations());
-        //}
     }
-
-    //public class CompanyServiceProvidersConfigurations : IEntityTypeConfiguration<CompanyServiceProvider>
-    //{
-    //    public void Configure(EntityTypeBuilder<CompanyServiceProvider> companyServiceProviderBuilder)
-    //    {
-    //    }
-    //}
-
-    // public class ServiceProvidersConfigurations : IEntityTypeConfiguration<ServiceProvider>
-    // {
-    //     public void Configure(EntityTypeBuilder<ServiceProvider> serviceProviderBuilder)
-    //     {
-    //         serviceProviderBuilder.HasMany(n => n.Companies);
-    //     }
-    // }
 }
