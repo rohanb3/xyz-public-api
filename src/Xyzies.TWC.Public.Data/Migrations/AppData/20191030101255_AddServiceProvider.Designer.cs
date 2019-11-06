@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xyzies.TWC.Public.Data;
 
-namespace Xyzies.TWC.Public.Data.Migrations
+namespace Xyzies.TWC.Public.Data.Migrations.AppData
 {
-    [DbContext(typeof(CablePortalAppDataContext))]
-    [Migration("20190411084128_BranchTypes")]
-    partial class BranchTypes
+    [DbContext(typeof(AppDataContext))]
+    [Migration("20191030101255_AddServiceProvider")]
+    partial class AddServiceProvider
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,12 +31,9 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("AddressLine2");
 
-                    b.Property<string>("BranchName")
-                        .IsRequired()
-                        .HasMaxLength(256);
+                    b.Property<string>("BranchName");
 
-                    b.Property<string>("City")
-                        .HasMaxLength(64);
+                    b.Property<string>("City");
 
                     b.Property<int>("CompanyId");
 
@@ -44,40 +41,31 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(128);
+                    b.Property<string>("Email");
 
-                    b.Property<string>("Fax")
-                        .HasMaxLength(16);
+                    b.Property<string>("Fax");
 
-                    b.Property<string>("GeoLat")
-                        .HasMaxLength(32);
+                    b.Property<string>("GeoLat");
 
-                    b.Property<string>("GeoLng")
-                        .HasMaxLength(32);
+                    b.Property<string>("GeoLng");
 
-                    b.Property<bool>("IsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
+                    b.Property<bool>("IsEnabled");
 
                     b.Property<int?>("ModifiedBy");
 
                     b.Property<DateTime?>("ModifiedDate");
 
-                    b.Property<string>("Phone")
-                        .HasMaxLength(16);
+                    b.Property<string>("Phone");
 
-                    b.Property<string>("State")
-                        .HasMaxLength(64);
+                    b.Property<string>("State");
 
-                    b.Property<string>("ZipCode")
-                        .HasMaxLength(16);
+                    b.Property<string>("ZipCode");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("TWC_Branch");
+                    b.ToTable("Branch");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
@@ -94,18 +82,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<DateTime?>("ModifiedDate");
 
-                    b.Property<string>("PersonLastName")
-                        .HasMaxLength(50);
+                    b.Property<string>("PersonLastName");
 
-                    b.Property<string>("PersonName")
-                        .HasMaxLength(50);
+                    b.Property<string>("PersonName");
 
-                    b.Property<string>("PersonTitle")
-                        .HasMaxLength(100);
+                    b.Property<string>("PersonTitle");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(100);
+                    b.Property<string>("Value");
 
                     b.HasKey("Id");
 
@@ -113,7 +96,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("TWC_BranchContact");
+                    b.ToTable("BranchContact");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContactType", b =>
@@ -122,12 +105,11 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TWC_BranchContactType");
+                    b.ToTable("BranchContactType");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
@@ -169,6 +151,10 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("CompanyName");
 
+                    b.Property<int?>("CompanyServiceProviderId");
+
+                    b.Property<Guid?>("CompanyStatusKey");
+
                     b.Property<byte?>("CompanyType");
 
                     b.Property<int?>("CreatedBy");
@@ -195,9 +181,7 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<bool?>("IsCallCenter");
 
-                    b.Property<bool>("IsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
+                    b.Property<bool>("IsEnabled");
 
                     b.Property<bool?>("IsMarketPlace");
 
@@ -243,6 +227,8 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<Guid?>("RetailerGroupKey");
 
+                    b.Property<Guid?>("ServiceProviderId");
+
                     b.Property<string>("SocialMediaAccount");
 
                     b.Property<string>("State");
@@ -265,10 +251,78 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("ZipCode");
 
-                    b.HasKey("Id")
-                        .HasName("CompanyID");
+                    b.HasKey("Id");
 
-                    b.ToTable("TWC_Companies");
+                    b.HasIndex("CompanyServiceProviderId");
+
+                    b.HasIndex("CompanyStatusKey");
+
+                    b.HasIndex("ServiceProviderId");
+
+                    b.ToTable("Company");
+                });
+
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.RequestStatus", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("StatusKey");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<int?>("DisplaySeq");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .HasColumnName("StatusName");
+
+                    b.Property<string>("ProcedureName");
+
+                    b.Property<string>("Reason");
+
+                    b.Property<Guid>("WfKey");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestStatus");
+                });
+
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.CompanyServiceProvider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<Guid>("ServiceProviderId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyServiceProviders");
+                });
+
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("Phone")
+                        .IsRequired();
+
+                    b.Property<string>("SeviceProviderName")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServiceProviders");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Users", b =>
@@ -350,14 +404,13 @@ namespace Xyzies.TWC.Public.Data.Migrations
 
                     b.Property<string>("ZipCode");
 
-                    b.HasKey("Id")
-                        .HasName("UserID");
+                    b.HasKey("Id");
 
                     b.HasIndex("BranchId");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("TWC_Users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
@@ -379,6 +432,21 @@ namespace Xyzies.TWC.Public.Data.Migrations
                         .WithMany("BranchContacts")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
+                {
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.ServiceProvider.CompanyServiceProvider")
+                        .WithMany("Companies")
+                        .HasForeignKey("CompanyServiceProviderId");
+
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.RequestStatus", "RequestStatus")
+                        .WithMany()
+                        .HasForeignKey("CompanyStatusKey");
+
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider")
+                        .WithMany("Companies")
+                        .HasForeignKey("ServiceProviderId");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Users", b =>
