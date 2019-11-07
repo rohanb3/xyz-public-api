@@ -69,13 +69,14 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.GroupBy(x => x.CompanyId).ToList();
+            var serviceProviders = (await _serviceProviderRep.GetAsync()).ToHashSet();
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-                var serviceProvider = await _serviceProviderRep.GetServiceProviderByCompany(company.Id);
+                var serviceProvider = serviceProviders.FirstOrDefault(x => x.Companies.Select(c => c.CompanyId).ToHashSet().Contains(company.Id));
                 companyModel.CountSalesRep = allUsers.FirstOrDefault(x => x.Key == company.Id)?.Count();
                 companyModel.CountBranch = company.Branches.Count;
-                companyModel.ServiceProvider = serviceProvider.Adapt<ServiceProviderSingleModel>();
+                companyModel.ServiceProvider = serviceProvider?.Adapt<ServiceProviderSingleModel>();
                 companyModelList.Add(companyModel);
             }
 
