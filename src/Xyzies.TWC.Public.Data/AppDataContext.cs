@@ -17,6 +17,7 @@ namespace Xyzies.TWC.Public.Data
         #region Entities
         public DbSet<ServiceProvider> ServiceProviders { get; set; }
         public DbSet<CompanyServiceProvider> CompanyServiceProviders { get; set; }
+        public DbSet<ProviderSetting> ProvidersSetting { get; set; }
 
         #endregion
     }

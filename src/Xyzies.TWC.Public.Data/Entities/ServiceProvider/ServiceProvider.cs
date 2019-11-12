@@ -16,6 +16,7 @@ namespace Xyzies.TWC.Public.Data.Entities.ServiceProvider
         public DateTime CreatedOn { get; set; }
 
         public virtual List<CompanyServiceProvider> Companies { get; set; }
+        public virtual ProviderSetting ProviderSetting { get; set; }
 
     }
 }
