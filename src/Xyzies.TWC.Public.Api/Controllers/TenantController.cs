@@ -17,7 +17,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     /// Service provider controller
     /// </summary>
     [ApiController]
-    [Route("provider")]
+    [Route("tenant")]
     [Authorize]
     public class TenantController : ControllerBase
     {
@@ -39,7 +39,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Create service provider
+        /// Create Tenant
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -47,13 +47,13 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created  /* 201 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> Post([FromBody] TenantRequest request)
         {
             try
             {
-                var deviceId = await _tenantService.Create(request);
-                return Created(HttpContext.Request.GetEncodedUrl(), deviceId);
+                var tenantId = await _tenantService.Create(request);
+                return Created(HttpContext.Request.GetEncodedUrl(), tenantId);
             }
             catch (ArgumentNullException ex)
             {
@@ -66,7 +66,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Update service provider by Id
+        /// Update Tenant by Id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="request"></param>
@@ -77,7 +77,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound /* 404 */)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status409Conflict /* 409 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> Put(Guid id, [FromBody] TenantRequest request)
         {
             try
@@ -100,7 +100,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Update service provider by Id
+        /// Update Tenant by Id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="request"></param>
@@ -111,7 +111,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound /* 404 */)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status409Conflict /* 409 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> Put(int id, [FromBody] TenantRequest request)
         {
             try
@@ -134,35 +134,35 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get service provider list
+        /// Get Tenants list
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(List<TenantModel>), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> Get()
         {
-            var TenantList = await _tenantService.Get();
-            return Ok(TenantList);
+            var tenantList = await _tenantService.Get();
+            return Ok(tenantList);
         }
 
         /// <summary>
-        /// Get service provider extended model by id(GUID)
+        /// Get Tenant extended model by id(GUID)
         /// </summary>
         /// <returns></returns>
         [HttpGet("extended/{id}")]
         [ProducesResponseType(typeof(TenantModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> GetExtended(Guid id)
         {
             try
             {
-                var Tenant = await _tenantService.GetExtended(id);
-                return Ok(Tenant);
+                var tenant = await _tenantService.GetExtended(id);
+                return Ok(tenant);
             }
             catch (KeyNotFoundException)
             {
@@ -171,20 +171,20 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get service provider single model by id(GUID)
+        /// Get Tenant single model by id(GUID)
         /// </summary>
         /// <returns></returns>
         [HttpGet("single/{id}")]
         [ProducesResponseType(typeof(TenantModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> GetSingle(Guid id)
         {
             try
             {
-                var Tenant = await _tenantService.GetSingle(id);
-                return Ok(Tenant);
+                var tenant = await _tenantService.GetSingle(id);
+                return Ok(tenant);
             }
             catch (KeyNotFoundException)
             {
@@ -193,20 +193,20 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get service provider by company id(int)
+        /// Get Tenant by company id(int)
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}/by-company")]
         [ProducesResponseType(typeof(TenantSingleModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var Tenant = await _tenantService.Get(id);
-                return Ok(Tenant);
+                var tenant = await _tenantService.Get(id);
+                return Ok(tenant);
             }
             catch (KeyNotFoundException)
             {
@@ -215,20 +215,20 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get single model of service provider by company id(int)
+        /// Get single model of Tenant by company id(int)
         /// </summary>
         /// <returns></returns>
         [HttpGet("single/{id}/by-company")]
         [ProducesResponseType(typeof(TenantSingleModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> GetSingle(int id)
         {
             try
             {
-                var Tenant = await _tenantService.GetSingle(id);
-                return Ok(Tenant);
+                var tenant = await _tenantService.GetSingle(id);
+                return Ok(tenant);
             }
             catch (KeyNotFoundException)
             {
