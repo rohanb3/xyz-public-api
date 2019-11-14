@@ -33,16 +33,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{providerId}")]
         [ProducesResponseType(typeof(ProviderSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
-        public async Task<IActionResult> GetProviderSettingById(Guid id)
+        public async Task<IActionResult> GetProviderSettingById(Guid providerId)
         {
             try
             {
-                var settings = await _providerSettingManager.GetProviderSettings(id);
+                var settings = await _providerSettingManager.GetProviderSettings(providerId);
                 return Ok(settings);
             }
             catch (KeyNotFoundException)
@@ -57,7 +57,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="providerId"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        [HttpPost("{id}")]
+        [HttpPost("{providerId}")]
         [ProducesResponseType(typeof(ProviderSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
@@ -74,16 +74,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="id"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("{providerId}")]
         [ProducesResponseType(typeof(ProviderSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
-        public async Task<IActionResult> UpdateProviderSettingById(Guid id, ProviderSettingModel settings)
+        public async Task<IActionResult> UpdateProviderSettingById(Guid providerId, ProviderSettingModel settings)
         {
             try
             {
-                await _providerSettingManager.UpdateProviderSettings(id, settings);
+                await _providerSettingManager.UpdateProviderSettings(providerId, settings);
                 return NoContent();
             }
             catch (KeyNotFoundException)
