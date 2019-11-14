@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Core;
-using Xyzies.TWC.Public.Data.Entities.Tenant;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 
 namespace Xyzies.TWC.Public.Data.Repositories.Interfaces
 {

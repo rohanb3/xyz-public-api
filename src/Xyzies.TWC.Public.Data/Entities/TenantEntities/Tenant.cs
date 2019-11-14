@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Core;
-using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
 
 namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
 {
@@ -16,7 +15,7 @@ namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
 
         public DateTime CreatedOn { get; set; }
 
-        public virtual TenantSetting ProviderSetting { get; set; }
+        public virtual TenantSetting TenantSetting { get; set; }
         public virtual List<CompanyTenant> Companies { get; set; }
 
     }

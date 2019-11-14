@@ -10,39 +10,39 @@ using Xyzies.TWC.Public.Api.Models;
 namespace Xyzies.TWC.Public.Api.Controllers
 {
     /// <summary>
-    /// Service provider settings controller
+    /// tenant settings controller
     /// </summary>
     [ApiController]
-    [Route("provider-settings")]
-    public class ProviderSettingsController : Controller
+    [Route("tenant-settings")]
+    public class TenantSettingsController : Controller
     {
         /// <summary>
         /// Service provider settings controller ctor
         /// </summary>
-        private readonly IProviderSettingManager _providerSettingManager;
+        private readonly ITenantrSettingManager _tenantSettingManager;
 
-        public ProviderSettingsController(IProviderSettingManager providerSettingManager)
+        public TenantSettingsController(ITenantrSettingManager tenantSettingManager)
 
         {
-            _providerSettingManager = providerSettingManager;
+            _tenantSettingManager = tenantSettingManager;
 
         }
 
         /// <summary>
-        /// Get provider settings by provider id(GUID)
+        /// Get tenant settings by provider id(GUID)
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{providerId}")]
-        [ProducesResponseType(typeof(ProviderSettingModel), StatusCodes.Status200OK  /* 200 */)]
+        [HttpGet("{tenantId}")]
+        [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
-        public async Task<IActionResult> GetProviderSettingById(Guid providerId)
+        public async Task<IActionResult> GetTenantSettingById(Guid tenantId)
         {
             try
             {
-                var settings = await _providerSettingManager.GetProviderSettings(providerId);
+                var settings = await _tenantSettingManager.GetTenantSettings(tenantId);
                 return Ok(settings);
             }
             catch (KeyNotFoundException)
@@ -52,38 +52,38 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Post provider settings for provider
+        /// Post tenant settings for provider
         /// </summary>
         /// <param name="providerId"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        [HttpPost("{providerId}")]
-        [ProducesResponseType(typeof(ProviderSettingModel), StatusCodes.Status200OK  /* 200 */)]
+        [HttpPost("{tenantId}")]
+        [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
-        public async Task<IActionResult> PostProviderSetting(Guid providerId, [FromBody] ProviderSettingModel settings)
+        public async Task<IActionResult> PostTenantSetting(Guid tenantId, [FromBody] TenantSettingModel settings)
         {
-            await _providerSettingManager.InsertProviderSettings(providerId, settings);
+            await _tenantSettingManager.InsertTenantSettings(tenantId, settings);
             return NoContent();
         }
 
         /// <summary>
-        /// Update provider settings by provider id(GUID)
+        /// Update tenant settings by provider id(GUID)
         /// </summary>
         /// <param name="id"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
         [HttpPut("{providerId}")]
-        [ProducesResponseType(typeof(ProviderSettingModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
-        public async Task<IActionResult> UpdateProviderSettingById(Guid providerId, ProviderSettingModel settings)
+        public async Task<IActionResult> UpdateTenantSettingById(Guid tenantId, TenantSettingModel settings)
         {
             try
             {
-                await _providerSettingManager.UpdateProviderSettings(providerId, settings);
+                await _tenantSettingManager.UpdateTenantSettings(tenantId, settings);
                 return NoContent();
             }
             catch (KeyNotFoundException)

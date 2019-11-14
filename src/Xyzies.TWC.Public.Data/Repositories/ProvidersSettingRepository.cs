@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Core;
-using Xyzies.TWC.Public.Data.Entities;
-using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories
 {
-    public class ProvidersSettingRepository : EfCoreBaseRepository<Guid, ProviderSetting>, IRepository<Guid, ProviderSetting>, IProvidersSettingRepository
+    public class ProvidersSettingRepository : EfCoreBaseRepository<Guid, TenantSetting>, IRepository<Guid, TenantSetting>, ITenantsSettingRepository
     {
         public ProvidersSettingRepository(AppDataContext dbContext)
             : base(dbContext)
@@ -17,7 +16,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         }
 
-        public override async Task<bool> UpdateAsync(ProviderSetting entity)
+        public override async Task<bool> UpdateAsync(TenantSetting entity)
         {
             var entityToUpdate = base.Data.FirstOrDefault(x => x.TenantId == entity.TenantId);
             if (entityToUpdate == null)

@@ -4,42 +4,42 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
-using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
-    public class ProviderSettingManager : IProviderSettingManager
+    public class TenantrSettingManager : ITenantrSettingManager
     {
-        private readonly IProvidersSettingRepository _providersSettingRepository;
+        private readonly ITenantsSettingRepository _tenantsSettingRepository;
 
-        public ProviderSettingManager(IProvidersSettingRepository providersSettingRepository)
+        public TenantrSettingManager(ITenantsSettingRepository providersSettingRepository)
         {
-            _providersSettingRepository = providersSettingRepository;
+            _tenantsSettingRepository = providersSettingRepository;
 
         }
 
-        public async Task<ProviderSettingModel> GetProviderSettings(Guid providerId)
+        public async Task<TenantSettingModel> GetTenantSettings(Guid providerId)
         {
 
-            var providerSettingString = await _providersSettingRepository.GetSettingsByProvider(providerId);
+            var providerSettingString = await _tenantsSettingRepository.GetSettingsByProvider(providerId);
             if (string.IsNullOrWhiteSpace(providerSettingString))
             {
                 throw new KeyNotFoundException();
             }
-            return JsonConvert.DeserializeObject<ProviderSettingModel>(providerSettingString);
+            return JsonConvert.DeserializeObject<TenantSettingModel>(providerSettingString);
         }
 
-        public async Task InsertProviderSettings(Guid providerId, ProviderSettingModel settings)
+        public async Task InsertTenantSettings(Guid providerId, TenantSettingModel settings)
         {
-            await _providersSettingRepository.AddAsync(GetProviderSettingModel(providerId, settings));
+            await _tenantsSettingRepository.AddAsync(GetTenantSettingModel(providerId, settings));
         }
 
-        public async Task UpdateProviderSettings(Guid providerId, ProviderSettingModel settings)
+        public async Task UpdateTenantSettings(Guid providerId, TenantSettingModel settings)
         {
             try
             {
-                await _providersSettingRepository.UpdateAsync(GetProviderSettingModel(providerId, settings));
+                await _tenantsSettingRepository.UpdateAsync(GetTenantSettingModel(providerId, settings));
             }
             catch (KeyNotFoundException)
             {
@@ -47,12 +47,12 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
         }
 
-        private ProviderSetting GetProviderSettingModel(Guid providerId, ProviderSettingModel settings)
+        private TenantSetting GetTenantSettingModel(Guid providerId, TenantSettingModel settings)
         {
-            return new ProviderSetting
+            return new TenantSetting
             {
                 Settings = JsonConvert.SerializeObject(settings),
-                ServiceProviderId = providerId
+                TenantId = providerId
             };
         }
     }

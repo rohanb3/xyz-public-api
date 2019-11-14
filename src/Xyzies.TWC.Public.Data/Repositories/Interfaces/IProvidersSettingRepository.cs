@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Data.Core;
-using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 
 namespace Xyzies.TWC.Public.Data.Repositories.Interfaces
 {
-    public interface IProvidersSettingRepository : IRepository<Guid, ProviderSetting>
+    public interface ITenantsSettingRepository : IRepository<Guid, TenantSetting>
     {
         Task<string> GetSettingsByProvider(Guid providerId);
     }

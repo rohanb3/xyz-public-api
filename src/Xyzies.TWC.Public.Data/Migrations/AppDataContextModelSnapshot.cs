@@ -36,7 +36,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     b.ToTable("CompanyTenants");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ProviderSetting", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.TenantSetting", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -79,11 +79,11 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ProviderSetting", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.TenantSetting", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider", "Provider")
-                        .WithOne("ProviderSetting")
-                        .HasForeignKey("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ProviderSetting", "ServiceProviderId")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.TenantEntities.Tenant", "Tenant")
+                        .WithOne("TenantSetting")
+                        .HasForeignKey("Xyzies.TWC.Public.Data.Entities.TenantEntities.TenantSetting", "TenantId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

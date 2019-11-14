@@ -8,28 +8,28 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ProvidersSetting",
+                name: "TenantsSetting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Settings = table.Column<string>(nullable: true),
-                    ServiceProviderId = table.Column<Guid>(nullable: false)
+                    TenantId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProvidersSetting", x => x.Id);
+                    table.PrimaryKey("PK_TenantsSetting", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProvidersSetting_ServiceProviders_ServiceProviderId",
-                        column: x => x.ServiceProviderId,
-                        principalTable: "ServiceProviders",
+                        name: "FK_TenantsSetting_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProvidersSetting_ServiceProviderId",
-                table: "ProvidersSetting",
-                column: "ServiceProviderId",
+                name: "IX_TenantsSetting_TenantId",
+                table: "TenantsSetting",
+                column: "TenantId",
                 unique: true);
         }
 
