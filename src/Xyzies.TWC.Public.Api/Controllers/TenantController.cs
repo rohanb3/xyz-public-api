@@ -19,23 +19,23 @@ namespace Xyzies.TWC.Public.Api.Controllers
     [ApiController]
     [Route("provider")]
     [Authorize]
-    public class ServiceProviderController : ControllerBase
+    public class TenantController : ControllerBase
     {
-        private readonly ILogger<ServiceProviderController> _logger = null;
-        private readonly IServiceProviderManager _serviceProviderService = null;
+        private readonly ILogger<TenantController> _logger = null;
+        private readonly ITenantManager _tenantService = null;
 
         /// <summary>
         /// Service provider constructor
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="serviceProviderService"></param>
-        public ServiceProviderController(ILogger<ServiceProviderController> logger,
-            IServiceProviderManager serviceProviderService)
+        /// <param name="TenantService"></param>
+        public TenantController(ILogger<TenantController> logger,
+            ITenantManager TenantService)
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
-            _serviceProviderService = serviceProviderService ??
-                throw new ArgumentNullException(nameof(serviceProviderService));
+            _tenantService = TenantService ??
+                throw new ArgumentNullException(nameof(TenantService));
         }
 
         /// <summary>
@@ -48,11 +48,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
-        public async Task<IActionResult> Post([FromBody] ServiceProviderRequest request)
+        public async Task<IActionResult> Post([FromBody] TenantRequest request)
         {
             try
             {
-                var deviceId = await _serviceProviderService.Create(request);
+                var deviceId = await _tenantService.Create(request);
                 return Created(HttpContext.Request.GetEncodedUrl(), deviceId);
             }
             catch (ArgumentNullException ex)
@@ -78,11 +78,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound /* 404 */)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status409Conflict /* 409 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
-        public async Task<IActionResult> Put(Guid id, [FromBody] ServiceProviderRequest request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] TenantRequest request)
         {
             try
             {
-                await _serviceProviderService.Update(id, request);
+                await _tenantService.Update(id, request);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -112,11 +112,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound /* 404 */)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status409Conflict /* 409 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
-        public async Task<IActionResult> Put(int id, [FromBody] ServiceProviderRequest request)
+        public async Task<IActionResult> Put(int id, [FromBody] TenantRequest request)
         {
             try
             {
-                await _serviceProviderService.UpdateByCompanyId(id, request);
+                await _tenantService.UpdateByCompanyId(id, request);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -138,14 +138,14 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(List<ServiceProviderModel>), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(List<TenantModel>), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
         public async Task<IActionResult> Get()
         {
-            var serviceProviderList = await _serviceProviderService.Get();
-            return Ok(serviceProviderList);
+            var TenantList = await _tenantService.Get();
+            return Ok(TenantList);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("extended/{id}")]
-        [ProducesResponseType(typeof(ServiceProviderModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(TenantModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
@@ -161,8 +161,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             try
             {
-                var serviceProvider = await _serviceProviderService.GetExtended(id);
-                return Ok(serviceProvider);
+                var Tenant = await _tenantService.GetExtended(id);
+                return Ok(Tenant);
             }
             catch (KeyNotFoundException)
             {
@@ -175,7 +175,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("single/{id}")]
-        [ProducesResponseType(typeof(ServiceProviderModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(TenantModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
@@ -183,8 +183,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             try
             {
-                var serviceProvider = await _serviceProviderService.GetSingle(id);
-                return Ok(serviceProvider);
+                var Tenant = await _tenantService.GetSingle(id);
+                return Ok(Tenant);
             }
             catch (KeyNotFoundException)
             {
@@ -197,7 +197,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}/by-company")]
-        [ProducesResponseType(typeof(ServiceProviderSingleModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(TenantSingleModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
@@ -205,8 +205,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             try
             {
-                var serviceProvider = await _serviceProviderService.Get(id);
-                return Ok(serviceProvider);
+                var Tenant = await _tenantService.Get(id);
+                return Ok(Tenant);
             }
             catch (KeyNotFoundException)
             {
@@ -219,7 +219,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("single/{id}/by-company")]
-        [ProducesResponseType(typeof(ServiceProviderSingleModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(TenantSingleModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Service provider API" })]
@@ -227,8 +227,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
         {
             try
             {
-                var serviceProvider = await _serviceProviderService.GetSingle(id);
-                return Ok(serviceProvider);
+                var Tenant = await _tenantService.GetSingle(id);
+                return Ok(Tenant);
             }
             catch (KeyNotFoundException)
             {

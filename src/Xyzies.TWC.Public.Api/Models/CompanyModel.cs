@@ -86,7 +86,7 @@ namespace Xyzies.TWC.Public.Api.Models
         public int? CountSalesRep { get; set; }
         public int? CountBranch { get; set; }
 
-        public ServiceProviderSingleModel ServiceProvider { get; set; }
+        public TenantSingleModel Tenant { get; set; }
 
         public IList<int> UserIds { get; set; } = new List<int>();
 

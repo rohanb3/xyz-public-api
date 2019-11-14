@@ -10,8 +10,8 @@ using Xyzies.TWC.Public.Data;
 namespace Xyzies.TWC.Public.Data.Migrations.AppData
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20191030101255_AddServiceProvider")]
-    partial class AddServiceProvider
+    [Migration("20191030101255_AddTenant")]
+    partial class AddTenant
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -151,7 +151,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
                     b.Property<string>("CompanyName");
 
-                    b.Property<int?>("CompanyServiceProviderId");
+                    b.Property<int?>("CompanyTenantId");
 
                     b.Property<Guid?>("CompanyStatusKey");
 
@@ -227,7 +227,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
                     b.Property<Guid?>("RetailerGroupKey");
 
-                    b.Property<Guid?>("ServiceProviderId");
+                    b.Property<Guid?>("TenantId");
 
                     b.Property<string>("SocialMediaAccount");
 
@@ -253,11 +253,11 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyServiceProviderId");
+                    b.HasIndex("CompanyTenantId");
 
                     b.HasIndex("CompanyStatusKey");
 
-                    b.HasIndex("ServiceProviderId");
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Company");
                 });
@@ -292,7 +292,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     b.ToTable("RequestStatus");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.CompanyServiceProvider", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.CompanyTenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,14 +300,14 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<Guid>("ServiceProviderId");
+                    b.Property<Guid>("TenantId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompanyServiceProviders");
+                    b.ToTable("CompanyTenants");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -322,7 +322,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceProviders");
+                    b.ToTable("Tenants");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Users", b =>
@@ -436,17 +436,17 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.ServiceProvider.CompanyServiceProvider")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Tenant.CompanyTenant")
                         .WithMany("Companies")
-                        .HasForeignKey("CompanyServiceProviderId");
+                        .HasForeignKey("CompanyTenantId");
 
                     b.HasOne("Xyzies.TWC.Public.Data.Entities.RequestStatus", "RequestStatus")
                         .WithMany()
                         .HasForeignKey("CompanyStatusKey");
 
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Tenant.Tenant")
                         .WithMany("Companies")
-                        .HasForeignKey("ServiceProviderId");
+                        .HasForeignKey("TenantId");
                 });
 
             modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Users", b =>

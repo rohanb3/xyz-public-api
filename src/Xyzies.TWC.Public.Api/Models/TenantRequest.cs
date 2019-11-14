@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
-    public class ServiceProviderRequest
+    public class TenantRequest
     {
         [Required]
         public string Name { get; set; }

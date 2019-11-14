@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Core;
 
-namespace Xyzies.TWC.Public.Data.Entities.ServiceProvider
+namespace Xyzies.TWC.Public.Data.Entities.Tenant
 {
-    public class ServiceProvider : BaseEntity<Guid>
+    public class Tenant : BaseEntity<Guid>
     {
         [Required]
-        public string ServiceProviderName { get; set; }
+        public string TenantName { get; set; }
 
         [Required]
         public string Phone { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
-        public virtual List<CompanyServiceProvider> Companies { get; set; }
+        public virtual List<CompanyTenant> Companies { get; set; }
 
     }
 }

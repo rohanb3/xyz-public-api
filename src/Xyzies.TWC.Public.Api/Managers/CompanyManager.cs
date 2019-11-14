@@ -20,7 +20,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ICompanyRepository _companyRepository = null;
         private readonly IAzureCompanyAvatarRepository _companyAvatarsRepository = null;
         private readonly IUserRepository _userRepository = null;
-        private readonly IServiceProviderRepository _serviceProviderRep = null;
+        private readonly ITenantRepository _TenantRep = null;
         private readonly string salesRoleId = "2";
 
         /// <summary>
@@ -30,12 +30,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
         /// <param name="companyAvatarsRepository"></param>
-        /// <param name="serviceProviderManager"></param>
-        public CompanyManager(ILogger<CompanyManager> logger, IServiceProviderRepository serviceProviderRep, IRequestStatusRepository requestStatusRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
+        /// <param name="TenantManager"></param>
+        public CompanyManager(ILogger<CompanyManager> logger, ITenantRepository TenantRep, IRequestStatusRepository requestStatusRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
-            _serviceProviderRep = serviceProviderRep ?? throw new ArgumentNullException(nameof(companyRepository));
+            _TenantRep = TenantRep ?? throw new ArgumentNullException(nameof(companyRepository));
             _companyAvatarsRepository = companyAvatarsRepository ?? throw new ArgumentNullException(nameof(companyAvatarsRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
@@ -69,14 +69,14 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.GroupBy(x => x.CompanyId).ToList();
-            var serviceProviders = (await _serviceProviderRep.GetAsync()).ToHashSet();
+            var Tenants = (await _TenantRep.GetAsync()).ToHashSet();
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-                var serviceProvider = serviceProviders.FirstOrDefault(x => x.Companies.Select(c => c.CompanyId).ToHashSet().Contains(company.Id));
+                var Tenant = Tenants.FirstOrDefault(x => x.Companies.Select(c => c.CompanyId).ToHashSet().Contains(company.Id));
                 companyModel.CountSalesRep = allUsers.FirstOrDefault(x => x.Key == company.Id)?.Count();
                 companyModel.CountBranch = company.Branches.Count;
-                companyModel.ServiceProvider = serviceProvider?.Adapt<ServiceProviderSingleModel>();
+                companyModel.Tenant = Tenant?.Adapt<TenantSingleModel>();
                 companyModelList.Add(companyModel);
             }
 
@@ -97,10 +97,10 @@ namespace Xyzies.TWC.Public.Api.Managers
             var companyDetailModel = companyDetails.Adapt<CompanyModelExtended>();
             if (companyDetailModel != null)
             {
-                var serviceProvider = await _serviceProviderRep.GetServiceProviderByCompany(id);
+                var Tenant = await _TenantRep.GetTenantByCompany(id);
                 var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == id);
                 var userByRoleCompany = usersByCompany.ToList().GroupBy(x => x.Role).AsQueryable();
-                companyDetailModel.ServiceProvider = serviceProvider.Adapt<ServiceProviderSingleModel>();
+                companyDetailModel.Tenant = Tenant.Adapt<TenantSingleModel>();
 
                 companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count() ?? 0;
                 companyDetailModel.CountBranch = companyDetails.Branches.Count;
@@ -129,9 +129,9 @@ namespace Xyzies.TWC.Public.Api.Managers
                     {
                         continue;
                     }
-                    var serviceProvider = await _serviceProviderRep.GetServiceProviderByCompany(user.CompanyId.Value);
+                    var Tenant = await _TenantRep.GetTenantByCompany(user.CompanyId.Value);
                     companyModel = company.Adapt<CompanyModel>();
-                    companyModel.ServiceProvider = serviceProvider.Adapt<ServiceProviderSingleModel>();
+                    companyModel.Tenant = Tenant.Adapt<TenantSingleModel>();
                     companyModel.UserIds.Add(user.Id);
                 }
                 if (companyModel != null)

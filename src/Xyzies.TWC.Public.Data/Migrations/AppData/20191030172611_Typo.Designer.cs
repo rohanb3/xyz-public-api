@@ -21,7 +21,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.CompanyServiceProvider", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.CompanyTenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -29,16 +29,16 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<Guid>("ServiceProviderId");
+                    b.Property<Guid>("TenantId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServiceProviderId");
+                    b.HasIndex("TenantId");
 
-                    b.ToTable("CompanyServiceProviders");
+                    b.ToTable("CompanyTenants");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -48,19 +48,19 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     b.Property<string>("Phone")
                         .IsRequired();
 
-                    b.Property<string>("ServiceProviderName")
+                    b.Property<string>("TenantName")
                         .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceProviders");
+                    b.ToTable("Tenants");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.ServiceProvider.CompanyServiceProvider", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.CompanyTenant", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.ServiceProvider.ServiceProvider", "ServiceProvider")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Tenant.Tenant", "Tenant")
                         .WithMany("Companies")
-                        .HasForeignKey("ServiceProviderId")
+                        .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
