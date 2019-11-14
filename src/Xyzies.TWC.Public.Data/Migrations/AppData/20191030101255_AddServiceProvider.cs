@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Xyzies.TWC.Public.Data.Migrations.AppData
 {
-    public partial class AddServiceProvider : Migration
+    public partial class AddTenant : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,17 +21,17 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyServiceProviders",
+                name: "CompanyTenants",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CompanyId = table.Column<int>(nullable: false),
-                    ServiceProviderId = table.Column<Guid>(nullable: false)
+                    TenantId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyServiceProviders", x => x.Id);
+                    table.PrimaryKey("PK_CompanyTenants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,7 +55,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceProviders",
+                name: "Tenants",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -65,7 +65,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceProviders", x => x.Id);
+                    table.PrimaryKey("PK_Tenants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,16 +138,16 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     MarketStrategy = table.Column<string>(nullable: true),
                     CompanyStatusKey = table.Column<Guid>(nullable: true),
                     IsEnabled = table.Column<bool>(nullable: false),
-                    CompanyServiceProviderId = table.Column<int>(nullable: true),
-                    ServiceProviderId = table.Column<Guid>(nullable: true)
+                    CompanyTenantId = table.Column<int>(nullable: true),
+                    TenantId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Company", x => x.CompanyID);
                     table.ForeignKey(
-                        name: "FK_Company_CompanyServiceProviders_CompanyServiceProviderId",
-                        column: x => x.CompanyServiceProviderId,
-                        principalTable: "CompanyServiceProviders",
+                        name: "FK_Company_CompanyTenants_CompanyTenantId",
+                        column: x => x.CompanyTenantId,
+                        principalTable: "CompanyTenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -157,9 +157,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                         principalColumn: "StatusKey",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Company_ServiceProviders_ServiceProviderId",
-                        column: x => x.ServiceProviderId,
-                        principalTable: "ServiceProviders",
+                        name: "FK_Company_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -304,9 +304,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Company_CompanyServiceProviderId",
+                name: "IX_Company_CompanyTenantId",
                 table: "Company",
-                column: "CompanyServiceProviderId");
+                column: "CompanyTenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Company_CompanyStatusKey",
@@ -314,9 +314,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 column: "CompanyStatusKey");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Company_ServiceProviderId",
+                name: "IX_Company_TenantId",
                 table: "Company",
-                column: "ServiceProviderId");
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_BranchID",
@@ -347,13 +347,13 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 name: "Company");
 
             migrationBuilder.DropTable(
-                name: "CompanyServiceProviders");
+                name: "CompanyTenants");
 
             migrationBuilder.DropTable(
                 name: "RequestStatus");
 
             migrationBuilder.DropTable(
-                name: "ServiceProviders");
+                name: "Tenants");
         }
     }
 }

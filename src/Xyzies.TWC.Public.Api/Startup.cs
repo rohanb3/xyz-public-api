@@ -118,8 +118,8 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyManager, CompanyManager>();
             services.AddScoped<IRelationService, RelationService>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
-            services.AddScoped<IServiceProviderRepository, ServiceProviderRepository>();
-            services.AddScoped<IServiceProviderManager, ServiceProviderManager>();
+            services.AddScoped<ITenantRepository, TenantRepository>();
+            services.AddScoped<ITenantManager, TenantManager>();
             services.AddScoped<TestSeed>();
 
             #endregion
@@ -199,7 +199,7 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<CreateCompanyModel, Company>.NewConfig().Map(dest => dest.GeoLon, src => src.GeoLog);
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 
-            ServiceProviderMappingConfigurations.ConfigureServiceProviderMappers();
+            TenantMappingConfigurations.ConfigureTenantMappers();
 
             #endregion
 

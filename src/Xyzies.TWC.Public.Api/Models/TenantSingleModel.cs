@@ -2,7 +2,7 @@
 
 namespace Xyzies.TWC.Public.Api.Models
 {
-    public class ServiceProviderSingleModel
+    public class TenantSingleModel
     {
         public Guid Id { get; set; }
 
