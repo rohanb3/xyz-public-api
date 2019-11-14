@@ -19,7 +19,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 
         public override async Task<bool> UpdateAsync(ProviderSetting entity)
         {
-            var entityToUpdate = base.Data.FirstOrDefault(x => x.ServiceProviderId == entity.ServiceProviderId);
+            var entityToUpdate = base.Data.FirstOrDefault(x => x.TenantId == entity.TenantId);
             if (entityToUpdate == null)
             {
                 throw new KeyNotFoundException();
@@ -29,6 +29,6 @@ namespace Xyzies.TWC.Public.Data.Repositories
         }
 
         public Task<string> GetSettingsByProvider(Guid providerId) => Task.FromResult(
-                base.Data.FirstOrDefault(x => x.ServiceProviderId == providerId)?.Settings);
+                base.Data.FirstOrDefault(x => x.TenantId == providerId)?.Settings);
     }
 }
