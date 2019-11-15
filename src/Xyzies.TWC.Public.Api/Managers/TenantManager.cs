@@ -16,11 +16,13 @@ namespace Xyzies.TWC.Public.Api.Managers
     {
         private readonly ILogger<TenantManager> _logger = null;
         private readonly ITenantRepository _tenantRepository = null;
+        private readonly ICompanyTenantRepository _companyTenantRepository = null;
         private readonly ICompanyManager _companyManager = null;
 
         public TenantManager(ILogger<TenantManager> logger,
             ITenantRepository tenantRepository,
-            ICompanyManager companyManager)
+            ICompanyManager companyManager,
+            ICompanyTenantRepository companyTenantRepository)
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
@@ -28,6 +30,8 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new ArgumentNullException(nameof(_tenantRepository));
             _companyManager = companyManager ??
                 throw new ArgumentNullException(nameof(_companyManager));
+            _companyTenantRepository = companyTenantRepository ??
+                throw new ArgumentNullException(nameof(_companyTenantRepository));
         }
 
         public async Task<Guid> Create(TenantRequest request)
@@ -166,6 +170,22 @@ namespace Xyzies.TWC.Public.Api.Managers
             tenant.TenantName = request.Name;
             tenant.Phone = request.Phone;
             await _tenantRepository.UpdateAsync(tenant);
+        }
+
+        public async Task CreateRelation(int companyId, Guid tenantId)
+        {
+
+            var isCompanyExist = (await _companyManager.GetCompanyById(companyId)) != null;
+            if (!isCompanyExist)
+            {
+                throw new KeyNotFoundException("Company is not exists");
+            }
+            var isTenantExists = (await _tenantRepository.GetAsync(tenantId)) != null;
+            if (!isTenantExists)
+            {
+                throw new KeyNotFoundException("Tenant is not exists");
+            }
+            await _companyTenantRepository.AddAsync(new CompanyTenant { CompanyId = companyId, TenantId = tenantId };)
         }
     }
 }

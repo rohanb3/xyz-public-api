@@ -66,6 +66,33 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
+        /// Create company to tenant relation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("{companyId}/in/{tenantId}")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created  /* 201 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
+        public async Task<IActionResult> PostRelation(int companyId, Guid tenantId)
+        {
+            try
+            {
+                await _tenantService.CreateRelation(companyId, tenantId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (DuplicateNameException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Update Tenant by Id
         /// </summary>
         /// <param name="id"></param>
