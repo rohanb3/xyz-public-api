@@ -8,15 +8,15 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
         {
             migrationBuilder.RenameColumn(
                 name: "SeviceProviderName",
-                table: "ServiceProviders",
-                newName: "ServiceProviderName");
+                table: "Tenants",
+                newName: "TenantName");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "ServiceProviderName",
-                table: "ServiceProviders",
+                name: "TenantName",
+                table: "Tenants",
                 newName: "SeviceProviderName");
         }
     }

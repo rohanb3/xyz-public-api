@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Entities.EntityConfigurations;
-using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
+using Xyzies.TWC.Public.Data.Entities.Tenant;
 
 namespace Xyzies.TWC.Public.Data
 {
@@ -15,8 +15,8 @@ namespace Xyzies.TWC.Public.Data
         }
 
         #region Entities
-        public DbSet<ServiceProvider> ServiceProviders { get; set; }
-        public DbSet<CompanyServiceProvider> CompanyServiceProviders { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<CompanyTenant> CompanyTenants { get; set; }
 
         #endregion
     }

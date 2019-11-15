@@ -55,10 +55,10 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             string state = _baseTest.Fixture.Create<string>();
             var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
-            var branches = _baseTest.Fixture.Build<Branch>().With(x=>x.Company, company).CreateMany(branchCount).ToList();
+            var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
-                                                .With(x=>x.State, state)
-                                                .With(x=>x.Company, company)
+                                                .With(x => x.State, state)
+                                                .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneState));
             _baseTest.DbContext.Branches.AddRange(branches);
             _baseTest.DbContext.SaveChanges();
@@ -220,7 +220,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             _baseTest.DbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
             var branches = _baseTest.Fixture.Build<Branch>()
-                                            .With(x=>x.IsEnabled, !isEnabled)
+                                            .With(x => x.IsEnabled, !isEnabled)
                                             .With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.IsEnabled, isEnabled)
@@ -286,8 +286,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>()
-                                            .With(x=>x.State, state)
-                                            .With(x=>x.City, city)
+                                            .With(x => x.State, state)
+                                            .With(x => x.City, city)
                                             .With(x => x.Email, email)
                                             .With(x => x.BranchName, branchName)
                                             .With(x => x.IsEnabled, isEnabled)
@@ -310,7 +310,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
             result.Total.Should().Be(expectedBranches.Count());
             result.Data.Count.Should().Be(expectedBranches.Count());
-            result.Data.All(x=>expectedBranches.Select(u=>u.Id).Contains(x.Id)).Should().BeTrue();
+            result.Data.All(x => expectedBranches.Select(u => u.Id).Contains(x.Id)).Should().BeTrue();
         }
 
         [Theory]
@@ -416,7 +416,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branchId = Guid.NewGuid();
             var branch = _baseTest.Fixture.Build<Branch>()
-                                            .With(x=>x.Id, branchId)
+                                            .With(x => x.Id, branchId)
                                             .With(x => x.Company, company)
                                             .Create();
             var users = _baseTest.Fixture.Build<Users>()
@@ -1196,7 +1196,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var request = _baseTest.Fixture.Build<CreateBranchModel>()
                                            .With(x => x.Email, "test@email.com")
                                            .With(x => x.Phone, "066-432-43-56")
-                                           .With(x=>x.ZipCode, "testZipCode")
+                                           .With(x => x.ZipCode, "testZipCode")
                                            .Without(x => x.BranchContacts)
                                            .Create();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
@@ -1218,7 +1218,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                            .With(x => x.Email, "test@email.com")
                                            .With(x => x.Phone, "066-432-43-56")
                                            .With(x => x.ZipCode, "578")
-                                           .Without(x=>x.BranchContacts)
+                                           .Without(x => x.BranchContacts)
                                            .Create();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
@@ -1287,7 +1287,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var request = _baseTest.Fixture.Build<CreateBranchModel>()
                                             .With(x => x.Phone, "066-432-43-56")
                                             .With(x => x.ZipCode, "7582")
-                                            .Without(x=>x.BranchContacts)
+                                            .Without(x => x.BranchContacts)
                                             .Create();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
@@ -1331,7 +1331,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var request = _baseTest.Fixture.Build<CreateBranchModel>()
                                             .With(x => x.Email, "test@email.com")
                                             .With(x => x.Phone, "066-432-43-56")
-                                            .With(x=>x.ZipCode, "testZipCode")
+                                            .With(x => x.ZipCode, "testZipCode")
                                             .Without(x => x.BranchContacts)
                                             .Create();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
@@ -1377,7 +1377,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             _baseTest.DbContext.SaveChanges();
             var branch = _baseTest.Fixture.Build<Branch>()
                                           .With(x => x.Id, Guid.NewGuid())
-                                          .With(x=>x.CompanyId, company.Id)
+                                          .With(x => x.CompanyId, company.Id)
                                           .Create();
             _baseTest.DbContext.Branches.Add(branch);
             _baseTest.DbContext.SaveChanges();
@@ -1480,7 +1480,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                            .Create();
             var branch = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.Company, company)
-                                            .With(x=>x.IsEnabled, false)
+                                            .With(x => x.IsEnabled, false)
                                             .Create();
             _baseTest.DbContext.Branches.Add(branch);
             _baseTest.DbContext.SaveChanges();

@@ -1131,7 +1131,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             string uri = $"{_baseCompanyUrl}";
             var request = _baseTest.Fixture.Build<CreateCompanyModel>()
                                            .With(x => x.CompanyName, companyName)
-                                           .With(x=>x.Email, "test@email.com")
+                                           .With(x => x.Email, "test@email.com")
                                            .With(x => x.Phone, "7643020430")
                                            .With(x => x.Fax, "7643020430")
                                            .Create();
@@ -1422,7 +1422,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .Create();
-            
+
             _baseTest.DbContext.Companies.Add(company);
             _baseTest.DbContext.SaveChanges();
             string uri = $"{_baseCompanyUrl}/{company.Id}";
@@ -1518,7 +1518,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
-                                           .With(x=>x.IsEnabled, false)
+                                           .With(x => x.IsEnabled, false)
                                            .Create();
 
             _baseTest.DbContext.Companies.Add(company);
@@ -1640,7 +1640,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
-                                           .With(x=>x.Id, _baseTest.DefaultCompanyId)
+                                           .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
             _baseTest.DbContext.Companies.Add(company);

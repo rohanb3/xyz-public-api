@@ -27,15 +27,15 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 name: "RequestStatus");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyServiceProviders_ServiceProviderId",
-                table: "CompanyServiceProviders",
-                column: "ServiceProviderId");
+                name: "IX_CompanyTenants_TenantId",
+                table: "CompanyTenants",
+                column: "TenantId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_CompanyServiceProviders_ServiceProviders_ServiceProviderId",
-                table: "CompanyServiceProviders",
-                column: "ServiceProviderId",
-                principalTable: "ServiceProviders",
+                name: "FK_CompanyTenants_Tenants_TenantId",
+                table: "CompanyTenants",
+                column: "TenantId",
+                principalTable: "Tenants",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -43,12 +43,12 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_CompanyServiceProviders_ServiceProviders_ServiceProviderId",
-                table: "CompanyServiceProviders");
+                name: "FK_CompanyTenants_Tenants_TenantId",
+                table: "CompanyTenants");
 
             migrationBuilder.DropIndex(
-                name: "IX_CompanyServiceProviders_ServiceProviderId",
-                table: "CompanyServiceProviders");
+                name: "IX_CompanyTenants_TenantId",
+                table: "CompanyTenants");
 
             migrationBuilder.CreateTable(
                 name: "BranchContactType",
@@ -104,7 +104,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     City = table.Column<string>(nullable: true),
                     CompanyKey = table.Column<Guid>(nullable: true),
                     CompanyName = table.Column<string>(nullable: true),
-                    CompanyServiceProviderId = table.Column<int>(nullable: true),
+                    CompanyTenantId = table.Column<int>(nullable: true),
                     CompanyStatusKey = table.Column<Guid>(nullable: true),
                     CompanyType = table.Column<byte>(nullable: true),
                     CreatedBy = table.Column<int>(nullable: true),
@@ -142,7 +142,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     RetailerGoogleAccount = table.Column<string>(nullable: true),
                     RetailerGooglePassword = table.Column<string>(nullable: true),
                     RetailerGroupKey = table.Column<Guid>(nullable: true),
-                    ServiceProviderId = table.Column<Guid>(nullable: true),
+                    TenantId = table.Column<Guid>(nullable: true),
                     SocialMediaAccount = table.Column<string>(nullable: true),
                     State = table.Column<string>(nullable: true),
                     StateEstablished = table.Column<string>(nullable: true),
@@ -159,9 +159,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 {
                     table.PrimaryKey("PK_Company", x => x.CompanyID);
                     table.ForeignKey(
-                        name: "FK_Company_CompanyServiceProviders_CompanyServiceProviderId",
-                        column: x => x.CompanyServiceProviderId,
-                        principalTable: "CompanyServiceProviders",
+                        name: "FK_Company_CompanyTenants_CompanyTenantId",
+                        column: x => x.CompanyTenantId,
+                        principalTable: "CompanyTenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -171,9 +171,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                         principalColumn: "StatusKey",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Company_ServiceProviders_ServiceProviderId",
-                        column: x => x.ServiceProviderId,
-                        principalTable: "ServiceProviders",
+                        name: "FK_Company_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -318,9 +318,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Company_CompanyServiceProviderId",
+                name: "IX_Company_CompanyTenantId",
                 table: "Company",
-                column: "CompanyServiceProviderId");
+                column: "CompanyTenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Company_CompanyStatusKey",
@@ -328,9 +328,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 column: "CompanyStatusKey");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Company_ServiceProviderId",
+                name: "IX_Company_TenantId",
                 table: "Company",
-                column: "ServiceProviderId");
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_BranchID",

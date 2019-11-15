@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
 using Xyzies.TWC.Public.Api.Models.Filters;
-using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
+using Xyzies.TWC.Public.Data.Entities.Tenant;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Managers
@@ -16,11 +16,11 @@ namespace Xyzies.TWC.Public.Api.Managers
     public class ServiceProviderManager : IServiceProviderManager
     {
         private readonly ILogger<ServiceProviderManager> _logger = null;
-        private readonly IServiceProviderRepository _serviceProviderRepository = null;
+        private readonly ITenantRepository _serviceProviderRepository = null;
         private readonly ICompanyManager _companyManager = null;
 
         public ServiceProviderManager(ILogger<ServiceProviderManager> logger,
-            IServiceProviderRepository serviceProviderRepository,
+            ITenantRepository serviceProviderRepository,
             ICompanyManager companyManager)
         {
             _logger = logger ??
@@ -31,7 +31,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new ArgumentNullException(nameof(_companyManager));
         }
 
-        public async Task<Guid> Create(ServiceProviderRequest request)
+        public async Task<Guid> Create(TenantRequest request)
         {
             if (request == null)
             {
@@ -40,29 +40,29 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
 
             var serviceProviders = await _serviceProviderRepository.GetAsync();
-            if (serviceProviders.Any(x => x.ServiceProviderName.ToLower() == request.Name.ToLower()))
+            if (serviceProviders.Any(x => x.TenantName.ToLower() == request.Name.ToLower()))
             {
                 _logger.LogError($"[Create] Duplicate parameter: {nameof(request.Name)}");
                 throw new DuplicateNameException();
             }
 
-            var serviceProvider = request.Adapt<ServiceProvider>();
+            var serviceProvider = request.Adapt<Tenant>();
             serviceProvider.CreatedOn = DateTime.UtcNow;
             return await _serviceProviderRepository.AddAsync(serviceProvider);
         }
 
-        public async Task<IEnumerable<ServiceProviderModel>> Get(TenantFilterModel filterModel)
+        public async Task<IEnumerable<TenantModel>> Get(TenantFilterModel filterModel)
         {
             var serviceProvidersList = (await _serviceProviderRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
             var companyIds = serviceProvidersList.SelectMany(x => x.Companies.Select(c => c.CompanyId)).Distinct().ToList();
             var companies = (await _companyManager.GetCompanies(new CompanyFilter { CompanyIds = companyIds })).Data.ToHashSet();
-            var result = new List<ServiceProviderModel>();
+            var result = new List<TenantModel>();
             foreach (var serviceProvider in serviceProvidersList)
             {
-                var model = new ServiceProviderModel
+                var model = new TenantModel
                 {
                     Id = serviceProvider.Id,
-                    Name = serviceProvider.ServiceProviderName,
+                    Name = serviceProvider.TenantName,
                     Phone = serviceProvider.Phone,
                     Companies = companies.Where(x => serviceProvider.Companies.Select(c => c.CompanyId).Contains(x.Id)).ToList()
                 };
@@ -71,38 +71,38 @@ namespace Xyzies.TWC.Public.Api.Managers
             return result;
         }
 
-        public async Task<ServiceProviderModel> GetExtended(Guid id)
+        public async Task<TenantModel> GetExtended(Guid id)
         {
             var serviceProvider = await _serviceProviderRepository.GetByAsync(x => x.Id == id);
             if (serviceProvider == null)
             {
                 throw new KeyNotFoundException();
             }
-            return serviceProvider.Adapt<ServiceProviderModel>();
+            return serviceProvider.Adapt<TenantModel>();
         }
 
 
-        public async Task<ServiceProviderSingleModel> GetSingle(Guid id)
+        public async Task<TenantSingleModel> GetSingle(Guid id)
         {
             var serviceProvider = await _serviceProviderRepository.GetByAsync(x => x.Id == id);
             if (serviceProvider == null)
             {
                 throw new KeyNotFoundException();
             }
-            return serviceProvider.Adapt<ServiceProviderSingleModel>();
+            return serviceProvider.Adapt<TenantSingleModel>();
         }
 
-        public async Task<ServiceProviderModel> Get(int companyId)
+        public async Task<TenantModel> Get(int companyId)
         {
-            var serviceProvider = await _serviceProviderRepository.GetServiceProviderByCompany(companyId);
+            var serviceProvider = await _serviceProviderRepository.GetTenantByCompany(companyId);
             if (serviceProvider == null)
             {
                 throw new KeyNotFoundException();
             }
-            return serviceProvider.Adapt<ServiceProviderModel>();
+            return serviceProvider.Adapt<TenantModel>();
         }
 
-        public async Task Update(Guid id, ServiceProviderRequest request)
+        public async Task Update(Guid id, TenantRequest request)
         {
             if (request == null)
             {
@@ -111,7 +111,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
 
             var serviceProviders = await _serviceProviderRepository.GetAsync();
-            if (serviceProviders.Any(x => x.ServiceProviderName.ToLower() == request.Name.ToLower() && x.Id != id))
+            if (serviceProviders.Any(x => x.TenantName.ToLower() == request.Name.ToLower() && x.Id != id))
             {
                 _logger.LogError($"[Update] Duplicate parameter: {nameof(request.Name)}");
                 throw new DuplicateNameException();
@@ -125,22 +125,22 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new KeyNotFoundException(nameof(id));
             }
 
-            serviceProvider.ServiceProviderName = request.Name;
+            serviceProvider.TenantName = request.Name;
             serviceProvider.Phone = request.Phone;
             await _serviceProviderRepository.UpdateAsync(serviceProvider);
         }
 
-        public async Task<ServiceProviderSingleModel> GetSingle(int companyId)
+        public async Task<TenantSingleModel> GetSingle(int companyId)
         {
-            var serviceProvider = await _serviceProviderRepository.GetServiceProviderByCompany(companyId);
+            var serviceProvider = await _serviceProviderRepository.GetTenantByCompany(companyId);
             if (serviceProvider == null)
             {
                 throw new KeyNotFoundException();
             }
-            return serviceProvider.Adapt<ServiceProviderSingleModel>();
+            return serviceProvider.Adapt<TenantSingleModel>();
         }
 
-        public async Task UpdateByCompanyId(int companyId, ServiceProviderRequest request)
+        public async Task UpdateByCompanyId(int companyId, TenantRequest request)
         {
             if (request == null)
             {
@@ -149,7 +149,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             }
 
             var serviceProviders = await _serviceProviderRepository.GetAsync();
-            if (serviceProviders.Any(x => x.ServiceProviderName.ToLower() == request.Name.ToLower() &&
+            if (serviceProviders.Any(x => x.TenantName.ToLower() == request.Name.ToLower() &&
                                           x.Companies.Select(c => c.Id).Contains(companyId)))
             {
                 _logger.LogError($"[Update] Duplicate parameter: {nameof(request.Name)}");
@@ -164,7 +164,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new KeyNotFoundException(nameof(companyId));
             }
 
-            serviceProvider.ServiceProviderName = request.Name;
+            serviceProvider.TenantName = request.Name;
             serviceProvider.Phone = request.Phone;
             await _serviceProviderRepository.UpdateAsync(serviceProvider);
         }

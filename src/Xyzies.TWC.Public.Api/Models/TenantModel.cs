@@ -4,7 +4,7 @@ using Xyzies.TWC.Public.Data.Entities;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
-    public class ServiceProviderModel
+    public class TenantModel
     {
         public Guid Id { get; set; }
 
