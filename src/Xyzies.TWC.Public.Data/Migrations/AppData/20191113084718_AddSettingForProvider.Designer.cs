@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xyzies.TWC.Public.Data;
 
 namespace Xyzies.TWC.Public.Data.Migrations.AppData
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20191113084718_AddSettingForProvider")]
+    partial class AddSettingForProvider
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.CompanyTenant", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.CompanyTenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,10 +52,10 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     b.HasIndex("TenantId")
                         .IsUnique();
 
-                    b.ToTable("TenantsSetting");
+                    b.ToTable("ProvidersSetting");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.Tenant", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -71,9 +73,9 @@ namespace Xyzies.TWC.Public.Data.Migrations.AppData
                     b.ToTable("Tenants");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Tenant.CompanyTenant", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.CompanyTenant", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Tenant.Tenant", "Tenant")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.TenantEntities.Tenant", "Tenant")
                         .WithMany("Companies")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade);

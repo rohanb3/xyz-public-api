@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xyzies.TWC.Public.Api.Models;
-using Xyzies.TWC.Public.Data.Entities.Tenant;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {

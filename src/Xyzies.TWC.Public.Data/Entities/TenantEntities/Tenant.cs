@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Core;
 
-namespace Xyzies.TWC.Public.Data.Entities.Tenant
+namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
 {
     public class Tenant : BaseEntity<Guid>
     {
@@ -15,6 +15,7 @@ namespace Xyzies.TWC.Public.Data.Entities.Tenant
 
         public DateTime CreatedOn { get; set; }
 
+        public virtual TenantSetting TenantSetting { get; set; }
         public virtual List<CompanyTenant> Companies { get; set; }
 
     }

@@ -1,9 +1,5 @@
 ﻿using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xyzies.TWC.Public.Data.Entities.Tenant;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 
 namespace Xyzies.TWC.Public.Api.Models.MapperConfigurations
 {

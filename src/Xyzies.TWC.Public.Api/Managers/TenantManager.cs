@@ -7,7 +7,7 @@ using Mapster;
 using Microsoft.Extensions.Logging;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
-using Xyzies.TWC.Public.Data.Entities.Tenant;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Managers
