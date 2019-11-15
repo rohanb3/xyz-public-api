@@ -185,7 +185,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 throw new KeyNotFoundException("Tenant is not exists");
             }
-            await _companyTenantRepository.AddAsync(new CompanyTenant { CompanyId = companyId, TenantId = tenantId };)
+            await _companyTenantRepository.AddAsync(new CompanyTenant { CompanyId = companyId, TenantId = tenantId });
         }
     }
 }

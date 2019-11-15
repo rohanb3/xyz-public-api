@@ -119,6 +119,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<IRelationService, RelationService>();
             services.AddScoped<ICompanyAvatarsManager, CompanyAvatarsManager>();
             services.AddScoped<ITenantRepository, TenantRepository>();
+            services.AddScoped<ICompanyTenantRepository, CompanyTenantRepository>();
             services.AddScoped<ITenantManager, TenantManager>();
             services.AddScoped<TestSeed>();
 
