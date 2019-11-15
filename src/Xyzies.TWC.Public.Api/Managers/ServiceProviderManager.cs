@@ -7,6 +7,7 @@ using Mapster;
 using Microsoft.Extensions.Logging;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Api.Models.Filters;
 using Xyzies.TWC.Public.Data.Entities.ServiceProvider;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
@@ -50,9 +51,9 @@ namespace Xyzies.TWC.Public.Api.Managers
             return await _serviceProviderRepository.AddAsync(serviceProvider);
         }
 
-        public async Task<IEnumerable<ServiceProviderModel>> Get()
+        public async Task<IEnumerable<ServiceProviderModel>> Get(TenantFilterModel filterModel)
         {
-            var serviceProvidersList = (await _serviceProviderRepository.GetAsync()).ToList();
+            var serviceProvidersList = (await _serviceProviderRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
             var companyIds = serviceProvidersList.SelectMany(x => x.Companies.Select(c => c.CompanyId)).Distinct().ToList();
             var companies = (await _companyManager.GetCompanies(new CompanyFilter { CompanyIds = companyIds })).Data.ToHashSet();
             var result = new List<ServiceProviderModel>();
