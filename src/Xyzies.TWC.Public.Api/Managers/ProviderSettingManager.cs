@@ -9,11 +9,11 @@ using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
-    public class TenantrSettingManager : ITenantrSettingManager
+    public class TenantSettingManager : ITenantSettingManager
     {
-        private readonly ITenantsSettingRepository _tenantsSettingRepository;
+        private readonly ITenantSettingRepository _tenantsSettingRepository;
 
-        public TenantrSettingManager(ITenantsSettingRepository providersSettingRepository)
+        public TenantSettingManager(ITenantSettingRepository providersSettingRepository)
         {
             _tenantsSettingRepository = providersSettingRepository;
 

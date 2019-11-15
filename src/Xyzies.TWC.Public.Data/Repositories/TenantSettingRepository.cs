@@ -8,9 +8,9 @@ using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories
 {
-    public class ProvidersSettingRepository : EfCoreBaseRepository<Guid, TenantSetting>, IRepository<Guid, TenantSetting>, ITenantsSettingRepository
+    public class TenantSettingRepository : EfCoreBaseRepository<Guid, TenantSetting>, IRepository<Guid, TenantSetting>, ITenantSettingRepository
     {
-        public ProvidersSettingRepository(AppDataContext dbContext)
+        public TenantSettingRepository(AppDataContext dbContext)
             : base(dbContext)
         {
 

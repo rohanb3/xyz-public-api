@@ -17,8 +17,8 @@ namespace Xyzies.TWC.Public.Data
         #region Entities
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<CompanyTenant> CompanyTenants { get; set; }
-        public DbSet<TenantSetting> ProvidersSetting { get; set; }
-        
+        public DbSet<TenantSetting> TenantsSetting { get; set; }
+
         #endregion
     }
 }

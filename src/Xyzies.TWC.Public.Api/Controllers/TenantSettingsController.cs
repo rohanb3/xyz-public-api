@@ -19,9 +19,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <summary>
         /// Service provider settings controller ctor
         /// </summary>
-        private readonly ITenantrSettingManager _tenantSettingManager;
+        private readonly ITenantSettingManager _tenantSettingManager;
 
-        public TenantSettingsController(ITenantrSettingManager tenantSettingManager)
+        public TenantSettingsController(ITenantSettingManager tenantSettingManager)
 
         {
             _tenantSettingManager = tenantSettingManager;

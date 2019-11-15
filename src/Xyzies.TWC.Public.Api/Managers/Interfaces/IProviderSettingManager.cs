@@ -4,7 +4,7 @@ using Xyzies.TWC.Public.Api.Models;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
-    public interface ITenantrSettingManager
+    public interface ITenantSettingManager
     {
         Task<TenantSettingModel> GetTenantSettings(Guid providerId);
         Task InsertTenantSettings(Guid providerId, TenantSettingModel settings);
