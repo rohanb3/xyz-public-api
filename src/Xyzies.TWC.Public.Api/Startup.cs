@@ -121,6 +121,8 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<ICompanyTenantRepository, CompanyTenantRepository>();
             services.AddScoped<ITenantManager, TenantManager>();
+            services.AddScoped<ITenantSettingManager, TenantSettingManager>();
+            services.AddScoped<ITenantSettingRepository, TenantSettingRepository>();
             services.AddScoped<TestSeed>();
 
             #endregion
