@@ -3,10 +3,10 @@ namespace Xyzies.TWC.Public.Api.Models
     public class TenantSettingModel
     {
         public string PrimaryColor { get; set; }
-        public string SecondaryColor { get; set; }
         public string LinkColor { get; set; }
         public string Logo { get; set; }
-        public string Video { get; set; }
+        public string BackgroundVideo { get; set; }
+        public string BackgroundImage { get; set; }
         public string InputBackgroundColor { get; set; }
         public string InputTextColor { get; set; }
         public string ActiveInputBackgroundColor { get; set; }
@@ -16,9 +16,13 @@ namespace Xyzies.TWC.Public.Api.Models
         public string PrimaryButtonTextColor { get; set; }
         public string TextColor { get; set; }
         public bool ShowXYZLogo { get; set; }
-        public bool CallImage { get; set; }
+        public string CallImage { get; set; }
+        public decimal CallImageScale { get; set; }
+        public string CallHintTextColor { get; set; }
         public string DefaultButtonColor { get; set; }
         public string DefaultButtonTextColor { get; set; }
         public string IconColor { get; set; }
+        public string BackgroundColorFrom { get; set; }
+        public string BackgroundColorTo { get; set; }
     }
 }

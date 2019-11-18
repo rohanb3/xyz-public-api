@@ -29,7 +29,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Get tenant settings by provider id(GUID)
+        /// Get tenant settings by id(GUID)
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -43,6 +43,29 @@ namespace Xyzies.TWC.Public.Api.Controllers
             try
             {
                 var settings = await _tenantSettingManager.GetTenantSettings(tenantId);
+                return Ok(settings);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get tenant settings by company id(int)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("/by-company/{companyId}")]
+        [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
+        public async Task<IActionResult> GetTenantSettingByCompanyId(int companyId)
+        {
+            try
+            {
+                var settings = await _tenantSettingManager.GetTenantSettingsByCompanyId(companyId);
                 return Ok(settings);
             }
             catch (KeyNotFoundException)

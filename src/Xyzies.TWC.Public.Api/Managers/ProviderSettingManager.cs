@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
@@ -16,7 +17,6 @@ namespace Xyzies.TWC.Public.Api.Managers
         public TenantSettingManager(ITenantSettingRepository providersSettingRepository)
         {
             _tenantsSettingRepository = providersSettingRepository;
-
         }
 
         public async Task<TenantSettingModel> GetTenantSettings(Guid providerId)
@@ -28,6 +28,16 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new KeyNotFoundException();
             }
             return JsonConvert.DeserializeObject<TenantSettingModel>(providerSettingString);
+        }
+
+        public async Task<TenantSettingModel> GetTenantSettingsByCompanyId(int companyId)
+        {
+            var setting = await _tenantsSettingRepository.GetByAsync(x => x.Tenant.Companies.Select(c => c.CompanyId).Contains(companyId));
+            if (setting == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            return JsonConvert.DeserializeObject<TenantSettingModel>(setting.Settings);
         }
 
         public async Task InsertTenantSettings(Guid providerId, TenantSettingModel settings)
