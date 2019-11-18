@@ -263,5 +263,32 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 return NotFound();
             }
         }
+
+        /// <summary>
+        /// Get single model of Tenant by company id(int)
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("trusted/{token}/single/{id}/by-company")]
+        [ProducesResponseType(typeof(TenantSingleModel), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
+        public async Task<IActionResult> GetSingle(int id, string token)
+        {
+            try
+            {
+                if (token != Consts.StaticToken)
+                {
+                    return new ContentResult { StatusCode = 403 };
+                }
+                var tenant = await _tenantService.GetSingle(id);
+                return Ok(tenant);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
     }
 }
