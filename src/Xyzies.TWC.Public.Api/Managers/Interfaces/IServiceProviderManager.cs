@@ -6,10 +6,9 @@ using Xyzies.TWC.Public.Api.Models.Filters;
 
 namespace Xyzies.TWC.Public.Api.Managers.Interfaces
 {
-    public interface ITenantManager
+    public interface IServiceProviderManager
     {
         Task<Guid> Create(TenantRequest request);
-        Task CreateRelation(int companyId, Guid tenantId);
         Task Update(Guid id, TenantRequest request);
         Task UpdateByCompanyId(int companyId, TenantRequest request);
         Task<IEnumerable<TenantModel>> Get(TenantFilterModel filterModel);

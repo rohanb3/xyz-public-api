@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Models;
+using Xyzies.TWC.Public.Api.Models.Filters;
 
 namespace Xyzies.TWC.Public.Api.Controllers
 {
@@ -169,9 +170,9 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Tenant API" })]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery]TenantFilterModel filterModel)
         {
-            var tenantList = await _tenantService.Get();
+            var tenantList = await _tenantService.Get(filterModel);
             return Ok(tenantList);
         }
 
