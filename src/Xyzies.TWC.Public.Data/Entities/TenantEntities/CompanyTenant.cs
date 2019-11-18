@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Xyzies.TWC.Public.Data.Core;
 
-namespace Xyzies.TWC.Public.Data.Entities.Tenant
+namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
 {
     public class CompanyTenant : BaseEntity<int>
     {
