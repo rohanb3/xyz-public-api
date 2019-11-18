@@ -1,4 +1,4 @@
-using Xyzies.TWC.Public.Data.Entities.Tenant;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 
 namespace Xyzies.TWC.Public.Data.Repositories

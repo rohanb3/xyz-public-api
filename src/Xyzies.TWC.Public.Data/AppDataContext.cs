@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Xyzies.TWC.Public.Data.Entities;
-using Xyzies.TWC.Public.Data.Entities.EntityConfigurations;
-using Xyzies.TWC.Public.Data.Entities.Tenant;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities;
 
 namespace Xyzies.TWC.Public.Data
 {
