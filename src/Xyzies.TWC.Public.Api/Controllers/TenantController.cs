@@ -15,7 +15,7 @@ using Xyzies.TWC.Public.Api.Models.Filters;
 namespace Xyzies.TWC.Public.Api.Controllers
 {
     /// <summary>
-    /// Service provider controller
+    /// Tenant controller
     /// </summary>
     [ApiController]
     [Route("tenant")]
@@ -26,7 +26,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         private readonly ITenantManager _tenantService = null;
 
         /// <summary>
-        /// Service provider constructor
+        /// Tenant controller constructor
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="TenantService"></param>
@@ -69,7 +69,6 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <summary>
         /// Create company to tenant relation
         /// </summary>
-        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("{companyId}/in/{tenantId}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created  /* 201 */)]

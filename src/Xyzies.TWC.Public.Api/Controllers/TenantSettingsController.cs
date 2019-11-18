@@ -17,7 +17,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
     public class TenantSettingsController : Controller
     {
         /// <summary>
-        /// Service provider settings controller ctor
+        /// Tenant settings controller ctor
         /// </summary>
         private readonly ITenantSettingManager _tenantSettingManager;
 
@@ -37,7 +37,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant settings API" })]
         public async Task<IActionResult> GetTenantSettingById(Guid tenantId)
         {
             try
@@ -56,11 +56,11 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("/by-company/{companyId}")]
+        [HttpGet("{companyId}/by-company")]
         [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant settings API" })]
         public async Task<IActionResult> GetTenantSettingByCompanyId(int companyId)
         {
             try
@@ -75,16 +75,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Post tenant settings for provider
+        /// Post tenant settings for tenant
         /// </summary>
-        /// <param name="providerId"></param>
+        /// <param name="tenantId"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
         [HttpPost("{tenantId}")]
         [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant settings API" })]
         public async Task<IActionResult> PostTenantSetting(Guid tenantId, [FromBody] TenantSettingModel settings)
         {
             await _tenantSettingManager.InsertTenantSettings(tenantId, settings);
@@ -92,16 +92,16 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
-        /// Update tenant settings by provider id(GUID)
+        /// Update tenant settings by tenant id(GUID)
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tenantId"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        [HttpPut("{providerId}")]
+        [HttpPut("{tenantId}")]
         [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
-        [SwaggerOperation(Tags = new[] { "Service provider settings API" })]
+        [SwaggerOperation(Tags = new[] { "Tenant settings API" })]
         public async Task<IActionResult> UpdateTenantSettingById(Guid tenantId, TenantSettingModel settings)
         {
             try

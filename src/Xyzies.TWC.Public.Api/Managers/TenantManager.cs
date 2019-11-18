@@ -57,7 +57,15 @@ namespace Xyzies.TWC.Public.Api.Managers
 
         public async Task<IEnumerable<TenantModel>> Get(TenantFilterModel filterModel)
         {
-            var tenantsList = (await _tenantRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
+            List<Tenant> tenantsList;
+            if (filterModel != null && filterModel.TenantIds != null && filterModel.TenantIds.Any())
+            {
+                tenantsList = (await _tenantRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
+            }
+            else
+            {
+                tenantsList = (await _tenantRepository.GetAsync()).ToList();
+            }
             var companyIds = tenantsList.SelectMany(x => x.Companies.Select(c => c.CompanyId)).Distinct().ToList();
             var companies = (await _companyManager.GetCompanies(new CompanyFilter { CompanyIds = companyIds })).Data.ToHashSet();
             var result = new List<TenantModel>();
