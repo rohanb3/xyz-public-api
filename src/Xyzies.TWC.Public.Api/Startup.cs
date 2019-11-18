@@ -218,6 +218,7 @@ namespace Xyzies.TWC.Public.Api
                 {
                     options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");//
 
+
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>
