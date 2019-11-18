@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Xyzies.TWC.Public.Data.Core;
@@ -19,4 +19,5 @@ namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
         public virtual List<CompanyTenant> Companies { get; set; }
 
     }
+
 }

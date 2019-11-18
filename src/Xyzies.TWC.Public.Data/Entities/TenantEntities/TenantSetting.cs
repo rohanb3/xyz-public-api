@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xyzies.TWC.Public.Data.Core;
 
 namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
