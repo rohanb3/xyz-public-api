@@ -19,4 +19,5 @@ namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
         public virtual List<CompanyTenant> Companies { get; set; }
 
     }
+
 }

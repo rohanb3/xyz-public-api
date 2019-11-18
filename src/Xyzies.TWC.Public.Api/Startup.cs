@@ -24,7 +24,6 @@ using Xyzies.TWC.Public.Api.Managers;
 using Xyzies.TWC.Public.Api.Managers.Interfaces;
 using Xyzies.TWC.Public.Api.Managers.Relation;
 using Xyzies.TWC.Public.Api.Models;
-using Xyzies.TWC.Public.Api.Models.MapperConfigurations;
 using Xyzies.TWC.Public.Api.Models.Options;
 using Xyzies.TWC.Public.Data;
 using Xyzies.TWC.Public.Data.Entities;
@@ -203,7 +202,7 @@ namespace Xyzies.TWC.Public.Api
             TypeAdapterConfig<CreateCompanyModel, Company>.NewConfig().Map(dest => dest.GeoLon, src => src.GeoLog);
             TypeAdapterConfig<BranchContact, BranchContactModel>.NewConfig();
 
-            TenantMappingConfigurations.ConfigureTenantMappers();
+            //TenantMappingConfigurations.ConfigureTenantMappers();
 
             #endregion
 
@@ -221,6 +220,7 @@ namespace Xyzies.TWC.Public.Api
                 {
                     options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");//
 
+                  
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>
