@@ -56,7 +56,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{companyId}/by-company")]
+        [HttpGet("by-company/{companyId}")]
         [ProducesResponseType(typeof(TenantSettingModel), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest /* 400 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
