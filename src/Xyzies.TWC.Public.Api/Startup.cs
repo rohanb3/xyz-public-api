@@ -124,6 +124,7 @@ namespace Xyzies.TWC.Public.Api
             services.AddScoped<ICompanyTenantRepository, CompanyTenantRepository>();
             services.AddScoped<ITenantSettingManager, TenantSettingManager>();
             services.AddScoped<ITenantSettingRepository, TenantSettingRepository>();
+            services.AddScoped<IMigrationManager, MigrationManager>();
             services.AddScoped<TestSeed>();
 
             #endregion
@@ -220,8 +221,6 @@ namespace Xyzies.TWC.Public.Api
                 .UseSwagger(options =>
                 {
                     options.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.BasePath = $"{ServiceBaseUrlPrefix}");//
-
-
                     options.RouteTemplate = "/swagger/{documentName}/swagger.json";
                 })
                 .UseSwaggerUI(uiOptions =>
