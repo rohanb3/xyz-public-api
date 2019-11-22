@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using Xyzies.TWC.Public.Data.Entities.TenantEntities;
+using Xyzies.TWC.Public.Data.Entities.TenantEntities.EntityConfigurations;
 
 namespace Xyzies.TWC.Public.Data
 {
@@ -17,5 +19,10 @@ namespace Xyzies.TWC.Public.Data
         public DbSet<TenantSetting> TenantsSetting { get; set; }
 
         #endregion
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new TenantConfiguration());
+        }
     }
 }
