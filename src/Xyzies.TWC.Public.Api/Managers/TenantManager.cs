@@ -194,6 +194,11 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 throw new KeyNotFoundException("Tenant is not exists");
             }
+            var isCompanyAssigned = (await _companyTenantRepository.GetByAsync(x => x.CompanyId == companyId)) != null;
+            if (isCompanyAssigned)
+            {
+                throw new DuplicateNameException("Company assigned to another Tenant");
+            }
             await _companyTenantRepository.AddAsync(new CompanyTenant { CompanyId = companyId, TenantId = tenantId });
         }
     }
