@@ -91,6 +91,10 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new KeyNotFoundException();
             }
             var companyIds = tenant.Companies.Select(x => x.CompanyId).ToList();
+            if (!companyIds.Any())
+            {
+                return tenant.Adapt<TenantModel>();
+            }
             var companies = (await _companyManager.GetCompanies(new CompanyFilter { CompanyIds = companyIds })).Data.ToList();
             var tenantModel = tenant.Adapt<TenantModel>();
             tenantModel.Companies = companies;
