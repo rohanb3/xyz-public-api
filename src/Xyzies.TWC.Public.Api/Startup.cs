@@ -62,7 +62,7 @@ namespace Xyzies.TWC.Public.Api
             }
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
-            // TODO: ExecutionStrategy
+            // TODO: ExecutionStrategy/
             services.AddDbContext<AppDataContext>(ctxOptions =>
                 ctxOptions.UseSqlServer(dbConnectionString));
 
