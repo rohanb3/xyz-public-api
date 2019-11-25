@@ -56,5 +56,13 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="requestModel"></param>
         /// <returns></returns>
         Task<BranchMin> GetAnyBranchAsync(BranchMinRequestModel requestModel);
+
+        /// <summary>
+        /// Uodate
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<bool> Update(Guid id, CreateBranchModel request);
     }
 }

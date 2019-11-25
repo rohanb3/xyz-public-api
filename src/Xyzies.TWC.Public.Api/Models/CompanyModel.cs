@@ -82,9 +82,11 @@ namespace Xyzies.TWC.Public.Api.Models
         public string MarketStrategy { get; set; }
         public bool NoSyncInfusion { get; set; }
         public Guid? CompanyStatusKey { get; set; }
-        public RequestStatus RequestStatus{ get; set; }
+        public RequestStatus RequestStatus { get; set; }
         public int? CountSalesRep { get; set; }
         public int? CountBranch { get; set; }
+
+        public TenantSingleModel Tenant { get; set; }
 
         public IList<int> UserIds { get; set; } = new List<int>();
 

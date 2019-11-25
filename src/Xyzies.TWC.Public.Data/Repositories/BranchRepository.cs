@@ -10,7 +10,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 {
     public class BranchRepository : EfCoreBaseRepository<Guid, Branch>, IBranchRepository
     {
-        public BranchRepository(AppDataContext dbContext)
+        public BranchRepository(CablePortalAppDataContext dbContext)
             : base(dbContext)
         {
 

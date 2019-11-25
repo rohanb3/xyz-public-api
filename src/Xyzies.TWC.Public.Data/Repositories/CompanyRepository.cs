@@ -9,7 +9,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 {
     public class CompanyRepository : EfCoreBaseRepository<int, Company>, ICompanyRepository
     {
-        public CompanyRepository(AppDataContext dbContext)
+        public CompanyRepository(CablePortalAppDataContext dbContext)
             : base(dbContext)
         {
 

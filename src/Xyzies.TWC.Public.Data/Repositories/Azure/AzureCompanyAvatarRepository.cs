@@ -120,7 +120,7 @@ namespace Xyzies.TWC.Public.Data.Repositories.Azure
                     blobItems.AddRange(response.Results);
                 } while (continuationToken != null);
 
-                return blobItems.FirstOrDefault(item => item.Uri.AbsoluteUri.Contains("avatar")).Uri.AbsoluteUri;
+                return blobItems.FirstOrDefault(item => item.Uri.AbsoluteUri.Contains("avatar"))?.Uri?.AbsoluteUri;
             }
             catch (StorageException)
             {

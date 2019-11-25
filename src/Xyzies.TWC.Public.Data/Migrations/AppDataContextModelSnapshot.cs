@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xyzies.TWC.Public.Data;
 
-namespace Xyzies.TWC.Public.Data.Migrations
+namespace Xyzies.TWC.Public.Data.Migrations.AppData
 {
     [DbContext(typeof(AppDataContext))]
     partial class AppDataContextModelSnapshot : ModelSnapshot
@@ -15,379 +15,85 @@ namespace Xyzies.TWC.Public.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.CompanyTenant", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("Id");
-
-                    b.Property<string>("AddressLine1");
-
-                    b.Property<string>("AddressLine2");
-
-                    b.Property<string>("BranchName")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.Property<string>("City")
-                        .HasMaxLength(64);
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<int?>("CreatedBy");
+                    b.Property<Guid>("TenantId");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.HasKey("Id");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(128);
+                    b.HasIndex("TenantId");
 
-                    b.Property<string>("Fax")
-                        .HasMaxLength(16);
+                    b.ToTable("CompanyTenants");
+                });
 
-                    b.Property<string>("GeoLat")
-                        .HasMaxLength(32);
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.Tenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("GeoLng")
-                        .HasMaxLength(32);
-
-                    b.Property<bool>("IsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
-
-                    b.Property<int?>("ModifiedBy");
-
-                    b.Property<DateTime?>("ModifiedDate");
+                    b.Property<DateTime>("CreatedOn");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(16);
+                        .IsRequired();
 
-                    b.Property<string>("State")
-                        .HasMaxLength(64);
-
-                    b.Property<string>("ZipCode")
-                        .HasMaxLength(16);
+                    b.Property<string>("TenantName")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.ToTable("Tenants");
 
-                    b.ToTable("TWC_Branch");
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0ed21401-e0e6-4b22-aa89-4c5522212b67"),
+                            CreatedOn = new DateTime(2019, 11, 22, 5, 49, 22, 39, DateTimeKind.Utc).AddTicks(6171),
+                            Phone = "380938821599",
+                            TenantName = "Spectrum"
+                        });
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.TenantSetting", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("Id");
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("BranchContactTypeId");
+                    b.Property<string>("Settings");
 
-                    b.Property<Guid>("BranchId");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<DateTime?>("ModifiedDate");
-
-                    b.Property<string>("PersonLastName")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("PersonName")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("PersonTitle")
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(100);
+                    b.Property<Guid>("TenantId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchContactTypeId");
+                    b.HasIndex("TenantId")
+                        .IsUnique();
 
-                    b.HasIndex("BranchId");
-
-                    b.ToTable("TWC_BranchContact");
+                    b.ToTable("TenantsSetting");
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContactType", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.CompanyTenant", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TWC_BranchContactType");
-                });
-
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("CompanyID")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AccountManager");
-
-                    b.Property<string>("ActivityStatus");
-
-                    b.Property<string>("Address");
-
-                    b.Property<int?>("Agentid");
-
-                    b.Property<DateTime?>("ApprovedDate");
-
-                    b.Property<string>("BankAccountNumber");
-
-                    b.Property<bool?>("BankInfoGiven");
-
-                    b.Property<string>("BankName");
-
-                    b.Property<string>("BankNumber");
-
-                    b.Property<string>("BusinessDescription");
-
-                    b.Property<int?>("BusinessSource");
-
-                    b.Property<string>("CallerId");
-
-                    b.Property<string>("CellNumber");
-
-                    b.Property<string>("City");
-
-                    b.Property<Guid?>("CompanyKey");
-
-                    b.Property<string>("CompanyName");
-
-                    b.Property<byte?>("CompanyType");
-
-                    b.Property<int?>("CreatedBy");
-
-                    b.Property<DateTime?>("CreatedDate");
-
-                    b.Property<string>("CrmCompanyId");
-
-                    b.Property<int?>("CustomerDemographicId");
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("Fax");
-
-                    b.Property<string>("FedId");
-
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("GeoLat");
-
-                    b.Property<string>("GeoLon");
-
-                    b.Property<bool?>("IsAgreement");
-
-                    b.Property<bool?>("IsCallCenter");
-
-                    b.Property<bool>("IsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
-
-                    b.Property<bool?>("IsMarketPlace");
-
-                    b.Property<bool?>("IsOwnerPassBackground");
-
-                    b.Property<bool?>("IsSellsLifelineWireless");
-
-                    b.Property<bool?>("IsSpectrum");
-
-                    b.Property<bool?>("IsWebsite");
-
-                    b.Property<string>("LastName");
-
-                    b.Property<string>("LegalName");
-
-                    b.Property<int?>("LocationTypeId");
-
-                    b.Property<string>("MarketPlaceName");
-
-                    b.Property<string>("MarketStrategy");
-
-                    b.Property<int?>("ModifiedBy");
-
-                    b.Property<DateTime?>("ModifiedDate");
-
-                    b.Property<int?>("NumberofStores");
-
-                    b.Property<int?>("ParentCompanyId");
-
-                    b.Property<int?>("PaymentMode");
-
-                    b.Property<string>("Phone");
-
-                    b.Property<string>("PhysicalName");
-
-                    b.Property<string>("PrimaryContactName");
-
-                    b.Property<string>("PrimaryContactTitle");
-
-                    b.Property<string>("RetailerGoogleAccount");
-
-                    b.Property<string>("RetailerGooglePassword");
-
-                    b.Property<Guid?>("RetailerGroupKey");
-
-                    b.Property<string>("SocialMediaAccount");
-
-                    b.Property<string>("State");
-
-                    b.Property<string>("StateEstablished");
-
-                    b.Property<int?>("Status");
-
-                    b.Property<int?>("StoreID");
-
-                    b.Property<int?>("StoreLocationCount");
-
-                    b.Property<Guid?>("TeamKey");
-
-                    b.Property<int?>("TypeOfCompany");
-
-                    b.Property<string>("WebsiteList");
-
-                    b.Property<string>("XyziesId");
-
-                    b.Property<string>("ZipCode");
-
-                    b.HasKey("Id")
-                        .HasName("CompanyID");
-
-                    b.ToTable("TWC_Companies");
-                });
-
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Users", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("UserID")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool?>("Active");
-
-                    b.Property<string>("Address");
-
-                    b.Property<Guid?>("BranchId")
-                        .HasColumnName("BranchID");
-
-                    b.Property<string>("City");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnName("CompanyID");
-
-                    b.Property<int?>("CreatedBy");
-
-                    b.Property<DateTime?>("CreatedDate");
-
-                    b.Property<bool?>("Deleted");
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("IPAddressRestriction");
-
-                    b.Property<string>("Imagename");
-
-                    b.Property<bool?>("IsEmailVerified");
-
-                    b.Property<bool?>("IsIdentityUploaded");
-
-                    b.Property<bool?>("IsPhoneVerified");
-
-                    b.Property<bool?>("IsUserPictureUploaded");
-
-                    b.Property<bool?>("Is_Agreement");
-
-                    b.Property<string>("LastName");
-
-                    b.Property<string>("LoginIpAddress");
-
-                    b.Property<int?>("ManagedBy");
-
-                    b.Property<int?>("ModifiedBy");
-
-                    b.Property<DateTime?>("ModifiedDate");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Password");
-
-                    b.Property<DateTime?>("PasswordExpiryOn");
-
-                    b.Property<string>("Phone");
-
-                    b.Property<string>("PhotoID");
-
-                    b.Property<string>("Role");
-
-                    b.Property<int?>("SalesPersonID");
-
-                    b.Property<string>("SocialMediaAccount");
-
-                    b.Property<string>("State");
-
-                    b.Property<int?>("StatusId");
-
-                    b.Property<Guid?>("UserGuid");
-
-                    b.Property<int?>("UserRefID");
-
-                    b.Property<string>("XyziesId");
-
-                    b.Property<string>("ZipCode");
-
-                    b.HasKey("Id")
-                        .HasName("UserID");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("TWC_Users");
-                });
-
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Branch", b =>
-                {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
-                        .WithMany("Branches")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.TenantEntities.Tenant", "Tenant")
+                        .WithMany("Companies")
+                        .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.BranchContact", b =>
+            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.TenantEntities.TenantSetting", b =>
                 {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.BranchContactType", "BranchContactType")
-                        .WithMany()
-                        .HasForeignKey("BranchContactTypeId")
+                    b.HasOne("Xyzies.TWC.Public.Data.Entities.TenantEntities.Tenant", "Tenant")
+                        .WithOne("TenantSetting")
+                        .HasForeignKey("Xyzies.TWC.Public.Data.Entities.TenantEntities.TenantSetting", "TenantId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Branch", "Branch")
-                        .WithMany("BranchContacts")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Xyzies.TWC.Public.Data.Entities.Users", b =>
-                {
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Branch")
-                        .WithMany("BranchUsers")
-                        .HasForeignKey("BranchId");
-
-                    b.HasOne("Xyzies.TWC.Public.Data.Entities.Company", "Company")
-                        .WithMany("CompanyUsers")
-                        .HasForeignKey("CompanyId");
                 });
 #pragma warning restore 612, 618
         }

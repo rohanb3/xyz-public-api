@@ -16,6 +16,7 @@ namespace Xyzies.TWC.Public.Api.Managers
     {
         private readonly ILogger<BranchManager> _logger = null;
         private readonly IBranchRepository _branchRepository = null;
+        private readonly ICompanyRepository _companyRepository = null;
         private readonly IUserRepository _userRepository = null;
         private readonly string salesRoleId = "2";
 
@@ -24,15 +25,19 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="branchRepository"></param>
+        /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
         public BranchManager(ILogger<BranchManager> logger,
             IBranchRepository branchRepository,
+            ICompanyRepository companyRepository,
             IUserRepository userRepository)
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
             _branchRepository = branchRepository ??
                 throw new ArgumentNullException(nameof(branchRepository));
+            _companyRepository = companyRepository ??
+                throw new ArgumentNullException(nameof(companyRepository));
             _userRepository = userRepository ??
                 throw new ArgumentNullException(nameof(userRepository));
         }
@@ -111,7 +116,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<PagingResult<BranchModel>> GetBranchesByCompany(int companyId, BranchFilter filter, Sortable sortable, Paginable paginable)
         {
-            // TODO: Add check: Is company exist?
+            var company = await _companyRepository.GetAsync(companyId);
+
+            if (company == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
             IQueryable<Branch> query = await _branchRepository.GetAsync(x => x.Company.Id == companyId);
 
@@ -127,7 +137,7 @@ namespace Xyzies.TWC.Public.Api.Managers
             var branches = query.ToList();
             var branchModelList = new List<BranchModel>();
 
-            var allUsersQuery = await _userRepository.GetAsync(x => string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
+            var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
 
             foreach (var branch in branches)
             {
@@ -205,12 +215,12 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 if (!string.IsNullOrEmpty(branchFilter.StateFilter))
                 {
-                    query = query.Where(x => x.State.ToLower().Equals(branchFilter.StateFilter.ToLower()));
+                    query = query.Where(x => x.State != null && x.State.ToLower().Equals(branchFilter.StateFilter.ToLower()));
                 }
 
                 if (!string.IsNullOrEmpty(branchFilter.CityFilter))
                 {
-                    query = query.Where(x => x.City.ToLower().Contains(branchFilter.CityFilter.ToLower()));
+                    query = query.Where(x => x.City != null && x.City.ToLower().Contains(branchFilter.CityFilter.ToLower()));
                 }
 
                 if (!string.IsNullOrEmpty(branchFilter.EmailFilter))
@@ -253,11 +263,32 @@ namespace Xyzies.TWC.Public.Api.Managers
             {
                 branch = await _branchRepository.GetByAsync(x => x.BranchName == requestModel.BranchName);
             }
-            if(branch == null)
+            if (branch == null)
             {
                 throw new KeyNotFoundException();
             }
             return branch.Adapt<BranchMin>();
+        }
+        /// <inheritdoc />
+        public async Task<bool> Update(Guid id, CreateBranchModel request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (!(await _branchRepository.HasAsync(id)))
+            {
+                throw new KeyNotFoundException();
+            }
+            var branch = request.Adapt<Branch>();
+            branch.Id = id;
+            if (request.BranchContacts != null)
+            {
+                branch.BranchContacts = new List<BranchContact>() { request.BranchContacts };
+            }
+
+            return await _branchRepository.UpdateAsync(branch);
         }
 
         /// <inheritdoc />
@@ -298,7 +329,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 {
                     query = query.OrderByDescending(x => x.IsEnabled);
                 }
-                else query = query.OrderBy(x => x.State);
+                else query = query.OrderBy(x => x.IsEnabled);
             }
 
             if (sortable.SortBy.ToLower() == "city")

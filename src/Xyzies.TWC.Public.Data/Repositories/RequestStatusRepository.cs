@@ -9,7 +9,7 @@ namespace Xyzies.TWC.Public.Data.Repositories
 {
     public class RequestStatusRepository : EfCoreBaseRepository<Guid, RequestStatus>, IRepository<Guid, RequestStatus>, IRequestStatusRepository
     {
-        public RequestStatusRepository(AppDataContext dbContext)
+        public RequestStatusRepository(CablePortalAppDataContext dbContext)
             : base(dbContext)
         {
 
