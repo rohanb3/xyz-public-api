@@ -9,7 +9,7 @@ using Xyzies.TWC.Public.Data;
 
 namespace Xyzies.TWC.Public.Data.Migrations
 {
-    [DbContext(typeof(AppDataContext))]
+    [DbContext(typeof(CablePortalAppDataContext))]
     [Migration("20190411084128_BranchTypes")]
     partial class BranchTypes
     {

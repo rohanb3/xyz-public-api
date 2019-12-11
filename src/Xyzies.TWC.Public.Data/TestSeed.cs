@@ -11,9 +11,9 @@ namespace Xyzies.TWC.Public.Data
     public class TestSeed : IDisposable
     {
         private readonly ILogger<TestSeed> _logger = null;
-        private readonly AppDataContext _dbContext = null;
+        private readonly CablePortalAppDataContext _dbContext = null;
 
-        public TestSeed(ILogger<TestSeed> logger, AppDataContext dbContext)
+        public TestSeed(ILogger<TestSeed> logger, CablePortalAppDataContext dbContext)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -30,7 +30,10 @@ namespace Xyzies.TWC.Public.Data
 
                 var companyId = _dbContext.Companies.FirstOrDefault(x => x.CompanyName.ToLower() == Consts.DefaultCompanyName.ToLower())?.Id;
                 if (companyId == null)
-                    companyId = _dbContext.Companies.Add(GetCompany(requestStatusId.Value)).Entity.Id;
+                    companyId = _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyName)).Entity.Id;
+
+                if (!_dbContext.Companies.Any(x => x.CompanyName == Consts.DefaultCompanyNameNotBindAnyBranch))
+                    _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyNameNotBindAnyBranch));
 
                 if (!_dbContext.Branches.Any(x => x.BranchName.ToLower() == Consts.DefaultBranchName.ToLower()))
                     _dbContext.Branches.Add(GetBranch(companyId.Value));
@@ -38,7 +41,7 @@ namespace Xyzies.TWC.Public.Data
                 _dbContext.SaveChanges();
                 transaction.Commit();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 transaction.Rollback();
                 _logger.LogError(ex, "[Seed] Database is not filling by default data");
@@ -46,10 +49,10 @@ namespace Xyzies.TWC.Public.Data
             }
         }
 
-        private Company GetCompany(Guid? requestStatusId)
+        private Company GetCompany(Guid? requestStatusId, string companyName)
         => new Company
         {
-            CompanyName = Consts.DefaultCompanyName,
+            CompanyName = companyName,
             Email = $"{Guid.NewGuid()}test.com",
             CompanyStatusKey = requestStatusId
         };

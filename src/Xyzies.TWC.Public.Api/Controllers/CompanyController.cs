@@ -184,25 +184,24 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
-        public IActionResult Put([FromRoute]int id, [FromBody] CreateCompanyModel companyModel)
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody] CreateCompanyModel companyModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var companyEntity = companyModel.Adapt<Company>();
-                companyEntity.Id = id;
-
-                bool result = _companyRepository.Update(companyEntity);
+                bool result = await _companyManager.Update(id, companyModel);
                 if (!result)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-
                 return Ok();
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (SqlException ex)
             {
@@ -256,9 +255,24 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// <param name="avatar">Avatar file</param>
         /// <returns></returns>
         [HttpPut("{companyId}/avatar")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Company API" })]
         public async Task<IActionResult> UpdateCompanyAvatar(string companyId, [FromForm] [Required] AvatarModel avatar)
         {
+            int id;
+            if(!int.TryParse(companyId, out id))
+            {
+                return BadRequest("Company id no correct");
+            }
+            var company = _companyRepository.GetAsync(id).GetAwaiter().GetResult();
+
+            if(company == null)
+            {
+                return NotFound();
+            }
+
             var result = await _companyAvatarsManager.UploadCompanyAvatarAsync(new CompanyAvatar { File = avatar.File, Id = companyId });
 
             return result ? Ok() : throw new ApplicationException("result is false");

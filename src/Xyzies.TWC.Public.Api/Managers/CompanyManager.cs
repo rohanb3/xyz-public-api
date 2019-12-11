@@ -8,6 +8,7 @@ using Xyzies.TWC.Public.Data.Entities;
 using Xyzies.TWC.Public.Data.Repositories.Interfaces;
 using Xyzies.TWC.Public.Data.Repositories.Azure;
 using System;
+using Xyzies.TWC.Public.Api.Managers.Interfaces;
 
 namespace Xyzies.TWC.Public.Api.Managers
 {
@@ -19,6 +20,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ICompanyRepository _companyRepository = null;
         private readonly IAzureCompanyAvatarRepository _companyAvatarsRepository = null;
         private readonly IUserRepository _userRepository = null;
+        private readonly ITenantRepository _TenantRep = null;
         private readonly string salesRoleId = "2";
 
         /// <summary>
@@ -28,10 +30,12 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <param name="companyRepository"></param>
         /// <param name="userRepository"></param>
         /// <param name="companyAvatarsRepository"></param>
-        public CompanyManager(ILogger<CompanyManager> logger, IRequestStatusRepository requestStatusRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
+        /// <param name="TenantManager"></param>
+        public CompanyManager(ILogger<CompanyManager> logger, ITenantRepository TenantRep, IRequestStatusRepository requestStatusRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IAzureCompanyAvatarRepository companyAvatarsRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
+            _TenantRep = TenantRep ?? throw new ArgumentNullException(nameof(companyRepository));
             _companyAvatarsRepository = companyAvatarsRepository ?? throw new ArgumentNullException(nameof(companyAvatarsRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
@@ -65,14 +69,14 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             var allUsersQuery = await _userRepository.GetAsync(x => !string.IsNullOrEmpty(x.Role) ? x.Role.Trim().Equals(salesRoleId) : false);
             var allUsers = allUsersQuery.GroupBy(x => x.CompanyId).ToList();
-
+            var Tenants = (await _TenantRep.GetAsync()).ToHashSet();
             foreach (var company in companies)
             {
                 var companyModel = company.Adapt<CompanyModel>();
-
-                companyModel.CountSalesRep = allUsers.Where(x => x.Key == company.Id)?.Count();
+                var Tenant = Tenants.FirstOrDefault(x => x.Companies.Select(c => c.CompanyId).ToHashSet().Contains(company.Id));
+                companyModel.CountSalesRep = allUsers.FirstOrDefault(x => x.Key == company.Id)?.Count();
                 companyModel.CountBranch = company.Branches.Count;
-
+                companyModel.Tenant = Tenant?.Adapt<TenantSingleModel>();
                 companyModelList.Add(companyModel);
             }
 
@@ -87,19 +91,20 @@ namespace Xyzies.TWC.Public.Api.Managers
         }
 
         /// <inheritdoc />
-        public async Task<CompanyModelExtended> GetCompanyById(int Id)
+        public async Task<CompanyModelExtended> GetCompanyById(int id)
         {
-            var companyDetails = await _companyRepository.GetAsync(Id);
+            var companyDetails = await _companyRepository.GetAsync(id);
             var companyDetailModel = companyDetails.Adapt<CompanyModelExtended>();
-
             if (companyDetailModel != null)
             {
-                var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == Id);
+                var Tenant = await _TenantRep.GetTenantByCompany(id);
+                var usersByCompany = await _userRepository.GetAsync(x => x.CompanyId == id);
                 var userByRoleCompany = usersByCompany.ToList().GroupBy(x => x.Role).AsQueryable();
+                companyDetailModel.Tenant = Tenant.Adapt<TenantSingleModel>();
 
                 companyDetailModel.CountSalesRep = userByRoleCompany.Where(x => x.Key == salesRoleId).FirstOrDefault()?.Count() ?? 0;
                 companyDetailModel.CountBranch = companyDetails.Branches.Count;
-                companyDetailModel.LogoUrl = await _companyAvatarsRepository.GetAvatarPath(Id.ToString());
+                companyDetailModel.LogoUrl = await _companyAvatarsRepository.GetAvatarPath(id.ToString());
             }
 
             return companyDetailModel;
@@ -124,7 +129,9 @@ namespace Xyzies.TWC.Public.Api.Managers
                     {
                         continue;
                     }
+                    var Tenant = await _TenantRep.GetTenantByCompany(user.CompanyId.Value);
                     companyModel = company.Adapt<CompanyModel>();
+                    companyModel.Tenant = Tenant.Adapt<TenantSingleModel>();
                     companyModel.UserIds.Add(user.Id);
                 }
                 if (companyModel != null)
@@ -166,6 +173,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public IQueryable<Company> Filtering(CompanyFilter companyFilter, IQueryable<Company> query)
         {
+            //TODO why this filter?
             if (companyFilter.RequestStatusNames != null && companyFilter.RequestStatusNames.Any())
             {
                 query = query.Where(x => x.RequestStatus != null &&
@@ -176,17 +184,17 @@ namespace Xyzies.TWC.Public.Api.Managers
 
             if (!string.IsNullOrEmpty(companyFilter.StateFilter))
             {
-                query = query.Where(x => x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.State) && x.State.ToLower().Equals(companyFilter.StateFilter.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.CityFilter))
             {
-                query = query.Where(x => x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.City) && x.City.ToLower().Contains(companyFilter.CityFilter.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.EmailFilter))
             {
-                query = query.Where(x => x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
+                query = query.Where(x => !string.IsNullOrWhiteSpace(x.Email) && x.Email.ToLower().Contains(companyFilter.EmailFilter.ToLower()));
             }
 
             if (companyFilter.CompanyNameFilter != null && companyFilter.CompanyNameFilter.Count > 0)
@@ -212,6 +220,11 @@ namespace Xyzies.TWC.Public.Api.Managers
             if (companyFilter.CompanyIdFilter.HasValue)
             {
                 query = query.Where(x => x.Id == companyFilter.CompanyIdFilter);
+            }
+
+            if (companyFilter.CompanyIds.Any())
+            {
+                query = query.Where(x => companyFilter.CompanyIds.Contains(x.Id));
             }
 
             if (!string.IsNullOrEmpty(companyFilter.SearchFilter))
@@ -295,11 +308,11 @@ namespace Xyzies.TWC.Public.Api.Managers
         /// <inheritdoc />
         public async Task<int> CreateCompany(CreateCompanyModel createCompanyModel)
         {
-            if(createCompanyModel == null)
+            if (createCompanyModel == null)
             {
                 throw new ArgumentNullException(nameof(createCompanyModel));
             }
-            if(await _companyRepository.HasAsync(x=>x.Email == createCompanyModel.Email))
+            if (await _companyRepository.HasAsync(x => x.Email == createCompanyModel.Email))
             {
                 throw new ApplicationException($"Company with email: {createCompanyModel.Email} already exist");
             }
@@ -307,11 +320,30 @@ namespace Xyzies.TWC.Public.Api.Managers
             company.CreatedDate = DateTime.Now;
             return await _companyRepository.AddAsync(company);
         }
-        
+
+        /// <inheritdoc />
+        public async Task<bool> Update(int id, CreateCompanyModel request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (!(await _companyRepository.HasAsync(id)))
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var company = request.Adapt<Company>();
+            company.Id = id;
+
+            return await _companyRepository.UpdateAsync(company);
+        }
+
         /// <inheritdoc />
         public async Task<CompanyMin> GetAnyCompanyAsync(CompanyMinRequestModel requestModel)
         {
-            if(requestModel == null)
+            if (requestModel == null)
             {
                 throw new ArgumentNullException(nameof(requestModel));
             }
@@ -325,7 +357,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                 company = await _companyRepository.GetByAsync(x => x.CompanyName == requestModel.CompanyName);
             }
 
-            if(company == null)
+            if (company == null)
             {
                 throw new KeyNotFoundException();
             }

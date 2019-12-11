@@ -153,8 +153,59 @@ namespace Xyzies.TWC.Public.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+            try
+            {
+                var branchList = await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable);
+                return Ok(branchList);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
-            return Ok(await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable));
+        /// <summary>
+        /// Returns all found branches related to the specific company
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="filterModel"></param>
+        /// <param name="sortable"></param>
+        /// <param name="paginable"></param>
+        /// <returns></returns>
+        /// <response code="200">List of branches related to the specific company by truested token</response>
+        /// <response code="400">Some input params were wrong</response>
+        /// <response code="404">Company not found</response>
+        [HttpGet("company/{companyId}/branch/{token}/trusted")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<BranchModel>), (int)HttpStatusCode.OK /* 200 */)]
+        [ProducesResponseType(typeof(ModelStateDictionary), (int)HttpStatusCode.BadRequest /* 400 */)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound /* 404 */)] // Company not found
+        [SwaggerOperation(Tags = new[] { "Company API" })]
+        public async Task<IActionResult> GetBranchesOfCompanyTrusted(
+            [FromRoute] int companyId,
+            [FromRoute] string token,
+            [FromQuery] BranchFilter filterModel,
+            [FromQuery] Sortable sortable,
+            [FromQuery] Paginable paginable)
+        {
+            if (token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var branchList = await _branchManager.GetBranchesByCompany(companyId, filterModel, sortable, paginable);
+                return Ok(branchList);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         /// <summary>
@@ -176,6 +227,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
 
             try
             {
+                // TODO can not adapt because CreateBranchModel has one object BranchContacts, but need has collection
                 var branchEntity = branchModel.Adapt<Branch>();
                 Guid branchId = await _branchRepository.AddAsync(branchEntity);
 
@@ -198,25 +250,24 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
-        public IActionResult Put([FromRoute]Guid id, [FromBody] CreateBranchModel branchModel)
+        public async Task<IActionResult> Put([FromRoute]Guid id, [FromBody] CreateBranchModel branchModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var branchEntity = branchModel.Adapt<Branch>();
-                branchEntity.Id = id;
-
-                bool result = _branchRepository.Update(branchEntity);
+                bool result = await _branchManager.Update(id, branchModel);
                 if (!result)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-
                 return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -263,6 +314,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Unauthorized /* 401 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound /* 404 */)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden /* 403 */)]
+        [AllowAnonymous]
         [SwaggerOperation(Tags = new[] { "Branch API" })]
         public async Task<IActionResult> GetAnyBranchAsync([FromQuery]BranchMinRequestModel requestModel, [FromRoute]string token)
         {
@@ -276,7 +328,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
                 var branchMinModel = await _branchManager.GetAnyBranchAsync(requestModel);
                 return Ok(branchMinModel);
             }
-            catch(KeyNotFoundException ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
