@@ -66,6 +66,8 @@ namespace Xyzies.TWC.Public.Api
             services.AddDbContext<AppDataContext>(ctxOptions =>
                 ctxOptions.UseSqlServer(dbConnectionString));
 
+            services.Configure<AssemblyOptions>(options => Configuration.Bind("AssemblyVersion", options));
+
             services.AddDbContext<CablePortalAppDataContext>(ctxOptions =>
                 ctxOptions.UseSqlServer(cpDbConnectionString));
 
