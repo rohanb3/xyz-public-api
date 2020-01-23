@@ -2,6 +2,11 @@ namespace Xyzies.TWC.Public.Api.Models
 {
     public class TenantSettingModel
     {
+        public string WebViewUrl { get; set; }
+        public bool ShowWebViewButton { get; set; }
+        public string WebViewButtonPosition { get; set; }
+        public string WebViewButtonPrimaryColor { get; set; }
+        public string WebViewButtonSecondaryColor { get; set; }
         public string PrimaryColor { get; set; }
         public string LinkColor { get; set; }
         public string Logo { get; set; }
