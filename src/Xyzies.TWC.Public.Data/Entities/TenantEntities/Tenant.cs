@@ -7,6 +7,11 @@ namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
 {
     public class Tenant : BaseEntity<Guid>
     {
+        public Tenant()
+        {
+            Companies = new List<CompanyTenant>();
+        }
+
         [Required]
         public string TenantName { get; set; }
 
@@ -16,7 +21,7 @@ namespace Xyzies.TWC.Public.Data.Entities.TenantEntities
         public DateTime CreatedOn { get; set; }
 
         public virtual TenantSetting TenantSetting { get; set; }
-        public virtual List<CompanyTenant> Companies { get; set; }
+        public virtual ICollection<CompanyTenant> Companies { get; set; }
 
     }
 

@@ -19,11 +19,13 @@ namespace Xyzies.TWC.Public.Api.Managers
         private readonly ITenantRepository _tenantRepository = null;
         private readonly ICompanyTenantRepository _companyTenantRepository = null;
         private readonly ICompanyManager _companyManager = null;
+        private readonly ICompanyRepository _companyRepository = null;
 
         public TenantManager(ILogger<TenantManager> logger,
             ITenantRepository tenantRepository,
             ICompanyManager companyManager,
-            ICompanyTenantRepository companyTenantRepository)
+            ICompanyTenantRepository companyTenantRepository,
+            ICompanyRepository companyRepository)
         {
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
@@ -33,6 +35,8 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new ArgumentNullException(nameof(_companyManager));
             _companyTenantRepository = companyTenantRepository ??
                 throw new ArgumentNullException(nameof(_companyTenantRepository));
+            _companyRepository = companyRepository ??
+                throw new ArgumentNullException(nameof(companyRepository));
         }
 
         public async Task<Guid> Create(TenantRequest request)
@@ -110,6 +114,37 @@ namespace Xyzies.TWC.Public.Api.Managers
                 throw new KeyNotFoundException();
             }
             return tenant.Adapt<TenantSingleModel>();
+        }
+
+        public async Task<IEnumerable<TenantSimpleModel>> GetSimple(TenantFilterModel filterModel)
+        {
+            List<Tenant> tenantsList = new List<Tenant>();
+            if (filterModel != null && filterModel.TenantIds != null && filterModel.TenantIds.Any())
+            {
+                tenantsList = (await _tenantRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
+            }
+            else
+            {
+                tenantsList = (await _tenantRepository.GetAsync()).ToList();
+            }
+            var companyIds = tenantsList.SelectMany(x => x.Companies.Select(c => c.CompanyId)).Distinct().ToList();
+            var companies = (await _companyRepository.GetAsync());
+            var companyBaseModels = (from c in companies
+                                    join cid in companyIds on c.Id equals cid
+                                    select new CompanyBaseModel
+                                    {
+                                        Id = c.Id,
+                                        CompanyName = c.CompanyName
+                                    }).ToList().ToHashSet();
+            var result = tenantsList.Select(x => new TenantSimpleModel
+            {
+                Id = x.Id,
+                Name = x.TenantName,
+                Phone = x.Phone,
+                Companies = companyBaseModels.Where(c => x.Companies.Select(tc => tc.CompanyId).Contains(c.Id)).ToList()
+            });
+
+            return result;
         }
 
         public async Task<TenantModel> Get(int companyId)

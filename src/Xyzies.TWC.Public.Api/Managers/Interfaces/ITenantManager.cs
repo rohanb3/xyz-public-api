@@ -15,6 +15,7 @@ namespace Xyzies.TWC.Public.Api.Managers.Interfaces
         Task<IEnumerable<TenantModel>> Get(TenantFilterModel filterModel);
         Task<TenantModel> GetExtended(Guid id);
         Task<TenantSingleModel> GetSingle(Guid id);
+        Task<IEnumerable<TenantSimpleModel>> GetSimple(TenantFilterModel filterModel);
         Task<TenantSingleModel> GetSingle(int companyId);
         Task<TenantModel> Get(int companyId);
     }
