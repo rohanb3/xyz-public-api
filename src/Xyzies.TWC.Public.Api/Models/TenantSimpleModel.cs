@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Xyzies.TWC.Public.Api.Models
 {
-    public class TenantSimpleModel : TenantSingleModel
+    public class TenantWithCompaniesSimpleModel : TenantSingleModel
     {
         public IEnumerable<CompanyBaseModel> Companies { get; set; }
     }

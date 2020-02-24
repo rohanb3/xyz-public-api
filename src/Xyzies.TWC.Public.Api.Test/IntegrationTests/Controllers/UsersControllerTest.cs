@@ -16,7 +16,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public UsersControllerTest(BaseTest baseTest)
         {
             _baseTest = baseTest ?? throw new ArgumentNullException(nameof(baseTest));
-            _baseTest.DbContext.ClearContext();
+            _baseTest.CableDbContext.ClearContext();
 
             _baseUserUrl = "users";
         }

@@ -223,8 +223,8 @@ namespace Xyzies.TWC.Public.Api.Controllers
         /// Get Tenant single model by List ids
         /// </summary>
         /// <returns></returns>
-        [HttpGet("simple")]
-        [ProducesResponseType(typeof(IEnumerable<TenantSimpleModel>), StatusCodes.Status200OK  /* 200 */)]
+        [HttpGet(Consts.PrefixForBaseUrl.TenantSimple)]
+        [ProducesResponseType(typeof(IEnumerable<TenantWithCompaniesSimpleModel>), StatusCodes.Status200OK  /* 200 */)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
         [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> GetSimple([FromQuery]TenantFilterModel filterModel)

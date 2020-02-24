@@ -62,7 +62,7 @@ namespace Xyzies.TWC.Public.Api.Managers
         public async Task<IEnumerable<TenantModel>> Get(TenantFilterModel filterModel)
         {
             List<Tenant> tenantsList;
-            if (filterModel != null && filterModel.TenantIds != null && filterModel.TenantIds.Any())
+            if (filterModel?.TenantIds != null && filterModel.TenantIds.Any())
             {
                 tenantsList = (await _tenantRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
             }
@@ -116,10 +116,10 @@ namespace Xyzies.TWC.Public.Api.Managers
             return tenant.Adapt<TenantSingleModel>();
         }
 
-        public async Task<IEnumerable<TenantSimpleModel>> GetSimple(TenantFilterModel filterModel)
+        public async Task<IEnumerable<TenantWithCompaniesSimpleModel>> GetSimple(TenantFilterModel filterModel)
         {
             List<Tenant> tenantsList = new List<Tenant>();
-            if (filterModel != null && filterModel.TenantIds != null && filterModel.TenantIds.Any())
+            if (filterModel?.TenantIds != null && filterModel.TenantIds.Any())
             {
                 tenantsList = (await _tenantRepository.GetAsync(x => filterModel.TenantIds.Contains(x.Id))).ToList();
             }
@@ -136,7 +136,7 @@ namespace Xyzies.TWC.Public.Api.Managers
                                         Id = c.Id,
                                         CompanyName = c.CompanyName
                                     }).ToList().ToHashSet();
-            var result = tenantsList.Select(x => new TenantSimpleModel
+            var result = tenantsList.Select(x => new TenantWithCompaniesSimpleModel
             {
                 Id = x.Id,
                 Name = x.TenantName,
