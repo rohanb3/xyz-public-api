@@ -26,7 +26,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public BranchControllerTest(BaseTest baseTest)
         {
             _baseTest = baseTest ?? throw new ArgumentNullException(nameof(baseTest));
-            _baseTest.DbContext.ClearContext();
+            _baseTest.CableDbContext.ClearContext();
             _baseTest.TestSeed.Seed();
             _baseBrqanchUrl = "branch";
         }
@@ -53,15 +53,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneState = 4;
             string state = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.State, state)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneState));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.StateFilter)}={state}";
 
             // Act
@@ -85,15 +85,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             string city = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.City, city)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.CityFilter)}={city}";
 
             // Act
@@ -117,15 +117,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             string email = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.Email, email)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.EmailFilter)}={email}";
 
             // Act
@@ -149,15 +149,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             string branchName = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.BranchName, branchName)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.BranchNameFilter)}={branchName}";
 
             // Act
@@ -181,9 +181,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             bool isEnabled = true;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
-            _baseTest.DbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
+            _baseTest.CableDbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
             var branches = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.IsEnabled, !isEnabled)
                                             .With(x => x.Company, company).CreateMany(branchCount).ToList();
@@ -191,8 +191,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.IsEnabled, isEnabled)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.IsEnabledFilter)}={isEnabled}";
 
             // Act
@@ -216,9 +216,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             bool isEnabled = false;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
-            _baseTest.DbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
+            _baseTest.CableDbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
             var branches = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.IsEnabled, !isEnabled)
                                             .With(x => x.Company, company).CreateMany(branchCount).ToList();
@@ -226,8 +226,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.IsEnabled, isEnabled)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.IsEnabledFilter)}={isEnabled}";
 
             // Act
@@ -249,13 +249,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int branchCount = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
-            var expectedBranch = _baseTest.DbContext.Branches.First();
+            var expectedBranch = _baseTest.CableDbContext.Branches.First();
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.BranchIdFilter)}={expectedBranch.Id}";
 
             // Act
@@ -283,7 +283,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             string branchName = _baseTest.Fixture.Create<string>();
             bool isEnabled = true;
 
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.State, state)
@@ -292,10 +292,10 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                             .With(x => x.BranchName, branchName)
                                             .With(x => x.IsEnabled, isEnabled)
                                             .With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
-            var expectedBranches = _baseTest.DbContext.Branches.Take(5).ToList();
+            var expectedBranches = _baseTest.CableDbContext.Branches.Take(5).ToList();
             var expectedBranchesIdsQuery = string.Join('&', expectedBranches.Select(x => $"{nameof(BranchFilter.BranchIds)}={x.Id}"));
             var uri = $"{_baseBrqanchUrl}?{nameof(BranchFilter.StateFilter)}={state}&{nameof(BranchFilter.CityFilter)}={city}&{nameof(BranchFilter.EmailFilter)}={email}&{nameof(BranchFilter.BranchNameFilter)}={branchName}&{nameof(BranchFilter.IsEnabledFilter)}={isEnabled}&{expectedBranchesIdsQuery}";
 
@@ -320,11 +320,11 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int branchCount = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
             var uri = $"{_baseBrqanchUrl}?{nameof(Paginable.Skip)}={skip}&{nameof(Paginable.Take)}={take}";
 
@@ -337,8 +337,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var result = JsonConvert.DeserializeObject<PagingResult<BranchModel>>(responseString);
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            result.Total.Should().Be(_baseTest.DbContext.Branches.Count());
-            result.Data.Count.Should().Be(_baseTest.DbContext.Branches.Skip(skip).Take(take).Count());
+            result.Total.Should().Be(_baseTest.CableDbContext.Branches.Count());
+            result.Data.Count.Should().Be(_baseTest.CableDbContext.Branches.Skip(skip).Take(take).Count());
             result.ItemsPerPage.Should().Be(take);
         }
 
@@ -372,11 +372,11 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int branchCount = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
             var uri = $"{_baseBrqanchUrl}?{nameof(Sortable.SortBy)}={sortByRequest}&{nameof(Sortable.SortOrder)}={order}";
 
@@ -391,8 +391,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             //Assert
             var expression = typeof(BranchModel).GetExpression<BranchModel>(sortBy);
 
-            result.Total.Should().Be(_baseTest.DbContext.Branches.Count());
-            result.Data.Count.Should().Be(_baseTest.DbContext.Branches.Count());
+            result.Total.Should().Be(_baseTest.CableDbContext.Branches.Count());
+            result.Data.Count.Should().Be(_baseTest.CableDbContext.Branches.Count());
             result.Data.All(x => x.GetType().GetProperty(sortBy).GetValue(x) == null).Should().BeFalse();
             result.ItemsPerPage.Should().Be(0);
             if (order == "asc")
@@ -412,7 +412,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int usersCount = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branchId = Guid.NewGuid();
             var branch = _baseTest.Fixture.Build<Branch>()
@@ -423,9 +423,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                          .With(x => x.Role, _baseTest.SalesRoleId.ToString())
                                          .With(x => x.BranchId, branchId)
                                          .CreateMany(usersCount);
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             var uri = $"{_baseBrqanchUrl}";
 
@@ -438,8 +438,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var result = JsonConvert.DeserializeObject<PagingResult<BranchModel>>(responseString);
 
             //Assert
-            result.Total.Should().Be(_baseTest.DbContext.Branches.Count());
-            result.Data.Count.Should().Be(_baseTest.DbContext.Branches.Count());
+            result.Total.Should().Be(_baseTest.CableDbContext.Branches.Count());
+            result.Data.Count.Should().Be(_baseTest.CableDbContext.Branches.Count());
             result.ItemsPerPage.Should().Be(0);
 
             var branchModel = result.Data.First(x => x.Id == branch.Id);
@@ -486,7 +486,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int usersCount = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branchId = Guid.NewGuid();
             var branch = _baseTest.Fixture.Build<Branch>()
@@ -497,9 +497,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                          .With(x => x.Role, _baseTest.SalesRoleId.ToString())
                                          .With(x => x.BranchId, branchId)
                                          .CreateMany(usersCount);
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted";
 
@@ -513,8 +513,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
 
-            result.Total.Should().Be(_baseTest.DbContext.Branches.Count());
-            result.Data.Count.Should().Be(_baseTest.DbContext.Branches.Count());
+            result.Total.Should().Be(_baseTest.CableDbContext.Branches.Count());
+            result.Data.Count.Should().Be(_baseTest.CableDbContext.Branches.Count());
             result.ItemsPerPage.Should().Be(0);
 
             var branchModel = result.Data.First(x => x.Id == branch.Id);
@@ -576,7 +576,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int usersCount = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branchId = Guid.NewGuid();
             var branch = _baseTest.Fixture.Build<Branch>()
@@ -587,9 +587,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                          .With(x => x.Role, _baseTest.SalesRoleId.ToString())
                                          .With(x => x.BranchId, branchId)
                                          .CreateMany(usersCount);
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseBrqanchUrl}/{branchId}";
 
             // Act
@@ -663,15 +663,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithFindCompany = 4;
             string state = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var firstCompany = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var secondCompany = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, firstCompany).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.Company, secondCompany)
                                                 .CreateMany(branchCountWithFindCompany));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"company/{secondCompany.Id}/{_baseBrqanchUrl}";
 
             // Act
@@ -695,15 +695,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneState = 4;
             string state = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.State, state)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneState));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.StateFilter)}={state}";
 
             // Act
@@ -727,15 +727,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             string city = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.City, city)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.CityFilter)}={city}";
 
             // Act
@@ -759,15 +759,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             string email = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.Email, email)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.EmailFilter)}={email}";
 
             // Act
@@ -791,15 +791,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             string branchName = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
             branches.AddRange(_baseTest.Fixture.Build<Branch>()
                                                 .With(x => x.BranchName, branchName)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.BranchNameFilter)}={branchName}";
 
             // Act
@@ -823,9 +823,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             bool isEnabled = true;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
-            _baseTest.DbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
+            _baseTest.CableDbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
             var branches = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.IsEnabled, !isEnabled)
                                             .With(x => x.Company, company).CreateMany(branchCount).ToList();
@@ -833,8 +833,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.IsEnabled, isEnabled)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.IsEnabledFilter)}={isEnabled}";
 
             // Act
@@ -858,9 +858,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int branchCount = 10;
             int branchCountWithOneCity = 4;
             bool isEnabled = false;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
-            _baseTest.DbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
+            _baseTest.CableDbContext.Branches.ToList().ForEach(x => x.IsEnabled = !isEnabled);
             var branches = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.IsEnabled, !isEnabled)
                                             .With(x => x.Company, company).CreateMany(branchCount).ToList();
@@ -868,8 +868,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.IsEnabled, isEnabled)
                                                 .With(x => x.Company, company)
                                                 .CreateMany(branchCountWithOneCity));
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.IsEnabledFilter)}={isEnabled}";
 
             // Act
@@ -891,13 +891,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int branchCount = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
-            var expectedBranch = _baseTest.DbContext.Branches.First();
+            var expectedBranch = _baseTest.CableDbContext.Branches.First();
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(BranchFilter.BranchIdFilter)}={expectedBranch.Id}";
 
             // Act
@@ -963,11 +963,11 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int branchCount = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(Paginable.Skip)}={skip}&{nameof(Paginable.Take)}={take}";
 
@@ -980,7 +980,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var result = JsonConvert.DeserializeObject<PagingResult<BranchModel>>(responseString);
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            var branchesWithExpectedCompanyInDb = _baseTest.DbContext.Branches.Where(x => x.CompanyId == company.Id);
+            var branchesWithExpectedCompanyInDb = _baseTest.CableDbContext.Branches.Where(x => x.CompanyId == company.Id);
             result.Total.Should().Be(branchesWithExpectedCompanyInDb.Count());
             result.Data.Count.Should().Be(branchesWithExpectedCompanyInDb.Skip(skip).Take(take).Count());
             result.ItemsPerPage.Should().Be(take);
@@ -1016,11 +1016,11 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int branchCount = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branches = _baseTest.Fixture.Build<Branch>().With(x => x.Company, company).CreateMany(branchCount).ToList();
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.SaveChanges();
 
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}?{nameof(Sortable.SortBy)}={sortByRequest}&{nameof(Sortable.SortOrder)}={order}";
 
@@ -1056,7 +1056,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int usersCount = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
             var branchId = Guid.NewGuid();
             var branch = _baseTest.Fixture.Build<Branch>()
@@ -1067,9 +1067,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                          .With(x => x.Role, _baseTest.SalesRoleId.ToString())
                                          .With(x => x.BranchId, branch.Id)
                                          .CreateMany(usersCount);
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             var uri = $"company/{company.Id}/{_baseBrqanchUrl}";
 
@@ -1229,7 +1229,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<Guid>(responseString);
-            var branchFromDb = _baseTest.DbContext.Branches.First(x => x.BranchName == request.BranchName);
+            var branchFromDb = _baseTest.CableDbContext.Branches.First(x => x.BranchName == request.BranchName);
             //Assert
             result.Should().Be(branchFromDb.Id);
         }
@@ -1371,16 +1371,16 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnSuccessResultWhenPutBranch()
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>().With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id).Create();
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
             var branch = _baseTest.Fixture.Build<Branch>()
                                           .With(x => x.Id, Guid.NewGuid())
                                           .With(x => x.CompanyId, company.Id)
                                           .Create();
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseBrqanchUrl}/{branch.Id}";
             var request = _baseTest.Fixture.Build<CreateBranchModel>()
@@ -1395,8 +1395,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var response = await _baseTest.HttpClient.PutAsync(uri, content);
             response.EnsureSuccessStatusCode();
 
-            await _baseTest.DbContext.Entry(branch).ReloadAsync();
-            var branchFromDb = _baseTest.DbContext.Branches.First(x => x.Id == branch.Id);
+            await _baseTest.CableDbContext.Entry(branch).ReloadAsync();
+            var branchFromDb = _baseTest.CableDbContext.Branches.First(x => x.Id == branch.Id);
             //Assert
             branchFromDb.Id.Should().Be(branch.Id);
             branchFromDb.BranchName.Should().Be(request.BranchName);
@@ -1458,8 +1458,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var branch = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.Id, Guid.NewGuid())
                                             .Create();
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseBrqanchUrl}/{branch.Id}";
 
             // Act
@@ -1474,7 +1474,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnSuccessResultWhenPatchBranch()
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .Create();
@@ -1482,8 +1482,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                             .With(x => x.Company, company)
                                             .With(x => x.IsEnabled, false)
                                             .Create();
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseBrqanchUrl}/{branch.Id}?isEnabled={true}";
 
             // Act
@@ -1491,8 +1491,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var response = await _baseTest.HttpClient.PatchAsync(uri, null);
             response.EnsureSuccessStatusCode();
 
-            await _baseTest.DbContext.Entry(branch).ReloadAsync();
-            var branchFromDb = _baseTest.DbContext.Branches.First(x => x.Id == branch.Id);
+            await _baseTest.CableDbContext.Entry(branch).ReloadAsync();
+            var branchFromDb = _baseTest.CableDbContext.Branches.First(x => x.Id == branch.Id);
             //Assert
             branchFromDb.IsEnabled.Should().BeTrue();
         }
@@ -1520,8 +1520,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             var branch = _baseTest.Fixture.Create<Branch>();
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted/internal?{nameof(BranchMinRequestModel.Id)}={Guid.NewGuid()}";
 
@@ -1539,8 +1539,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             var branch = _baseTest.Fixture.Create<Branch>();
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted/internal?{nameof(BranchMinRequestModel.BranchName)}={branch.BranchName}";
 
@@ -1564,8 +1564,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             var branch = _baseTest.Fixture.Create<Branch>();
-            _baseTest.DbContext.Branches.Add(branch);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.Add(branch);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseBrqanchUrl}/{Consts.StaticToken}/trusted/internal?{nameof(BranchMinRequestModel.Id)}={branch.Id}";
 

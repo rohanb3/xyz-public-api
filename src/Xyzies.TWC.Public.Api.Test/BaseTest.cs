@@ -31,7 +31,8 @@ namespace Xyzies.TWC.Public.Api.Tests
         private readonly object _lock = new object();
         public TestServer TestServer;
         public HttpClient HttpClient;
-        public CablePortalAppDataContext DbContext;
+        public CablePortalAppDataContext CableDbContext;
+        public AppDataContext DbContext;
         private CloudBlobContainer _cloudBlobContainer;
         public TestSeed TestSeed;
         public Fixture Fixture;
@@ -45,6 +46,7 @@ namespace Xyzies.TWC.Public.Api.Tests
         public async Task DisposeAsync()
         {
             await DeleteImageInBlobStorage();
+            CableDbContext.Dispose();
             DbContext.Dispose();
             HttpClient.Dispose();
             TestServer.Dispose();
@@ -65,15 +67,21 @@ namespace Xyzies.TWC.Public.Api.Tests
                                .UseWebRoot(Directory.GetCurrentDirectory())
                                .UseContentRoot(Directory.GetCurrentDirectory());
 
+                var cableDbConnectionString = configuration.GetConnectionString("cpdb");
                 var dbConnectionString = configuration.GetConnectionString("db");
 
-                if (string.IsNullOrEmpty(dbConnectionString))
+                if (string.IsNullOrWhiteSpace(cableDbConnectionString) || string.IsNullOrWhiteSpace(dbConnectionString))
                 {
                     throw new ApplicationException("Missing the connection string to database");
                 };
                 webHostBuild.ConfigureServices(service =>
                 {
                     service.AddDbContextPool<CablePortalAppDataContext>(ctxOptions =>
+                    {
+                        ctxOptions.UseInMemoryDatabase(cableDbConnectionString).EnableSensitiveDataLogging();
+                        ctxOptions.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                    });
+                    service.AddDbContextPool<AppDataContext>(ctxOptions =>
                     {
                         ctxOptions.UseInMemoryDatabase(dbConnectionString).EnableSensitiveDataLogging();
                         ctxOptions.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
@@ -94,7 +102,8 @@ namespace Xyzies.TWC.Public.Api.Tests
                     }
                 });
                 TestServer = new TestServer(webHostBuild);
-                DbContext = TestServer.Host.Services.GetRequiredService<CablePortalAppDataContext>();
+                CableDbContext = TestServer.Host.Services.GetRequiredService<CablePortalAppDataContext>();
+                DbContext = TestServer.Host.Services.GetRequiredService<AppDataContext>();
                 TestSeed = TestServer.Host.Services.GetRequiredService<TestSeed>();
                 HttpClient = TestServer.CreateClient();
                 Fixture = new Fixture();
