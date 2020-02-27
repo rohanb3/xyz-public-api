@@ -54,6 +54,7 @@ namespace Xyzies.TWC.Public.Data
         {
             CompanyName = companyName,
             Email = $"{Guid.NewGuid()}test.com",
+            CreatedDate = DateTime.UtcNow,
             CompanyStatusKey = requestStatusId
         };
 
@@ -62,7 +63,9 @@ namespace Xyzies.TWC.Public.Data
         {
             BranchName = Consts.DefaultBranchName,
             Email = $"{Guid.NewGuid()}test.com",
-            CompanyId = companyId
+            CompanyId = companyId,
+            CreatedDate = DateTime.UtcNow,
+            IsEnabled = true
         };
 
         private RequestStatus GetRequestStatus()
