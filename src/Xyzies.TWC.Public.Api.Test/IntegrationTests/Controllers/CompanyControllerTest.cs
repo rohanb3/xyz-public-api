@@ -31,10 +31,10 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public CompanyControllerTest(BaseTest baseTest)
         {
             _baseTest = baseTest ?? throw new ArgumentNullException(nameof(baseTest));
-            _baseTest.DbContext.ClearContext();
+            _baseTest.CableDbContext.ClearContext();
             _baseTest.TestSeed.Seed();
-            _baseTest.DbContext.RemoveRange(_baseTest.DbContext.Companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.RemoveRange(_baseTest.CableDbContext.Companies);
+            _baseTest.CableDbContext.SaveChanges();
             _baseCompanyUrl = "company";
         }
 
@@ -60,7 +60,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int countCompanyWithOneState = 3;
             int countCompanyWithDifferenceState = 5;
             string state = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompanyWithDifferenceState)
@@ -69,8 +69,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                                 .With(x => x.State, state)
                                                 .CreateMany(countCompanyWithOneState));
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.StateFilter)}={state}";
 
@@ -94,8 +94,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             var company = _baseTest.Fixture.Create<Company>();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}";
 
@@ -118,7 +118,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int countCompanyWithOneCity = 3;
             int countCompanyWithDifferenceCity = 5;
             string city = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompanyWithDifferenceCity)
@@ -127,8 +127,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                                 .With(x => x.City, city)
                                                 .CreateMany(countCompanyWithOneCity));
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.CityFilter)}={city}";
 
@@ -153,7 +153,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int countCompanyWithOneEmail = 3;
             int countCompanyWithDifferenceEmail = 5;
             string email = _baseTest.Fixture.Create<string>();
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompanyWithDifferenceEmail)
@@ -162,8 +162,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                                 .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                                 .With(x => x.Email, email)
                                                 .CreateMany(countCompanyWithOneEmail));
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.EmailFilter)}={email}";
 
@@ -187,16 +187,16 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             int countCompanyMustBeFounded = 3;
             int countCompany = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany)
                                            .ToList();
 
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
-            var expectedCompanies = _baseTest.DbContext.Companies.Take(countCompanyMustBeFounded);
+            var expectedCompanies = _baseTest.CableDbContext.Companies.Take(countCompanyMustBeFounded);
             var expectedCompanyNameQuery = string.Join('&', expectedCompanies.Select(x => $"{nameof(CompanyFilter.CompanyNameFilter)}={x.CompanyName}"));
             string uri = $"{_baseCompanyUrl}?{expectedCompanyNameQuery}";
 
@@ -221,7 +221,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var dateCreated = DateTime.Now;
             int countCompanyMustBeFounded = 3;
             int countCompany = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.CreatedDate, DateTime.Now.AddDays(-1))
@@ -232,8 +232,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             {
                 expectedCompanies[i].CreatedDate = dateCreated.AddDays(i);
             }
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.DateFrom)}={dateCreated.ToString("yyyy-MM-dd")}";
 
@@ -258,7 +258,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var dateCreated = DateTime.Now;
             int countCompanyMustBeFounded = 3;
             int countCompany = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.CreatedDate, DateTime.Now.AddDays(+1))
@@ -269,8 +269,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             {
                 expectedCompanies[i].CreatedDate = dateCreated.AddDays(-(i + 1));
             }
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.DateTo)}={dateCreated.ToString("yyyy-MM-dd")}";
 
@@ -296,7 +296,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             int countCompanyMustBeFounded = 4;
             var dateCreatedFrom = DateTime.Now;
             var dateCreatedTo = DateTime.Now.AddDays(countCompanyMustBeFounded);
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany)
@@ -305,8 +305,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             {
                 companies[i].CreatedDate = dateCreatedFrom.AddDays(i);
             }
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.DateFrom)}={dateCreatedFrom.ToString("yyyy-MM-dd")}&{nameof(CompanyFilter.DateTo)}={dateCreatedTo.ToString("yyyy-MM-dd")}";
 
@@ -330,13 +330,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             int countCompany = 10;
             bool isEnabled = true;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany)
                                            .ToList();
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.IsEnabledFilter)}={isEnabled}";
 
@@ -349,7 +349,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            int countIsEnabledEntity = _baseTest.DbContext.Companies.Count(x => x.IsEnabled == isEnabled);
+            int countIsEnabledEntity = _baseTest.CableDbContext.Companies.Count(x => x.IsEnabled == isEnabled);
             result.Total.Should().Be(countIsEnabledEntity);
             result.Data.Count.Should().Be(countIsEnabledEntity);
             result.Data.All(x => x.IsEnabled == isEnabled).Should().BeTrue();
@@ -360,13 +360,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int countCompany = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany)
                                            .ToList();
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             var expectedCompany = companies.First();
 
@@ -391,13 +391,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int countCompany = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany)
                                            .ToList();
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             var expectedCompany = companies.First();
 
@@ -422,15 +422,15 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int countCompany = 10;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany)
                                            .ToList();
             string companyNameStartWith = "Test";
             companies.ForEach(x => x.CompanyName = $"{companyNameStartWith}{x.CompanyName}");
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string expectedContainsCompanyName = $"{companyNameStartWith}{nameof(Company.CompanyName)}";
             string uri = $"{_baseCompanyUrl}?{nameof(CompanyFilter.SearchFilter)}={expectedContainsCompanyName}";
@@ -463,7 +463,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var dateTo = DateTime.Now.AddDays(1);
             var dateCreated = DateTime.Now;
             bool isEnabled = true;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.State, state)
@@ -475,10 +475,10 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                            .CreateMany(countCompany)
                                            .ToList();
 
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
-            var expectedCompanies = _baseTest.DbContext.Companies.Take(countCompanyMustBeFounded);
+            var expectedCompanies = _baseTest.CableDbContext.Companies.Take(countCompanyMustBeFounded);
             var expectedCompanyIdQuery = string.Join('&', expectedCompanies.Select(x => $"{nameof(CompanyFilter.CompanyIds)}={x.Id}"));
             string uri = $"{_baseCompanyUrl}?{expectedCompanyIdQuery}&{nameof(CompanyFilter.StateFilter)}={state}&{nameof(CompanyFilter.CityFilter)}={city}&{nameof(CompanyFilter.EmailFilter)}={email}&{nameof(CompanyFilter.IsEnabledFilter)}={isEnabled}&{nameof(CompanyFilter.SearchFilter)}={companyName}&{nameof(CompanyFilter.DateFrom)}={dateFrom.ToString("yyyy-MM-dd")}&{nameof(CompanyFilter.DateTo)}={dateTo.ToString("yyyy-MM-dd")}";
 
@@ -500,14 +500,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnSuccessResultCheckCorrectDataWhenGetCompanies()
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             int branchCount = 5;
             int usersCount = 5;
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .Create();
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             var branches = _baseTest.Fixture.Build<Branch>()
                                             .With(x => x.CompanyId, company.Id)
@@ -518,9 +518,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                        .With(x => x.CompanyId, company.Id)
                                        .CreateMany(usersCount);
 
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}";
 
@@ -531,7 +531,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
-            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            int countCompanyInDb = _baseTest.CableDbContext.Companies.Count();
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
             result.Total.Should().Be(countCompanyInDb);
@@ -612,13 +612,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int countCompany = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany);
 
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(Paginable.Skip)}={skip}&{nameof(Paginable.Take)}={take}";
 
@@ -629,12 +629,12 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
-            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            int countCompanyInDb = _baseTest.CableDbContext.Companies.Count();
 
             //Assert
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            result.Total.Should().Be(_baseTest.DbContext.Companies.Count());
-            result.Data.Count.Should().Be(_baseTest.DbContext.Companies.Skip(skip).Take(take).Count());
+            result.Total.Should().Be(_baseTest.CableDbContext.Companies.Count());
+            result.Data.Count.Should().Be(_baseTest.CableDbContext.Companies.Skip(skip).Take(take).Count());
             result.ItemsPerPage.Should().Be(take);
         }
 
@@ -664,13 +664,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int countCompany = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany);
 
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}?{nameof(Sortable.SortBy)}={sortByRequest}&{nameof(Sortable.SortOrder)}={order}";
 
@@ -681,7 +681,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
-            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            int countCompanyInDb = _baseTest.CableDbContext.Companies.Count();
 
             //Assert
             var expression = typeof(CompanyModel).GetExpression<CompanyModel>(sortBy);
@@ -724,13 +724,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             int countCompany = 100;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany);
 
-            _baseTest.DbContext.Companies.AddRange(companies);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.AddRange(companies);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted";
             // Act
             _baseTest.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_baseTest.AdminToken.TokenType, _baseTest.AdminToken.AccessToken);
@@ -739,7 +739,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
-            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            int countCompanyInDb = _baseTest.CableDbContext.Companies.Count();
             //Assert
             result.Total.Should().Be(countCompanyInDb);
             result.Data.Count.Should().Be(countCompanyInDb);
@@ -752,13 +752,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             int usersCount = 5;
             int branchCount = 9;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             var branches = _baseTest.Fixture.Build<Branch>()
                                            .With(x => x.CompanyId, company.Id)
@@ -769,9 +769,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                        .With(x => x.CompanyId, company.Id)
                                        .CreateMany(usersCount);
 
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted";
             // Act
@@ -781,7 +781,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<PagingResult<CompanyModel>>(responseString);
-            int countCompanyInDb = _baseTest.DbContext.Companies.Count();
+            int countCompanyInDb = _baseTest.CableDbContext.Companies.Count();
             //Assert
             result.Total.Should().Be(countCompanyInDb);
             result.Data.Count.Should().Be(countCompanyInDb);
@@ -894,14 +894,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             int usersCount = 5;
             int branchCount = 9;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             var branches = _baseTest.Fixture.Build<Branch>()
                                            .With(x => x.CompanyId, company.Id)
@@ -912,9 +912,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                        .With(x => x.CompanyId, company.Id)
                                        .CreateMany(usersCount);
 
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{company.Id}";
             // Act
@@ -1000,14 +1000,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             int usersCount = 5;
             int branchCount = 9;
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
             var file = GetFormFileMoq();
             await _baseTest.AddImageInBlobStorage(file);
             CompanyModelExtended companyResult = null;
@@ -1021,9 +1021,9 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                        .With(x => x.CompanyId, company.Id)
                                        .CreateMany(usersCount);
 
-            _baseTest.DbContext.Branches.AddRange(branches);
-            _baseTest.DbContext.Users.AddRange(users);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Branches.AddRange(branches);
+            _baseTest.CableDbContext.Users.AddRange(users);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{company.Id}";
             // Act
@@ -1207,14 +1207,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             string email = "test@email.com";
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.Email, email)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}";
             var request = _baseTest.Fixture.Build<CreateCompanyModel>()
@@ -1251,8 +1251,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
             int companyId = JsonConvert.DeserializeObject<int>(responseString);
             //Assert
-            _baseTest.DbContext.Companies.Count().Should().Be(1);
-            _baseTest.DbContext.Companies.First().Id.Should().Be(companyId);
+            _baseTest.CableDbContext.Companies.Count().Should().Be(1);
+            _baseTest.CableDbContext.Companies.First().Id.Should().Be(companyId);
         }
         #endregion
 
@@ -1418,13 +1418,13 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnSuccessResultWhenPutCompany()
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseCompanyUrl}/{company.Id}";
             var request = _baseTest.Fixture.Build<CreateCompanyModel>()
                                            .With(x => x.Email, "test@email.com")
@@ -1438,8 +1438,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var response = await _baseTest.HttpClient.PutAsync(uri, content);
             response.EnsureSuccessStatusCode();
 
-            await _baseTest.DbContext.Entry(company).ReloadAsync();
-            var companyFromDb = _baseTest.DbContext.Companies.First(x => x.Id == company.Id);
+            await _baseTest.CableDbContext.Entry(company).ReloadAsync();
+            var companyFromDb = _baseTest.CableDbContext.Companies.First(x => x.Id == company.Id);
             //Assert
             companyFromDb.CompanyName.Should().Be(request.CompanyName);
             companyFromDb.LegalName.Should().Be(request.LegalName);
@@ -1499,8 +1499,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         {
             // Arrange
             var company = _baseTest.Fixture.Create<Company>();
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseCompanyUrl}/{company.Id}";
 
             // Act
@@ -1515,14 +1515,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnSuccessResultWhenPatchCompany()
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.IsEnabled, false)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
             string uri = $"{_baseCompanyUrl}/{company.Id}?isEnabled={true}";
 
             // Act
@@ -1530,8 +1530,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var response = await _baseTest.HttpClient.PatchAsync(uri, null);
             response.EnsureSuccessStatusCode();
 
-            await _baseTest.DbContext.Entry(company).ReloadAsync();
-            var companyFromDb = _baseTest.DbContext.Companies.First(x => x.Id == company.Id);
+            await _baseTest.CableDbContext.Entry(company).ReloadAsync();
+            var companyFromDb = _baseTest.CableDbContext.Companies.First(x => x.Id == company.Id);
             //Assert
             companyFromDb.IsEnabled.Should().BeTrue();
         }
@@ -1575,14 +1575,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnBadRequestResultIfFileIsNotImageOrHasBigSizeWhenUpdateCompanyAvatar(string path)
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{company.Id}/avatar";
             var index = Directory.GetCurrentDirectory().ToString().IndexOf("bin");
@@ -1637,14 +1637,14 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
         public async Task ShouldReturnSuccessResultWhenUpdateCompanyAvatar(string extension, long length)
         {
             // Arrange
-            var requestStatusOnBoarder = _baseTest.DbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
+            var requestStatusOnBoarder = _baseTest.CableDbContext.RequestStatuses.First(x => x.Name == Data.Consts.OnBoardedStatusName);
             var company = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{company.Id}/avatar";
             var file = GetFormFileMoq(extension, length);
@@ -1709,8 +1709,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.Id)}={companyId}";
 
@@ -1731,8 +1731,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.CompanyName)}={companyName}";
 
@@ -1750,8 +1750,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             // Arrange
             var company = _baseTest.Fixture.Create<Company>();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.Id)}={company.Id}";
 
@@ -1776,8 +1776,8 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
                                            .With(x => x.Id, _baseTest.DefaultCompanyId)
                                            .Create();
 
-            _baseTest.DbContext.Companies.Add(company);
-            _baseTest.DbContext.SaveChanges();
+            _baseTest.CableDbContext.Companies.Add(company);
+            _baseTest.CableDbContext.SaveChanges();
 
             string uri = $"{_baseCompanyUrl}/{Consts.StaticToken}/trusted/internal?{nameof(CompanyMinRequestModel.CompanyName)}={company.CompanyName}";
 
