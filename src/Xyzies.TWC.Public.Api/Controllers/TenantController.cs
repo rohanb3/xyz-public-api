@@ -240,7 +240,7 @@ namespace Xyzies.TWC.Public.Api.Controllers
         [AllowAnonymous]
         [HttpGet(Consts.PrefixForBaseUrl.TenantSimpleTrusted)]
         [ProducesResponseType(typeof(IEnumerable<TenantWithCompaniesSimpleModel>), StatusCodes.Status200OK  /* 200 */)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden /* 403 */)]
         [SwaggerOperation(Tags = new[] { "Tenant API" })]
         public async Task<IActionResult> GetSimpleTrusted(string token, [FromQuery]TenantFilterModel filterModel)
         {
