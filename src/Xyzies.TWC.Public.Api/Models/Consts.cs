@@ -7,6 +7,7 @@
         public class PrefixForBaseUrl
         {
             public const string TenantSimple = "simple";
+            public const string TenantSimpleTrusted = "simple/{token}/trusted";
         }
     }
 }

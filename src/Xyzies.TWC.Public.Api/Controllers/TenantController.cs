@@ -234,6 +234,26 @@ namespace Xyzies.TWC.Public.Api.Controllers
         }
 
         /// <summary>
+        /// Get Tenant single model by List ids
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet(Consts.PrefixForBaseUrl.TenantSimpleTrusted)]
+        [ProducesResponseType(typeof(IEnumerable<TenantWithCompaniesSimpleModel>), StatusCodes.Status200OK  /* 200 */)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized /* 401 */)]
+        [SwaggerOperation(Tags = new[] { "Tenant API" })]
+        public async Task<IActionResult> GetSimpleTrusted(string token, [FromQuery]TenantFilterModel filterModel)
+        {
+            if(token != Consts.StaticToken)
+            {
+                return new ContentResult { StatusCode = 403 };
+            }
+
+            var tenant = await _tenantService.GetSimple(filterModel);
+            return Ok(tenant);
+        }
+
+        /// <summary>
         /// Get Tenant by company id(int)
         /// </summary>
         /// <returns></returns>
