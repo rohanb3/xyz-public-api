@@ -22,6 +22,7 @@ namespace Xyzies.TWC.Public.Data
         public void Seed()
         {
             var transaction = _dbContext.Database.BeginTransaction();
+            Company companyIdWithoutAnyBranch = null;
             try
             {
                 var requestStatusId = _dbContext.RequestStatuses.FirstOrDefault(x => x.Name.ToLower() == Consts.OnBoardedStatusName.ToLower())?.Id;
@@ -29,11 +30,12 @@ namespace Xyzies.TWC.Public.Data
                     requestStatusId = _dbContext.RequestStatuses.Add(GetRequestStatus()).Entity.Id;
 
                 var companyId = _dbContext.Companies.FirstOrDefault(x => x.CompanyName.ToLower() == Consts.DefaultCompanyName.ToLower())?.Id;
-                if (companyId == null)
+                if (!companyId.HasValue)
                     companyId = _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyName)).Entity.Id;
 
-                if (!_dbContext.Companies.Any(x => x.CompanyName == Consts.DefaultCompanyNameNotBindAnyBranch))
-                    _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyNameNotBindAnyBranch));
+                companyIdWithoutAnyBranch = _dbContext.Companies.Include(x=>x.Branches).FirstOrDefault(x => x.CompanyName == Consts.DefaultCompanyNameNotBindAnyBranch);
+                if (companyIdWithoutAnyBranch == null)
+                    companyIdWithoutAnyBranch = _dbContext.Companies.Add(GetCompany(requestStatusId.Value, Consts.DefaultCompanyNameNotBindAnyBranch)).Entity;
 
                 if (!_dbContext.Branches.Any(x => x.BranchName.ToLower() == Consts.DefaultBranchName.ToLower()))
                     _dbContext.Branches.Add(GetBranch(companyId.Value));
@@ -47,6 +49,10 @@ namespace Xyzies.TWC.Public.Data
                 _logger.LogError(ex, "[Seed] Database is not filling by default data");
                 throw new ApplicationException("Database is not filling by default data");
             }
+
+            var testBranchesForDeleteList = _dbContext.Branches.Where(x => x.CompanyId == companyIdWithoutAnyBranch.Id);
+            if (testBranchesForDeleteList.Any())
+                _dbContext.Branches.RemoveRange(testBranchesForDeleteList);
         }
 
         private Company GetCompany(Guid? requestStatusId, string companyName)
@@ -54,6 +60,7 @@ namespace Xyzies.TWC.Public.Data
         {
             CompanyName = companyName,
             Email = $"{Guid.NewGuid()}test.com",
+            CreatedDate = DateTime.UtcNow,
             CompanyStatusKey = requestStatusId
         };
 
@@ -62,7 +69,9 @@ namespace Xyzies.TWC.Public.Data
         {
             BranchName = Consts.DefaultBranchName,
             Email = $"{Guid.NewGuid()}test.com",
-            CompanyId = companyId
+            CompanyId = companyId,
+            CreatedDate = DateTime.UtcNow,
+            IsEnabled = true
         };
 
         private RequestStatus GetRequestStatus()

@@ -96,7 +96,7 @@ namespace Xyzies.TWC.Public.Api.Tests.IntegrationTests.Controllers
             var companies = _baseTest.Fixture.Build<Company>()
                                            .With(x => x.CompanyStatusKey, requestStatusOnBoarder.Id)
                                            .CreateMany(countCompany);
-            
+
             _baseTest.CableDbContext.Companies.AddRange(companies);
             _baseTest.CableDbContext.SaveChanges();
             var tenantCompanies = companies.Select(x => _baseTest.Fixture.Build<CompanyTenant>()
