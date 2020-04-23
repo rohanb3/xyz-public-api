@@ -1,7 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Xyzies.TWC.Public.Api.Models
 {
     public class TenantSettingModel
     {
+        public bool FaceDetectionEnabled { get; set; }
+        public int FaceDetectionCallTimeout { get; set; }
+        public string FaceDetectionPopupSize { get; set; }
+
+        [MaxLength(150)]
+        public string FaceDetectionPopupTitle { get; set; }
+
+        [MaxLength(150)]
+        public string FaceDetectionPopupBody { get; set; }
         public string WebViewUrl { get; set; }
         public bool ShowWebViewButton { get; set; }
         public string WebViewButtonPosition { get; set; }
